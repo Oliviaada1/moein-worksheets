@@ -433,7 +433,6 @@
 
     // --- 🚀 منطق التزامن المبسط والمشفر خفيف الوزن ---
     
-    // الحصول على البيانات بتنسيق خفيف
     function getFormState() {
       return {
         tab: activeTab,
@@ -450,7 +449,6 @@
       };
     }
 
-    // تطبيق البيانات على الاستمارة
     function setFormState(data) {
       if (data.tt !== undefined) document.getElementById('textSheetTitle').value = data.tt;
       if (data.tc !== undefined) document.getElementById('textSheetContent').value = data.tc;
@@ -467,7 +465,6 @@
       else renderPreview();
     }
 
-    // 1️⃣ إنشاء كود مشفر خفيف الوزن (Base64)
     function exportCode() {
       const jsonStr = JSON.stringify(getFormState());
       const encodedCode = btoa(encodeURIComponent(jsonStr));
@@ -476,7 +473,6 @@
       toggleModal('exportModal');
     }
 
-    // نسخ الكود للذاكرة
     function copyGeneratedCode() {
       const codeInput = document.getElementById('generatedSyncCode');
       codeInput.select();
@@ -484,7 +480,6 @@
       alert('تم نسخ كود الربط المباشر بنجاح! 📋');
     }
 
-    // 2️⃣ فك التشفير واستيراد الكود
     function importCode() {
       const code = document.getElementById('inputSyncCode').value.trim();
       if (!code) return alert('يرجى لصق الكود أولاً!');
@@ -500,7 +495,6 @@
       }
     }
 
-    // حفظ ملف مسبق
     function exportDraft() {
       const blob = new Blob([JSON.stringify(getFormState())], { type: 'application/json' });
       const a = document.createElement('a');
@@ -509,7 +503,6 @@
       a.click();
     }
 
-    // تحميل الصورة
     function downloadAsImage() {
       const node = document.getElementById('printableArea');
       html2canvas(node, { scale: 2 }).then(canvas => {
