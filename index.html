@@ -44,6 +44,14 @@
       user-select: none;
     }
 
+    /* حاوية الصورة المصممة للقص والضبط */
+    .img-crop-container {
+      overflow: hidden;
+      display: inline-block;
+      position: relative;
+      transition: all 0.2s ease;
+    }
+
     @media print {
       body * { visibility: hidden; }
       .no-print { display: none !important; }
@@ -69,7 +77,7 @@
         <h1 class="text-2xl sm:text-3xl font-extrabold flex items-center gap-2">
           <span>✨</span> منصة مُعِين التعليمية
         </h1>
-        <p class="text-indigo-100 text-xs sm:text-sm mt-1">أوراق عمل، ألعاب حروف ورياضيات، شهادات قابلة للتخصيص ونقل سريع</p>
+        <p class="text-indigo-100 text-xs sm:text-sm mt-1">تصميم أوراق عمل، تعديل وقص الصور، شهادات وتصدير حسب الحجم الفعلي</p>
       </div>
 
       <!-- أدوات النقل والتحكم -->
@@ -145,21 +153,39 @@
       </div>
     </section>
 
-    <!-- 2️⃣ قسم ورقة العمل المصورة -->
+    <!-- 2️⃣ قسم ورقة العمل المصورة أدوات قص وتعديل الصور -->
     <section id="section-imageWorksheet" class="tab-content hidden bg-white p-4 sm:p-5 rounded-2xl shadow-sm border border-slate-200 space-y-4 no-print">
       <h2 class="text-xs sm:text-sm font-bold text-indigo-900 border-b pb-2 flex items-center gap-1">
-        <span>🖼️</span> إدراج ورقة عمل كصورة:
+        <span>🖼️</span> إدراج ورقة عمل كصورة وتعديلها:
       </h2>
       
-      <div class="space-y-3">
-        <div>
-          <label class="block text-xs font-bold text-slate-600 mb-1">اختر صورة ورقة العمل أو التمرين:</label>
-          <input type="file" id="imgSheetFile" accept="image/*" onchange="handleImageUpload(event)" class="w-full p-2 border border-slate-300 rounded-lg text-xs bg-slate-50">
+      <div class="space-y-4">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-bold text-slate-600 mb-1">اختر صورة ورقة العمل:</label>
+            <input type="file" id="imgSheetFile" accept="image/*" onchange="handleImageUpload(event)" class="w-full p-2 border border-slate-300 rounded-lg text-xs bg-slate-50">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-600 mb-1">عنوان ورقة العمل / الترويسة:</label>
+            <input type="text" id="imgSheetTitle" oninput="renderPreview()" class="w-full p-2.5 border border-slate-300 rounded-lg text-xs" placeholder="عنوان الورقة">
+          </div>
         </div>
 
-        <div>
-          <label class="block text-xs font-bold text-slate-600 mb-1">عنوان ورقة العمل / الترويسة:</label>
-          <input type="text" id="imgSheetTitle" oninput="renderPreview()" class="w-full p-2.5 border border-slate-300 rounded-lg text-xs" placeholder="مثال: ورقة عمل مادة العلوم - الصف الرابع">
+        <!-- أدوات تعديل وقص حقوق/روابط الصورة -->
+        <div class="p-3 bg-amber-50 border border-amber-200 rounded-xl space-y-3">
+          <h3 class="text-xs font-bold text-amber-900 flex items-center gap-1">
+            <span>✂️</span> أدوات قص وتعديل الصورة (إزالة الروابط والحقوق السفلية):
+          </h3>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label class="block text-[11px] font-bold text-slate-600 mb-1">قص وإخفاء الجزء السفلي (حذف رابط الموقع):</label>
+              <input type="range" id="imgCropBottom" min="0" max="40" value="0" oninput="updateImageAdjustments()" class="w-full">
+            </div>
+            <div>
+              <label class="block text-[11px] font-bold text-slate-600 mb-1">حجم تكبير/تصغير الصورة:</label>
+              <input type="range" id="imgScale" min="50" max="100" value="100" oninput="updateImageAdjustments()" class="w-full">
+            </div>
+          </div>
         </div>
       </div>
     </section>
@@ -242,7 +268,7 @@
       </div>
     </section>
 
-    <!-- 5️⃣ قسم شهادات التقدير بخصائص التخصيص والشعار -->
+    <!-- 5️⃣ قسم شهادات التقدير -->
     <section id="section-certificate" class="tab-content hidden bg-white p-4 sm:p-5 rounded-2xl shadow-sm border border-slate-200 space-y-4 no-print">
       <h2 class="text-xs sm:text-sm font-bold text-indigo-900 border-b pb-2 flex items-center gap-1">
         <span>🎓</span> إعداد وتخصيص شهادة التقدير:
@@ -281,7 +307,7 @@
 
         <div>
           <label class="block text-xs font-bold text-slate-600 mb-1">التاريخ:</label>
-          <input type="text" id="certDate" oninput="renderPreview()" class="w-full p-2.5 border border-slate-300 rounded-lg text-xs" placeholder="2026/09/25">
+          <input type="text" id="certDate" oninput="renderPreview()" class="w-full p-2.5 border border-slate-300 rounded-lg text-xs" placeholder="2026/09/26">
         </div>
       </div>
     </section>
@@ -293,8 +319,8 @@
           👁️ المعاينة والتحميل:
         </h2>
         <div class="flex items-center gap-2">
-          <button onclick="downloadAsImage()" class="bg-purple-600 hover:bg-purple-700 text-white px-3 py-2 rounded-lg font-bold text-xs transition shadow">
-            🖼️ حفظ كصورة
+          <button onclick="downloadTrimmedImage()" class="bg-purple-600 hover:bg-purple-700 text-white px-3.5 py-2 rounded-lg font-bold text-xs transition shadow flex items-center gap-1">
+            🖼️ حفظ كصورة (حجم المحتوى فقط)
           </button>
           <button onclick="window.print()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg font-bold text-xs transition shadow">
             🛈 طباعة / PDF
@@ -412,6 +438,12 @@
       }
     }
 
+    function updateImageAdjustments() {
+      if (activeTab === 'imageWorksheet') {
+        renderPreview();
+      }
+    }
+
     function generateMathProblems(type, level, count) {
       const problems = [];
       let maxNum = level === 'easy' ? 10 : level === 'medium' ? 50 : 100;
@@ -515,14 +547,21 @@
         }
       } else if (activeTab === 'imageWorksheet') {
         const title = document.getElementById('imgSheetTitle').value || 'ورقة عمل مصورة';
+        const cropBottom = document.getElementById('imgCropBottom') ? document.getElementById('imgCropBottom').value : 0;
+        const scale = document.getElementById('imgScale') ? document.getElementById('imgScale').value : 100;
+
         area.innerHTML = `
           <div class="flex flex-col h-full">
             <div class="flex justify-between items-center mb-3 pb-2 border-b-2 border-indigo-900">
               <h3 class="font-bold text-indigo-900 text-sm">${title}</h3>
               <div class="text-[10px] text-slate-500">الاسم: .......................... | التاريخ:  /  / </div>
             </div>
-            <div class="flex-1 flex items-center justify-center border-2 border-dashed border-slate-200 rounded-xl p-2 min-h-[220mm]">
-              ${uploadedImageData ? `<img src="${uploadedImageData}" class="max-h-[220mm] object-contain rounded-lg" />` : '<p class="text-slate-400 text-xs">الرجاء اختيار صورة ورقة العمل...</p>'}
+            <div class="flex-1 flex items-center justify-center border-2 border-dashed border-slate-200 rounded-xl p-2 min-h-[200mm] overflow-hidden">
+              ${uploadedImageData ? `
+                <div class="img-crop-container" style="margin-bottom: -${cropBottom}\%; transform: scale(${scale / 100}); transform-origin: top center;">
+                  <img src="${uploadedImageData}" class="max-h-[220mm] object-contain rounded-lg" />
+                </div>
+              ` : '<p class="text-slate-400 text-xs">الرجاء اختيار صورة ورقة العمل...</p>'}
             </div>
           </div>
         `;
@@ -602,9 +641,8 @@
         const student = document.getElementById('certStudentName').value || 'اسم الطالب/الطالبة';
         const reason = document.getElementById('certReason').value || 'للتفوق والتميز الدراسي';
         const teacher = document.getElementById('certTeacher').value || 'معلمة المادة';
-        const date = document.getElementById('certDate').value || '2026/09/25';
+        const date = document.getElementById('certDate').value || '2026/09/26';
 
-        // تنسيق الثيمات والألوان
         let themeClasses = {
           royal: { border: 'border-indigo-900', text: 'text-indigo-950', accent: 'text-purple-900', borderAcc: 'border-purple-300', bg: 'from-indigo-50/40 to-purple-50/40' },
           gold: { border: 'border-amber-700', text: 'text-amber-950', accent: 'text-amber-800', borderAcc: 'border-amber-400', bg: 'from-amber-50/50 to-yellow-50/40' },
@@ -615,7 +653,6 @@
         area.innerHTML = `
           <div class="h-full border-8 double ${themeClasses.border} p-6 flex flex-col justify-between text-center relative bg-gradient-to-b ${themeClasses.bg}">
             
-            <!-- الشعار أعلى الشهادة -->
             <div class="flex justify-between items-center mb-2">
               <div class="w-16 h-16 flex items-center justify-center">
                 ${certLogoData ? `<img src="${certLogoData}" class="max-h-16 max-w-16 object-contain" />` : ''}
@@ -638,6 +675,62 @@
           </div>
         `;
       }
+    }
+
+    // ⭐ الدالة المحدثة لتصدير الصورة بالحجم الفعلي فقط وقص المساحات الفارغة
+    function downloadTrimmedImage() {
+      const element = document.getElementById('printableArea');
+      
+      html2canvas(element, { scale: 2 }).then(canvas => {
+        const ctx = canvas.getContext('2d');
+        const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        let top = canvas.height, bottom = 0, left = canvas.width, right = 0;
+
+        // خوارزمية تحديد أطراف المحتوى الفعلي المكتوب وإهمال المساحات الفارغة
+        for (let y = 0; y < canvas.height; y++) {
+          for (let x = 0; x < canvas.width; x++) {
+            const alpha = imgData.data[(y * canvas.width + x) * 4 + 3];
+            const r = imgData.data[(y * canvas.width + x) * 4];
+            const g = imgData.data[(y * canvas.width + x) * 4 + 1];
+            const b = imgData.data[(y * canvas.width + x) * 4 + 2];
+
+            // التحقق من أن البكسل ليس أبيض خالصاً أو شفافاً
+            if (alpha > 0 && !(r > 248 && g > 248 && b > 248)) {
+              if (x < left) left = x;
+              if (x > right) right = x;
+              if (y < top) top = y;
+              if (y > bottom) bottom = y;
+            }
+          }
+        }
+
+        // إضافة هامش بسيط حول المحتوى
+        const padding = 20;
+        left = Math.max(0, left - padding);
+        top = Math.max(0, top - padding);
+        right = Math.min(canvas.width, right + padding);
+        bottom = Math.min(canvas.height, bottom + padding);
+
+        const trimmedWidth = right - left;
+        const trimmedHeight = bottom - top;
+
+        // إنشاء كانفاس جديد بالمقاس الفعلي المحسوب
+        const trimmedCanvas = document.createElement('canvas');
+        trimmedCanvas.width = trimmedWidth;
+        trimmedCanvas.height = trimmedHeight;
+        const trimmedCtx = trimmedCanvas.getContext('2d');
+
+        trimmedCtx.drawImage(
+          canvas,
+          left, top, trimmedWidth, trimmedHeight,
+          0, 0, trimmedWidth, trimmedHeight
+        );
+
+        const link = document.createElement('a');
+        link.download = 'moeen_trimmed_sheet.png';
+        link.href = trimmedCanvas.toDataURL('image/png');
+        link.click();
+      });
     }
 
     function getFormState() {
@@ -687,7 +780,6 @@
       switchTab(data.t || 'textWorksheet');
     }
 
-    // ⭐ نظام الحفظ والاسترجاع الآمن باسم المادة
     function saveToCloud() {
       const subject = document.getElementById('cloudSubject').value.trim();
       const pass = document.getElementById('cloudPass').value.trim();
@@ -734,15 +826,6 @@
       a.href = URL.createObjectURL(blob);
       a.download = `moeen_draft.json`;
       a.click();
-    }
-
-    function downloadAsImage() {
-      html2canvas(document.getElementById('printableArea'), { scale: 2 }).then(canvas => {
-        const link = document.createElement('a');
-        link.download = 'moeen_document.png';
-        link.href = canvas.toDataURL('image/png');
-        link.click();
-      });
     }
 
     function toggleModal(id) {
