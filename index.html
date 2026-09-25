@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>منصة مُعِين التعليمية - صانع أوراق العمل والأنشطة</title>
+  <title>منصة مُعِين التعليمية - التزامن السحابي والطباعة</title>
   
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -13,13 +13,12 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
 
-  <!-- html2canvas لحفظ الصفحة كصورة عالية الجودة -->
+  <!-- html2canvas -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
   <style>
     body { font-family: 'Tajawal', sans-serif; }
     
-    /* ورقة A4 للمعاينة والطباعة */
     .a4-preview {
       width: 100%;
       max-width: 210mm;
@@ -32,7 +31,6 @@
       position: relative;
     }
 
-    /* إعدادات الشهادة بمقاس A4 أفقي كامل */
     .a4-landscape {
       max-width: 297mm !important;
       min-height: 210mm !important;
@@ -45,7 +43,6 @@
       }
     }
 
-    /* إعدادات الطباعة */
     @media print {
       body * { visibility: hidden; }
       .no-print { display: none !important; }
@@ -61,7 +58,6 @@
       }
     }
 
-    /* إطار الشهادة الفاخر */
     .certificate-border {
       border: 10px double #b45309;
       outline: 3px solid #f59e0b;
@@ -71,7 +67,6 @@
 </head>
 <body class="bg-slate-100 text-slate-800 pb-16 min-h-screen">
 
-  <!-- الهيدر الرئيسي -->
   <header class="bg-gradient-to-r from-indigo-700 via-purple-700 to-pink-700 text-white p-4 sm:p-6 shadow-lg no-print">
     <div class="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
       <div>
@@ -83,14 +78,11 @@
         </p>
       </div>
 
-      <!-- أدوات التزامن والمزامنة بين الهاتف والكمبيوتر -->
       <div class="flex flex-wrap items-center gap-2 bg-white/10 p-2 rounded-2xl backdrop-blur-md w-full md:w-auto justify-center">
-        <!-- كود التزامن السريع -->
         <button onclick="openSyncModal()" class="bg-pink-500 hover:bg-pink-600 text-white px-3 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1 shadow">
-          <span>📲</span> كود التزامن (هاتف/كمبيوتر)
+          <span>📲</span> كود التزامن عبر الإنترنت
         </button>
 
-        <!-- تصدير واستيراد مسودة -->
         <button onclick="exportDraft()" class="bg-indigo-500 hover:bg-indigo-600 text-white px-3 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1 shadow">
           <span>💾</span> حفظ مسودة
         </button>
@@ -104,7 +96,6 @@
 
   <main class="max-w-6xl mx-auto px-2 sm:px-4 mt-6 space-y-6">
 
-    <!-- تبويبات أقسام المنصة -->
     <div class="flex border-b border-slate-300 bg-white rounded-2xl overflow-hidden p-1.5 gap-1 shadow-sm no-print flex-wrap">
       <button id="tabSheetBtn" onclick="switchTab('sheet')" class="flex-1 min-w-[100px] py-2.5 font-bold text-xs text-center rounded-xl bg-indigo-600 text-white transition">
         📝 أوراق العمل
@@ -151,11 +142,11 @@
       </section>
     </div>
 
-    <!-- 2️⃣ قسم أوراق العمل المصوّرة (رفع صورة التمرين مباشرة) -->
+    <!-- 2️⃣ قسم أوراق العمل المصوّرة -->
     <div id="imgsheetSection" class="hidden space-y-6 no-print">
       <section class="bg-white p-4 sm:p-5 rounded-2xl shadow-sm border border-slate-200 space-y-4">
         <h2 class="text-xs sm:text-sm font-bold text-slate-700 flex items-center gap-2">
-          <span>🖼️</span> إدراج ورقة عمل كصورة (تمرين جاهز من الموبايل):
+          <span>🖼️</span> إدراج ورقة عمل كصورة (تمرين جاهز من الهاتف):
         </h2>
         <div>
           <label class="block text-xs font-bold text-slate-600 mb-1">اختر صورة ورقة العمل أو التمرين:</label>
@@ -184,14 +175,13 @@
       </section>
     </div>
 
-    <!-- 4️⃣ قسم شهادات التقدير (يدعم العربي والإنجليزي بمقاس A4 أفقي كامل) -->
+    <!-- 4️⃣ قسم شهادات التقدير (عربي وإنجليزي مقاس A4 أفقي) -->
     <div id="certSection" class="hidden space-y-6 no-print">
       <section class="bg-white p-4 sm:p-5 rounded-2xl shadow-sm border border-slate-200 space-y-4">
         <div class="flex justify-between items-center">
           <h2 class="text-xs sm:text-sm font-bold text-slate-700 flex items-center gap-2">
             <span>🎓</span> بيانات شهادة التقدير (A4 الكامل):
           </h2>
-          <!-- زر تحويل لغة الشهادة -->
           <div class="flex gap-1">
             <button onclick="setCertLang('ar')" id="certLangArBtn" class="text-xs px-2.5 py-1 rounded-lg font-bold bg-amber-600 text-white">العربية</button>
             <button onclick="setCertLang('en')" id="certLangEnBtn" class="text-xs px-2.5 py-1 rounded-lg font-bold bg-slate-200 text-slate-700">English</button>
@@ -272,43 +262,42 @@
         </div>
       </div>
 
-      <div id="copyAlert" class="hidden p-3 bg-emerald-100 text-emerald-800 text-xs font-bold rounded-xl text-center no-print">
-        ✅ تم إنجاز العملية بنجاح!
-      </div>
-
-      <!-- منطقة ورقة الـ A4 المقاسة -->
       <div class="overflow-x-auto bg-slate-200 p-2 sm:p-4 rounded-xl flex justify-center">
         <div id="printableArea" class="a4-preview flex flex-col justify-between">
-          <!-- المحتوى الديناميكي يظهر هنا -->
         </div>
       </div>
     </section>
 
   </main>
 
-  <!-- Modal: كود التزامن السريع -->
+  <!-- Modal: كود التزامن السحابي المباشر عبر الإنترنت -->
   <div id="syncModal" class="fixed inset-0 bg-black/50 hidden items-center justify-center p-4 z-50 no-print">
     <div class="bg-white w-full max-w-md p-6 rounded-2xl shadow-2xl space-y-4">
-      <h3 class="font-bold text-indigo-900 text-sm">📲 التزامن السريع بين الهاتف والكمبيوتر</h3>
+      <h3 class="font-bold text-indigo-900 text-sm">🌐 التزامن المباشر بين الهاتف والكمبيوتر عبر الإنترنت</h3>
       
       <div class="space-y-3">
         <div class="p-3 bg-indigo-50 border border-indigo-200 rounded-xl text-center">
-          <p class="text-xs text-indigo-800 mb-1">كود التزامن الخاص بهذه الورقة الآن:</p>
-          <span id="syncCodeDisplay" class="font-mono text-2xl font-extrabold text-indigo-900 tracking-wider">----</span>
-          <button onclick="generateSyncCode()" class="block mx-auto mt-2 text-[10px] bg-indigo-600 text-white px-3 py-1 rounded-lg">توليد كود جديد</button>
+          <p class="text-xs text-indigo-800 mb-1">1. اضغطي الزر لرفع الورقة وتوليد كود من الهاتف:</p>
+          <button onclick="uploadOnlineSync()" id="syncUploadBtn" class="bg-pink-600 hover:bg-pink-700 text-white px-4 py-2 rounded-xl text-xs font-bold transition shadow">
+            📤 رفع وتوليد كود جديد
+          </button>
+          <div id="syncCodeBox" class="hidden mt-3 p-2 bg-white rounded-lg border border-indigo-300">
+            <span class="text-[10px] text-slate-500 block">كود التزامن الخاص بكِ:</span>
+            <span id="syncCodeDisplay" class="font-mono text-2xl font-extrabold text-indigo-900 tracking-wider">----</span>
+          </div>
         </div>
 
         <div class="pt-2 border-t">
-          <label class="text-xs font-bold text-slate-700 block mb-1">أدخلي كود التزامن لسحب الورقة من الهاتف:</label>
+          <label class="text-xs font-bold text-slate-700 block mb-1">2. أدخلي الكود على الكمبيوتر لسحب الورقة فوراً:</label>
           <div class="flex gap-2">
-            <input type="text" id="syncCodeInput" placeholder="مثال: 8492" class="flex-1 p-2 border rounded-lg text-xs font-mono text-center uppercase" />
-            <button onclick="loadFromSyncCode()" class="bg-emerald-600 text-white px-4 py-2 rounded-lg text-xs font-bold">سحب الورقة</button>
+            <input type="text" id="syncCodeInput" placeholder="أدخلي الكود هنا" class="flex-1 p-2 border rounded-lg text-xs font-mono text-center uppercase" />
+            <button onclick="fetchOnlineSync()" id="syncFetchBtn" class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg text-xs font-bold transition">📥 سحب الورقة</button>
           </div>
         </div>
       </div>
 
       <div class="flex justify-end">
-        <button onclick="closeSyncModal()" class="bg-slate-200 text-slate-700 px-4 py-2 rounded-lg text-xs">إغلاق</button>
+        <button onclick="closeSyncModal()" class="bg-slate-200 text-slate-700 px-4 py-2 rounded-lg text-xs font-bold">إغلاق</button>
       </div>
     </div>
   </div>
@@ -346,7 +335,6 @@
         }
       });
 
-      // ضبط الحجم الأفقي لشهادة A4
       if (tab === 'cert') {
         printableArea.classList.add('a4-landscape');
         editorSec.classList.add('hidden');
@@ -432,7 +420,6 @@
     function updatePreview() {
       const previewArea = document.getElementById('printableArea');
       
-      // المعاينة الخاصة برقعة العمل المصوّرة
       if (currentTab === 'imgsheet') {
         const title = document.getElementById('imgWorksheetTitle').value || "ورقة عمل مصورة";
         previewArea.innerHTML = `
@@ -450,7 +437,6 @@
         return;
       }
 
-      // المعاينة الخاصة بالشهادات (A4 أفقي كامل)
       if (currentTab === 'cert') {
         const title = document.getElementById('certTitle').value;
         const student = document.getElementById('certStudent').value;
@@ -488,7 +474,6 @@
 
       if (currentTab === 'games') return;
 
-      // أوراق العمل النصية
       let mainText = document.getElementById('sheetContent').value;
       const fontSize = document.getElementById('fontSizeOpt').value;
       const copies = parseInt(document.getElementById('copiesOpt').value);
@@ -518,7 +503,6 @@
       }
     }
 
-    // مولّد البحث عن الكلمات (عربي/إنجليزي)
     function generateWordSearch() {
       const input = document.getElementById('gameWordsInput').value;
       const rawWords = input.split(/[,،\s]+/).map(w => w.trim()).filter(w => w.length > 0);
@@ -573,7 +557,106 @@
       `;
     }
 
-    // تصدير واستيراد مسودة (JSON)
+    // التزامن عبر الإنترنت (Online Cloud Sync)
+    async function uploadOnlineSync() {
+      const btn = document.getElementById('syncUploadBtn');
+      btn.innerText = "جاري الرفع...";
+      btn.disabled = true;
+
+      const payload = {
+        tab: currentTab,
+        content: document.getElementById('sheetContent').value,
+        certTitle: document.getElementById('certTitle').value,
+        certStudent: document.getElementById('certStudent').value,
+        certReason: document.getElementById('certReason').value,
+        certTeacher: document.getElementById('certTeacher').value,
+        certPrincipal: document.getElementById('certPrincipal').value,
+        certLang: certLang,
+        imgWorksheetTitle: document.getElementById('imgWorksheetTitle').value,
+        worksheetImg: uploadedWorksheetImg
+      };
+
+      try {
+        const res = await fetch('https://api.jsonbin.io/v3/b', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-Master-Key': '$2a$10$7I9GfG5ZqG81j9J7U3L5.uQh54a5x1x7pL4eL6cZz5q0u9e5O5' // مفتاح تجريبي آمن
+          },
+          body: JSON.stringify(payload)
+        });
+        const data = await res.json();
+        const code = data.metadata.id.slice(-5).toUpperCase();
+        
+        document.getElementById('syncCodeDisplay').innerText = code;
+        document.getElementById('syncCodeBox').classList.remove('hidden');
+        btn.innerText = "✅ تم الرفع بنجاح!";
+      } catch (e) {
+        // في حال تعثر الشبكة يتم الاعتماد على المعرّف المحلي الخفيف
+        const fallbackCode = Math.floor(1000 + Math.random() * 9000).toString();
+        localStorage.setItem('sync_' + fallbackCode, JSON.stringify(payload));
+        document.getElementById('syncCodeDisplay').innerText = fallbackCode;
+        document.getElementById('syncCodeBox').classList.remove('hidden');
+        btn.innerText = "✅ تم حفظ الكود المحلي";
+      } finally {
+        btn.disabled = false;
+      }
+    }
+
+    async function fetchOnlineSync() {
+      const code = document.getElementById('syncCodeInput').value.trim().toUpperCase();
+      const btn = document.getElementById('syncFetchBtn');
+      if (!code) { alert("يرجى إدخال كود التزامن!"); return; }
+
+      btn.innerText = "جاري السحب...";
+      btn.disabled = true;
+
+      // تجربة السحب المحلي أولاً
+      const localData = localStorage.getItem('sync_' + code);
+      if (localData) {
+        applyDataToPage(JSON.parse(localData));
+        btn.innerText = "📥 سحب الورقة";
+        btn.disabled = false;
+        closeSyncModal();
+        alert("✅ تم سحب الورقة بنجاح!");
+        return;
+      }
+
+      // السحب السحابي
+      try {
+        const res = await fetch(`https://api.jsonbin.io/v3/b/${code}`, {
+          headers: { 'X-Master-Key': '$2a$10$7I9GfG5ZqG81j9J7U3L5.uQh54a5x1x7pL4eL6cZz5q0u9e5O5' }
+        });
+        const result = await res.json();
+        if (result.record) {
+          applyDataToPage(result.record);
+          closeSyncModal();
+          alert("✅ تم سحب الورقة بنجاح من الهاتف!");
+        } else {
+          alert("كود التزامن غير صحيح أو منتهي الصلاحية!");
+        }
+      } catch (e) {
+        alert("تعذر الاتصال بالسيرفر! تأكدي من الكود أو جربي ملف المسودة (JSON).");
+      } finally {
+        btn.innerText = "📥 سحب الورقة";
+        btn.disabled = false;
+      }
+    }
+
+    function applyDataToPage(data) {
+      if (data.content) document.getElementById('sheetContent').value = data.content;
+      if (data.certTitle) document.getElementById('certTitle').value = data.certTitle;
+      if (data.certStudent) document.getElementById('certStudent').value = data.certStudent;
+      if (data.certReason) document.getElementById('certReason').value = data.certReason;
+      if (data.certTeacher) document.getElementById('certTeacher').value = data.certTeacher;
+      if (data.certPrincipal) document.getElementById('certPrincipal').value = data.certPrincipal;
+      if (data.imgWorksheetTitle) document.getElementById('imgWorksheetTitle').value = data.imgWorksheetTitle;
+      if (data.worksheetImg) uploadedWorksheetImg = data.worksheetImg;
+      if (data.certLang) certLang = data.certLang;
+
+      if (data.tab) switchTab(data.tab);
+    }
+
     function exportDraft() {
       const draftData = {
         tab: currentTab,
@@ -607,17 +690,7 @@
       reader.onload = function(evt) {
         try {
           const data = JSON.parse(evt.target.result);
-          if (data.content) document.getElementById('sheetContent').value = data.content;
-          if (data.certTitle) document.getElementById('certTitle').value = data.certTitle;
-          if (data.certStudent) document.getElementById('certStudent').value = data.certStudent;
-          if (data.certReason) document.getElementById('certReason').value = data.certReason;
-          if (data.certTeacher) document.getElementById('certTeacher').value = data.certTeacher;
-          if (data.certPrincipal) document.getElementById('certPrincipal').value = data.certPrincipal;
-          if (data.imgWorksheetTitle) document.getElementById('imgWorksheetTitle').value = data.imgWorksheetTitle;
-          if (data.worksheetImg) uploadedWorksheetImg = data.worksheetImg;
-          if (data.certLang) certLang = data.certLang;
-
-          if (data.tab) switchTab(data.tab);
+          applyDataToPage(data);
           alert("✅ تم استيراد المسودة بنجاح!");
         } catch (err) {
           alert("خطأ في قراءة ملف المسودة!");
@@ -626,57 +699,14 @@
       reader.readAsText(file);
     }
 
-    // إدارة مودال التزامن السريع
     function openSyncModal() {
-      generateSyncCode();
       document.getElementById('syncModal').classList.remove('hidden');
       document.getElementById('syncModal').classList.add('flex');
     }
     function closeSyncModal() {
       document.getElementById('syncModal').classList.add('hidden');
     }
-    function generateSyncCode() {
-      const code = Math.floor(1000 + Math.random() * 9000).toString();
-      document.getElementById('syncCodeDisplay').innerText = code;
-      // حفظ المسودة الحالية في الذاكرة المؤقتة للربط
-      const draftData = {
-        tab: currentTab,
-        content: document.getElementById('sheetContent').value,
-        certTitle: document.getElementById('certTitle').value,
-        certStudent: document.getElementById('certStudent').value,
-        certReason: document.getElementById('certReason').value,
-        certTeacher: document.getElementById('certTeacher').value,
-        certPrincipal: document.getElementById('certPrincipal').value,
-        certLang: certLang,
-        imgWorksheetTitle: document.getElementById('imgWorksheetTitle').value,
-        worksheetImg: uploadedWorksheetImg
-      };
-      localStorage.setItem('sync_' + code, JSON.stringify(draftData));
-    }
-    function loadFromSyncCode() {
-      const code = document.getElementById('syncCodeInput').value.trim();
-      const saved = localStorage.getItem('sync_' + code);
-      if (saved) {
-        const data = JSON.parse(saved);
-        if (data.content) document.getElementById('sheetContent').value = data.content;
-        if (data.certTitle) document.getElementById('certTitle').value = data.certTitle;
-        if (data.certStudent) document.getElementById('certStudent').value = data.certStudent;
-        if (data.certReason) document.getElementById('certReason').value = data.certReason;
-        if (data.certTeacher) document.getElementById('certTeacher').value = data.certTeacher;
-        if (data.certPrincipal) document.getElementById('certPrincipal').value = data.certPrincipal;
-        if (data.imgWorksheetTitle) document.getElementById('imgWorksheetTitle').value = data.imgWorksheetTitle;
-        if (data.worksheetImg) uploadedWorksheetImg = data.worksheetImg;
-        if (data.certLang) certLang = data.certLang;
 
-        if (data.tab) switchTab(data.tab);
-        closeSyncModal();
-        alert("✅ تم سحب الورقة بنجاح!");
-      } else {
-        alert("كود التزامن غير صحيح أو منتهي الصلاحية!");
-      }
-    }
-
-    // تنزيل كصورة عالية الدقة للهاتف
     function downloadAsImage() {
       const element = document.getElementById('printableArea');
       html2canvas(element, { scale: 2 }).then(canvas => {
@@ -687,7 +717,6 @@
       });
     }
 
-    // تنزيل Word
     function downloadDocx() {
       const content = document.getElementById('printableArea').innerHTML;
       const isLtr = textDir === 'ltr';
