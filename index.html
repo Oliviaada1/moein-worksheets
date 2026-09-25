@@ -69,10 +69,10 @@
         <h1 class="text-2xl sm:text-3xl font-extrabold flex items-center gap-2">
           <span>✨</span> منصة مُعِين التعليمية
         </h1>
-        <p class="text-indigo-100 text-xs sm:text-sm mt-1">المساعد الشامل للمعلمة: أوراق عمل، ألعاب تعليمية، ونقل آمن بين الأجهزة</p>
+        <p class="text-indigo-100 text-xs sm:text-sm mt-1">أوراق عمل، ألعاب حروف ورياضيات، شهادات قابلة للتخصيص ونقل سريع</p>
       </div>
 
-      <!-- أدوات النقل الآمن عبر المادة وكلمة السر -->
+      <!-- أدوات النقل والتحكم -->
       <div class="flex flex-wrap items-center gap-2 justify-center">
         <button onclick="toggleModal('saveCloudModal')" class="bg-emerald-500 hover:bg-emerald-600 text-white px-3.5 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5 shadow">
           <span>☁️</span> حفظ بالحساب (للهاتف)
@@ -90,18 +90,21 @@
   <main class="max-w-5xl mx-auto px-3 mt-6 space-y-6">
 
     <!-- تبويبات التصفح الرئيسية -->
-    <nav class="bg-white p-2 rounded-2xl shadow-sm border border-slate-200 grid grid-cols-2 sm:grid-cols-4 gap-2 no-print">
+    <nav class="bg-white p-2 rounded-2xl shadow-sm border border-slate-200 grid grid-cols-2 sm:grid-cols-5 gap-2 no-print">
       <button onclick="switchTab('textWorksheet')" id="tab-textWorksheet" class="tab-btn bg-indigo-600 text-white py-2.5 rounded-xl text-xs sm:text-sm font-bold transition">
         📝 أوراق العمل
       </button>
       <button onclick="switchTab('imageWorksheet')" id="tab-imageWorksheet" class="tab-btn bg-slate-100 text-slate-700 hover:bg-slate-200 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition">
-        🖼️ ورقة عمل مصورة
+        🖼️ ورقة مصورة
       </button>
       <button onclick="switchTab('wordGame')" id="tab-wordGame" class="tab-btn bg-slate-100 text-slate-700 hover:bg-slate-200 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition">
         🧩 ألعاب الحروف
       </button>
+      <button onclick="switchTab('mathGame')" id="tab-mathGame" class="tab-btn bg-slate-100 text-slate-700 hover:bg-slate-200 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition">
+        🔢 ألعاب Math
+      </button>
       <button onclick="switchTab('certificate')" id="tab-certificate" class="tab-btn bg-slate-100 text-slate-700 hover:bg-slate-200 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition">
-        🎓 شهادات التقدير (A4)
+        🎓 شهادات التقدير
       </button>
     </nav>
 
@@ -197,39 +200,85 @@
       </div>
     </section>
 
-    <!-- 4️⃣ قسم شهادات التقدير -->
+    <!-- 4️⃣ قسم ألعاب الرياضيات Math -->
+    <section id="section-mathGame" class="tab-content hidden bg-white p-4 sm:p-5 rounded-2xl shadow-sm border border-slate-200 space-y-4 no-print">
+      <h2 class="text-xs sm:text-sm font-bold text-indigo-900 border-b pb-2 flex items-center gap-1">
+        <span>🔢</span> تصميم أنشطة وألعاب الرياضيات (Math Worksheets):
+      </h2>
+
+      <div class="space-y-3">
+        <div>
+          <label class="block text-xs font-bold text-slate-600 mb-1">عنوان النشاط:</label>
+          <input type="text" id="mathTitle" oninput="renderPreview()" class="w-full p-2.5 border border-slate-300 rounded-lg text-xs" value="تحدي أبطال الرياضيات (Math Challenge)">
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <div>
+            <label class="block text-xs font-bold text-slate-600 mb-1">نوع النشاط:</label>
+            <select id="mathType" onchange="renderPreview()" class="w-full p-2 border border-slate-300 rounded-lg text-xs">
+              <option value="addition" selected>جمع (+)</option>
+              <option value="subtraction">طرح (-)</option>
+              <option value="multiplication">ضرب (×)</option>
+              <option value="mixed">عمود مكس / مشكل</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-600 mb-1">مستوى الصعوبة:</label>
+            <select id="mathLevel" onchange="renderPreview()" class="w-full p-2 border border-slate-300 rounded-lg text-xs">
+              <option value="easy" selected>سهل (أرقام من 1 إلى 10)</option>
+              <option value="medium">متوسط (أرقام من 10 إلى 50)</option>
+              <option value="hard">متقدم (أرقام من 10 إلى 100)</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-600 mb-1">عدد المسائل:</label>
+            <select id="mathCount" onchange="renderPreview()" class="w-full p-2 border border-slate-300 rounded-lg text-xs">
+              <option value="8">8 مسائل</option>
+              <option value="12" selected>12 مسألة</option>
+              <option value="16">16 مسألة</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5️⃣ قسم شهادات التقدير بخصائص التخصيص والشعار -->
     <section id="section-certificate" class="tab-content hidden bg-white p-4 sm:p-5 rounded-2xl shadow-sm border border-slate-200 space-y-4 no-print">
       <h2 class="text-xs sm:text-sm font-bold text-indigo-900 border-b pb-2 flex items-center gap-1">
-        <span>🎓</span> إعداد شهادة تقدير (A4):
+        <span>🎓</span> إعداد وتخصيص شهادة التقدير:
       </h2>
 
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <div>
-          <label class="block text-xs font-bold text-slate-600 mb-1">لغة الشهادة:</label>
-          <select id="certLang" onchange="renderPreview()" class="w-full p-2 border border-slate-300 rounded-lg text-xs">
-            <option value="ar" selected>العربية</option>
-            <option value="en">English</option>
+          <label class="block text-xs font-bold text-slate-600 mb-1">ثيم ولون الشهادة:</label>
+          <select id="certTheme" onchange="renderPreview()" class="w-full p-2 border border-slate-300 rounded-lg text-xs font-bold">
+            <option value="royal" selected>👑 ملكي (أزرق داكن وذهبي)</option>
+            <option value="gold">✨ كلاسيكي (ذهبي وأسود)</option>
+            <option value="pink">🌸 وردي لطيف (زهري وبنفسجي)</option>
+            <option value="emerald">🌿 زمردي (أخضر وذهبي)</option>
           </select>
         </div>
+
         <div>
-          <label class="block text-xs font-bold text-slate-600 mb-1">الجنس:</label>
-          <select id="certGender" onchange="renderPreview()" class="w-full p-2 border border-slate-300 rounded-lg text-xs">
-            <option value="female" selected>طالبة (أنثى)</option>
-            <option value="male">طالب (ذكر)</option>
-          </select>
+          <label class="block text-xs font-bold text-slate-600 mb-1">شعار المدرسة / المؤسسة:</label>
+          <input type="file" id="certLogoFile" accept="image/*" onchange="handleLogoUpload(event)" class="w-full p-1.5 border border-slate-300 rounded-lg text-xs bg-slate-50">
         </div>
+
         <div class="sm:col-span-2">
-          <label class="block text-xs font-bold text-slate-600 mb-1">اسم الطالب/الطالبة:</label>
-          <input type="text" id="certStudentName" oninput="renderPreview()" class="w-full p-2.5 border border-slate-300 rounded-lg text-xs" placeholder="اسم الطالب كامل">
+          <label class="block text-xs font-bold text-slate-600 mb-1">اسم الطالب / الطالبة:</label>
+          <input type="text" id="certStudentName" oninput="renderPreview()" class="w-full p-2.5 border border-slate-300 rounded-lg text-xs font-bold" placeholder="اسم الطالبة كاملاً">
         </div>
+
         <div class="sm:col-span-2">
-          <label class="block text-xs font-bold text-slate-600 mb-1">سبب التقدير / النص:</label>
-          <input type="text" id="certReason" oninput="renderPreview()" class="w-full p-2.5 border border-slate-300 rounded-lg text-xs" placeholder="مثال: للتفوق والتميز في مادة الرياضيات">
+          <label class="block text-xs font-bold text-slate-600 mb-1">سبب التقدير / نص الشهادة:</label>
+          <input type="text" id="certReason" oninput="renderPreview()" class="w-full p-2.5 border border-slate-300 rounded-lg text-xs" placeholder="مثال: للتفوق والتميز في مادة الرياضيات خلال الفصل الدراسي الأول">
         </div>
+
         <div>
-          <label class="block text-xs font-bold text-slate-600 mb-1">اسم المعلمة:</label>
+          <label class="block text-xs font-bold text-slate-600 mb-1">اسم المعلمة / المديرة:</label>
           <input type="text" id="certTeacher" oninput="renderPreview()" class="w-full p-2.5 border border-slate-300 rounded-lg text-xs" placeholder="معلمة المادة">
         </div>
+
         <div>
           <label class="block text-xs font-bold text-slate-600 mb-1">التاريخ:</label>
           <input type="text" id="certDate" oninput="renderPreview()" class="w-full p-2.5 border border-slate-300 rounded-lg text-xs" placeholder="2026/09/25">
@@ -262,7 +311,7 @@
 
   </main>
 
-  <!-- ☁️ نافذة حفظ الورقة باسم المادة وباسورد (من الهاتف) -->
+  <!-- ☁️ نافذة الحفظ عبر اسم المادة وباسورد (من الهاتف) -->
   <div id="saveCloudModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden no-print">
     <div class="bg-white rounded-3xl p-6 max-w-md w-full shadow-2xl space-y-4 text-right">
       <h3 class="font-bold text-slate-800 text-sm flex items-center gap-1.5">
@@ -273,7 +322,7 @@
       <div class="space-y-3">
         <div>
           <label class="block text-xs font-bold text-slate-600 mb-1">اسم المادة / الحساب:</label>
-          <input type="text" id="cloudSubject" class="w-full p-2.5 border border-slate-300 rounded-xl text-xs" placeholder="مثال: علوم_الرابع">
+          <input type="text" id="cloudSubject" class="w-full p-2.5 border border-slate-300 rounded-xl text-xs" placeholder="مثال: رياضيات_الرابع">
         </div>
         <div>
           <label class="block text-xs font-bold text-slate-600 mb-1">كلمة السر الخاصة بك:</label>
@@ -301,7 +350,7 @@
       <div class="space-y-3">
         <div>
           <label class="block text-xs font-bold text-slate-600 mb-1">اسم المادة / الحساب:</label>
-          <input type="text" id="searchSubject" class="w-full p-2.5 border border-slate-300 rounded-xl text-xs" placeholder="مثال: علوم_الرابع">
+          <input type="text" id="searchSubject" class="w-full p-2.5 border border-slate-300 rounded-xl text-xs" placeholder="مثال: رياضيات_الرابع">
         </div>
         <div>
           <label class="block text-xs font-bold text-slate-600 mb-1">كلمة السر:</label>
@@ -321,6 +370,7 @@
   <script>
     let activeTab = 'textWorksheet';
     let uploadedImageData = '';
+    let certLogoData = '';
 
     function switchTab(tabId) {
       activeTab = tabId;
@@ -348,6 +398,47 @@
         };
         reader.readAsDataURL(file);
       }
+    }
+
+    function handleLogoUpload(e) {
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(event) {
+          certLogoData = event.target.result;
+          renderPreview();
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+
+    function generateMathProblems(type, level, count) {
+      const problems = [];
+      let maxNum = level === 'easy' ? 10 : level === 'medium' ? 50 : 100;
+
+      for (let i = 0; i < count; i++) {
+        let op = type;
+        if (type === 'mixed') {
+          const ops = ['addition', 'subtraction', 'multiplication'];
+          op = ops[Math.floor(Math.random() * ops.length)];
+        }
+
+        let n1 = Math.floor(Math.random() * maxNum) + 1;
+        let n2 = Math.floor(Math.random() * (level === 'easy' ? 10 : 20)) + 1;
+        let symbol = '+';
+
+        if (op === 'subtraction') {
+          if (n1 < n2) [n1, n2] = [n2, n1];
+          symbol = '-';
+        } else if (op === 'multiplication') {
+          n1 = Math.floor(Math.random() * 10) + 1;
+          n2 = Math.floor(Math.random() * 10) + 1;
+          symbol = '×';
+        }
+
+        problems.push({ n1, n2, symbol });
+      }
+      return problems;
     }
 
     function generateWordSearchGrid(words, size, lang) {
@@ -470,24 +561,77 @@
             </div>
           </div>
         `;
+      } else if (activeTab === 'mathGame') {
+        const title = document.getElementById('mathTitle').value || 'ألعاب الرياضيات';
+        const type = document.getElementById('mathType').value;
+        const level = document.getElementById('mathLevel').value;
+        const count = parseInt(document.getElementById('mathCount').value);
+        const problems = generateMathProblems(type, level, count);
+
+        let mathCardsHtml = `<div class="grid grid-cols-2 sm:grid-cols-3 gap-4 mt-6">`;
+        problems.forEach((p, idx) => {
+          mathCardsHtml += `
+            <div class="border-2 border-indigo-200 rounded-2xl p-4 bg-indigo-50/50 flex flex-col items-center justify-center space-y-2 shadow-sm">
+              <span class="text-[10px] font-bold text-indigo-400 self-start">#${idx + 1}</span>
+              <div class="text-xl font-extrabold text-slate-800 tracking-wider flex items-center gap-2">
+                <span>${p.n1}</span>
+                <span class="text-indigo-600 font-bold">${p.symbol}</span>
+                <span>${p.n2}</span>
+                <span>=</span>
+              </div>
+              <div class="w-16 h-8 border-b-2 border-dashed border-indigo-400 bg-white rounded-lg"></div>
+            </div>
+          `;
+        });
+        mathCardsHtml += `</div>`;
+
+        area.innerHTML = `
+          <div class="flex flex-col h-full justify-between">
+            <div>
+              <div class="flex justify-between items-center mb-4 pb-2 border-b-2 border-indigo-900">
+                <h3 class="font-bold text-indigo-900 text-sm">🔢 ${title}</h3>
+                <div class="text-[10px] text-slate-500">الاسم: .......................... | التاريخ:  /  / </div>
+              </div>
+              <p class="text-xs text-center font-bold text-slate-600 mb-2">احسب النتيجة واكتب الإجابة في المربع:</p>
+              ${mathCardsHtml}
+            </div>
+          </div>
+        `;
       } else if (activeTab === 'certificate') {
-        const lang = document.getElementById('certLang').value;
-        const gender = document.getElementById('certGender').value;
-        const isAr = lang === 'ar';
-        const student = document.getElementById('certStudentName').value || (isAr ? 'اسم الطالبة' : 'Student Name');
+        const theme = document.getElementById('certTheme').value;
+        const student = document.getElementById('certStudentName').value || 'اسم الطالب/الطالبة';
         const reason = document.getElementById('certReason').value || 'للتفوق والتميز الدراسي';
         const teacher = document.getElementById('certTeacher').value || 'معلمة المادة';
         const date = document.getElementById('certDate').value || '2026/09/25';
 
+        // تنسيق الثيمات والألوان
+        let themeClasses = {
+          royal: { border: 'border-indigo-900', text: 'text-indigo-950', accent: 'text-purple-900', borderAcc: 'border-purple-300', bg: 'from-indigo-50/40 to-purple-50/40' },
+          gold: { border: 'border-amber-700', text: 'text-amber-950', accent: 'text-amber-800', borderAcc: 'border-amber-400', bg: 'from-amber-50/50 to-yellow-50/40' },
+          pink: { border: 'border-pink-600', text: 'text-pink-950', accent: 'text-pink-700', borderAcc: 'border-pink-300', bg: 'from-pink-50/50 to-rose-50/40' },
+          emerald: { border: 'border-emerald-800', text: 'text-emerald-950', accent: 'text-emerald-800', borderAcc: 'border-emerald-300', bg: 'from-emerald-50/50 to-teal-50/40' }
+        }[theme];
+
         area.innerHTML = `
-          <div class="h-full border-8 double border-indigo-900 p-6 flex flex-col justify-between text-center relative bg-gradient-to-b from-indigo-50/30 to-purple-50/30">
-            <div class="space-y-4">
-              <div class="text-2xl font-extrabold text-indigo-950 mt-4">🎓 شهادة تقدير وتميز 🎓</div>
-              <p class="text-xs text-slate-500">تتشرف إدارة المدرسة بتقديم هذه الشهادة للطالبة المتميزة:</p>
-              <div class="text-2xl font-bold text-purple-900 border-b-2 border-purple-300 inline-block px-8 py-2 my-2">${student}</div>
-              <p class="text-xs text-slate-600 max-w-md mx-auto">${reason}</p>
+          <div class="h-full border-8 double ${themeClasses.border} p-6 flex flex-col justify-between text-center relative bg-gradient-to-b ${themeClasses.bg}">
+            
+            <!-- الشعار أعلى الشهادة -->
+            <div class="flex justify-between items-center mb-2">
+              <div class="w-16 h-16 flex items-center justify-center">
+                ${certLogoData ? `<img src="${certLogoData}" class="max-h-16 max-w-16 object-contain" />` : ''}
+              </div>
+              <div class="text-xs font-bold text-slate-400">شهادة تقدير رسمية</div>
+              <div class="w-16"></div>
             </div>
-            <div class="flex justify-between items-end border-t border-slate-200 pt-4 text-xs font-bold text-indigo-900">
+
+            <div class="space-y-4 my-auto">
+              <div class="text-3xl font-extrabold ${themeClasses.text}">🎓 شهادة تقدير وتميز 🎓</div>
+              <p class="text-xs text-slate-500">تتشرف إدارة المدرسة والمعلمة بتقديم هذه الشهادة للطالب/ـة:</p>
+              <div class="text-2xl font-extrabold ${themeClasses.accent} border-b-2 ${themeClasses.borderAcc} inline-block px-10 py-2 my-2">${student}</div>
+              <p class="text-xs text-slate-600 max-w-md mx-auto leading-relaxed">${reason}</p>
+            </div>
+
+            <div class="flex justify-between items-end border-t border-slate-200 pt-4 text-xs font-bold ${themeClasses.text}">
               <div>التاريخ: ${date}</div>
               <div>التوقيع: ${teacher}</div>
             </div>
@@ -507,11 +651,16 @@
         gw: document.getElementById('gameWords').value,
         gl: document.getElementById('gameLang').value,
         gs: document.getElementById('gameGridSize').value,
+        mt: document.getElementById('mathTitle').value,
+        mType: document.getElementById('mathType').value,
+        mLevel: document.getElementById('mathLevel').value,
+        mCount: document.getElementById('mathCount').value,
+        cTheme: document.getElementById('certTheme').value,
+        cLogo: certLogoData,
         cs: document.getElementById('certStudentName').value,
         cr: document.getElementById('certReason').value,
         ct: document.getElementById('certTeacher').value,
-        cd: document.getElementById('certDate').value,
-        cg: document.getElementById('certGender').value
+        cd: document.getElementById('certDate').value
       };
     }
 
@@ -525,15 +674,20 @@
       document.getElementById('gameWords').value = data.gw || '';
       if(data.gl) document.getElementById('gameLang').value = data.gl;
       if(data.gs) document.getElementById('gameGridSize').value = data.gs;
+      if(data.mt) document.getElementById('mathTitle').value = data.mt;
+      if(data.mType) document.getElementById('mathType').value = data.mType;
+      if(data.mLevel) document.getElementById('mathLevel').value = data.mLevel;
+      if(data.mCount) document.getElementById('mathCount').value = data.mCount;
+      if(data.cTheme) document.getElementById('certTheme').value = data.cTheme;
+      certLogoData = data.cLogo || '';
       document.getElementById('certStudentName').value = data.cs || '';
       document.getElementById('certReason').value = data.cr || '';
       document.getElementById('certTeacher').value = data.ct || '';
       document.getElementById('certDate').value = data.cd || '';
-      if(data.cg) document.getElementById('certGender').value = data.cg;
       switchTab(data.t || 'textWorksheet');
     }
 
-    // ⭐ نظام الحفظ والاسترجاع المحلي والآمن
+    // ⭐ نظام الحفظ والاسترجاع الآمن باسم المادة
     function saveToCloud() {
       const subject = document.getElementById('cloudSubject').value.trim();
       const pass = document.getElementById('cloudPass').value.trim();
