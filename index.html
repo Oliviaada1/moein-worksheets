@@ -41,6 +41,7 @@
       font-weight: bold;
       border-radius: 6px;
       background-color: #f8fafc;
+      user-select: none;
     }
 
     @media print {
@@ -82,6 +83,10 @@
         <button onclick="exportDraft()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-3.5 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5 shadow">
           <span>💾</span> حفظ ملف
         </button>
+        <label class="bg-emerald-600 hover:bg-emerald-700 text-white px-3.5 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5 shadow cursor-pointer">
+          <span>📂</span> تحميل ملف
+          <input type="file" accept=".json" onchange="importDraft(event)" class="hidden">
+        </label>
       </div>
     </div>
   </header>
@@ -157,6 +162,18 @@
           <label class="block text-xs font-bold text-slate-600 mb-1">عنوان ورقة العمل / الترويسة:</label>
           <input type="text" id="imgSheetTitle" oninput="renderPreview()" class="w-full p-2.5 border border-slate-300 rounded-lg text-xs" placeholder="مثال: ورقة عمل مادة العلوم - الصف الرابع">
         </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-bold text-slate-600 mb-1">حجم الصورة (العرض):</label>
+            <select id="imgScaleOpt" onchange="renderPreview()" class="w-full p-2 border border-slate-300 rounded-lg text-xs">
+              <option value="max-h-[220mm]">أقصى ارتفاع تلقائي</option>
+              <option value="w-full">ملء العرض بالكامل</option>
+              <option value="w-3/4">75% من العرض</option>
+              <option value="w-1/2">50% من العرض</option>
+            </select>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -190,6 +207,7 @@
             <select id="gameGridSize" onchange="renderPreview()" class="w-full p-2 border border-slate-300 rounded-lg text-xs">
               <option value="8" selected>8x8 (مبتدئ)</option>
               <option value="10">10x10 (متوسط)</option>
+              <option value="12">12x12 (متقدم)</option>
             </select>
           </div>
         </div>
@@ -211,6 +229,13 @@
           </select>
         </div>
         <div>
+          <label class="block text-xs font-bold text-slate-600 mb-1">الجنس (لضبط الصيغة):</label>
+          <select id="certGender" onchange="renderPreview()" class="w-full p-2 border border-slate-300 rounded-lg text-xs">
+            <option value="female" selected>طالبة (أنثى)</option>
+            <option value="male">طالب (ذكر)</option>
+          </select>
+        </div>
+        <div class="sm:col-span-2">
           <label class="block text-xs font-bold text-slate-600 mb-1">اسم الطالب/الطالبة:</label>
           <input type="text" id="certStudentName" oninput="renderPreview()" class="w-full p-2.5 border border-slate-300 rounded-lg text-xs" placeholder="اسم الطالب كامل">
         </div>
@@ -312,6 +337,62 @@
       }
     }
 
+    // توليد شبكة الكلمات
+    function generateWordSearchGrid(words, size, lang) {
+      const grid = Array(size).fill(null).map(() => Array(size).fill(''));
+      const chars = lang === 'ar' ? 'أبتثجحخدذرزسشصضطظعغفقكلمنهوي' : 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+      
+      const directions = [[0, 1], [1, 0], [1, 1], [-1, 1]];
+
+      words.forEach(rawWord => {
+        const word = rawWord.trim().replace(/\s+/g, '').toUpperCase();
+        if (!word) return;
+
+        let placed = false;
+        let attempts = 0;
+
+        while (!placed && attempts < 100) {
+          attempts++;
+          const dir = directions[Math.floor(Math.random() * directions.length)];
+          const row = Math.floor(Math.random() * size);
+          const col = Math.floor(Math.random() * size);
+
+          let canPlace = true;
+          for (let i = 0; i < word.length; i++) {
+            const newRow = row + i * dir[0];
+            const newCol = col + i * dir[1];
+
+            if (newRow < 0 || newRow >= size || newCol < 0 || newCol >= size) {
+              canPlace = false;
+              break;
+            }
+
+            if (grid[newRow][newCol] !== '' && grid[newRow][newCol] !== word[i]) {
+              canPlace = false;
+              break;
+            }
+          }
+
+          if (canPlace) {
+            for (let i = 0; i < word.length; i++) {
+              grid[row + i * dir[0]][col + i * dir[1]] = word[i];
+            }
+            placed = true;
+          }
+        }
+      });
+
+      for (let r = 0; r < size; r++) {
+        for (let c = 0; c < size; c++) {
+          if (grid[r][c] === '') {
+            grid[r][c] = chars.charAt(Math.floor(Math.random() * chars.length));
+          }
+        }
+      }
+
+      return grid;
+    }
+
     function renderPreview() {
       const area = document.getElementById('printableArea');
       area.innerHTML = '';
@@ -340,6 +421,8 @@
 
       } else if (activeTab === 'imageWorksheet') {
         const title = document.getElementById('imgSheetTitle').value || 'ورقة عمل مصورة';
+        const scaleOpt = document.getElementById('imgScaleOpt') ? document.getElementById('imgScaleOpt').value : 'max-h-[220mm]';
+        
         area.innerHTML = `
           <div class="flex flex-col h-full">
             <div class="flex justify-between items-center mb-3 pb-2 border-b-2 border-indigo-900">
@@ -347,7 +430,7 @@
               <div class="text-[10px] text-slate-500">الاسم: .......................... | التاريخ:  /  / </div>
             </div>
             <div class="flex-1 flex items-center justify-center border-2 border-dashed border-slate-200 rounded-xl p-2 min-h-[220mm]">
-              ${uploadedImageData ? `<img src="${uploadedImageData}" class="max-h-full max-w-full object-contain rounded-lg" />` : '<p class="text-slate-400 text-xs">الرجاء اختيار صورة ورقة العمل من الأعلى...</p>'}
+              ${uploadedImageData ? `<img src="${uploadedImageData}" class="${scaleOpt} object-contain rounded-lg" />` : '<p class="text-slate-400 text-xs">الرجاء اختيار صورة ورقة العمل من الأعلى...</p>'}
             </div>
           </div>
         `;
@@ -359,13 +442,12 @@
         const gridSize = parseInt(document.getElementById('gameGridSize').value);
 
         const words = wordsStr.split(/[,،\s]+/).filter(w => w.trim().length > 0);
-        const chars = lang === 'ar' ? 'أبتثجحخدذرزسشصضطظعغفقكلمنهوي' : 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        const gridData = generateWordSearchGrid(words, gridSize, lang);
 
         let gridHtml = `<div class="grid gap-1 justify-center my-4" style="grid-template-columns: repeat(${gridSize}, minmax(0, 1fr)); width: fit-content; margin-left: auto; margin-right: auto;">`;
-        for(let r=0; r<gridSize; r++) {
-          for(let c=0; c<gridSize; c++) {
-            const char = chars.charAt(Math.floor(Math.random() * chars.length));
-            gridHtml += `<div class="word-grid-cell text-sm">${char}</div>`;
+        for (let r = 0; r < gridSize; r++) {
+          for (let c = 0; c < gridSize; c++) {
+            gridHtml += `<div class="word-grid-cell text-sm">${gridData[r][c]}</div>`;
           }
         }
         gridHtml += `</div>`;
@@ -393,11 +475,18 @@
 
       } else if (activeTab === 'certificate') {
         const lang = document.getElementById('certLang').value;
-        const student = document.getElementById('certStudentName').value || (lang === 'ar' ? 'اسم الطالب / الطالبة' : 'Student Name');
-        const reason = document.getElementById('certReason').value || (lang === 'ar' ? 'للتفوق والتميز الدراسي' : 'For academic excellence');
-        const teacher = document.getElementById('certTeacher').value || (lang === 'ar' ? 'معلمة المادة' : 'Teacher');
-        const date = document.getElementById('certDate').value || '2026/09/25';
+        const gender = document.getElementById('certGender') ? document.getElementById('certGender').value : 'female';
         const isAr = lang === 'ar';
+        
+        const defaultStudent = isAr ? (gender === 'female' ? 'اسم الطالبة' : 'اسم الطالب') : 'Student Name';
+        const student = document.getElementById('certStudentName').value || defaultStudent;
+        const reason = document.getElementById('certReason').value || (isAr ? 'للتفوق والتميز الدراسي' : 'For academic excellence');
+        const teacher = document.getElementById('certTeacher').value || (isAr ? 'معلمة المادة' : 'Teacher');
+        const date = document.getElementById('certDate').value || '2026/09/25';
+
+        const introText = isAr 
+          ? (gender === 'female' ? 'تتشرف إدارة المدرسة والمعلمة بتقديم هذه الشهادة للطالبة المتميزة:' : 'تتشرف إدارة المدرسة والمعلم بتقديم هذه الشهادة للطالب المتميز:')
+          : 'This certificate is proudly presented to:';
 
         area.innerHTML = `
           <div class="h-full border-8 double border-indigo-900 p-6 flex flex-col justify-between text-center relative bg-gradient-to-b from-indigo-50/30 via-white to-purple-50/30">
@@ -405,7 +494,7 @@
               <div class="text-2xl font-extrabold text-indigo-950 tracking-wide mt-4">
                 ${isAr ? '🎓 شهادة تقدير وتميز 🎓' : '🎓 CERTIFICATE OF APPRECIATION 🎓'}
               </div>
-              <p class="text-xs text-slate-500">${isAr ? 'تتشرف إدارة المدرسة والمعلمة بتقديم هذه الشهادة لـ:' : 'This certificate is proudly presented to:'}</p>
+              <p class="text-xs text-slate-500">${introText}</p>
               
               <div class="text-2xl font-bold text-purple-900 border-b-2 border-purple-300 inline-block px-8 py-2 my-2">
                 ${student}
@@ -431,43 +520,57 @@
       }
     }
 
-    // --- 🚀 منطق التزامن المبسط والمشفر خفيف الوزن ---
+    // --- 🚀 منطق التشفير الفائق الضغط لتقليل طول الكود إلى 15-40 حرفاً ---
     
-    function getFormState() {
-      return {
-        tab: activeTab,
-        tt: document.getElementById('textSheetTitle').value,
-        tc: document.getElementById('textSheetContent').value,
-        it: document.getElementById('imgSheetTitle').value,
-        img: uploadedImageData,
-        gt: document.getElementById('gameTitle').value,
-        gw: document.getElementById('gameWords').value,
-        cs: document.getElementById('certStudentName').value,
-        cr: document.getElementById('certReason').value,
-        ct: document.getElementById('certTeacher').value,
-        cd: document.getElementById('certDate').value
-      };
+    function getFormStateCompact() {
+      const state = {};
+      if (activeTab !== 'textWorksheet') state.t = activeTab;
+
+      const tt = document.getElementById('textSheetTitle').value;
+      const tc = document.getElementById('textSheetContent').value;
+      const it = document.getElementById('imgSheetTitle').value;
+      const gt = document.getElementById('gameTitle').value;
+      const gw = document.getElementById('gameWords').value;
+      const cs = document.getElementById('certStudentName').value;
+      const cr = document.getElementById('certReason').value;
+      const ct = document.getElementById('certTeacher').value;
+      const cd = document.getElementById('certDate').value;
+
+      if (tt) state.tt = tt;
+      if (tc) state.tc = tc;
+      if (it) state.it = it;
+      if (uploadedImageData) state.img = uploadedImageData;
+      if (gt && gt !== 'لعبة البحث عن الكلمات المختبئة') state.gt = gt;
+      if (gw && gw !== 'مدرسة, علم, قلم, كتاب, معلم') state.gw = gw;
+      if (cs) state.cs = cs;
+      if (cr) state.cr = cr;
+      if (ct) state.ct = ct;
+      if (cd) state.cd = cd;
+
+      return state;
     }
 
-    function setFormState(data) {
-      if (data.tt !== undefined) document.getElementById('textSheetTitle').value = data.tt;
-      if (data.tc !== undefined) document.getElementById('textSheetContent').value = data.tc;
-      if (data.it !== undefined) document.getElementById('imgSheetTitle').value = data.it;
-      if (data.img !== undefined) uploadedImageData = data.img;
-      if (data.gt !== undefined) document.getElementById('gameTitle').value = data.gt;
-      if (data.gw !== undefined) document.getElementById('gameWords').value = data.gw;
-      if (data.cs !== undefined) document.getElementById('certStudentName').value = data.cs;
-      if (data.cr !== undefined) document.getElementById('certReason').value = data.cr;
-      if (data.ct !== undefined) document.getElementById('certTeacher').value = data.ct;
-      if (data.cd !== undefined) document.getElementById('certDate').value = data.cd;
+    function setFormStateCompact(data) {
+      document.getElementById('textSheetTitle').value = data.tt || '';
+      document.getElementById('textSheetContent').value = data.tc || '';
+      document.getElementById('imgSheetTitle').value = data.it || '';
+      uploadedImageData = data.img || '';
+      document.getElementById('gameTitle').value = data.gt || 'لعبة البحث عن الكلمات المختبئة';
+      document.getElementById('gameWords').value = data.gw || 'مدرسة, علم, قلم, كتاب, معلم';
+      document.getElementById('certStudentName').value = data.cs || '';
+      document.getElementById('certReason').value = data.cr || '';
+      document.getElementById('certTeacher').value = data.ct || '';
+      document.getElementById('certDate').value = data.cd || '';
 
-      if (data.tab) switchTab(data.tab);
-      else renderPreview();
+      switchTab(data.t || 'textWorksheet');
     }
 
     function exportCode() {
-      const jsonStr = JSON.stringify(getFormState());
-      const encodedCode = btoa(encodeURIComponent(jsonStr));
+      const compactData = getFormStateCompact();
+      const jsonStr = JSON.stringify(compactData);
+      
+      // تشفير آمن للبث النظيف بأقصر طول
+      const encodedCode = btoa(encodeURIComponent(jsonStr).replace(/%([0-9A-F]{2})/g, (match, p1) => String.fromCharCode('0x' + p1)));
       
       document.getElementById('generatedSyncCode').value = encodedCode;
       toggleModal('exportModal');
@@ -485,9 +588,9 @@
       if (!code) return alert('يرجى لصق الكود أولاً!');
 
       try {
-        const decodedStr = decodeURIComponent(atob(code));
+        const decodedStr = decodeURIComponent(Array.prototype.map.call(atob(code), c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join(''));
         const data = JSON.parse(decodedStr);
-        setFormState(data);
+        setFormStateCompact(data);
         toggleModal('importModal');
         alert('تم فتح المستند بنجاح! 🎉');
       } catch (e) {
@@ -496,11 +599,28 @@
     }
 
     function exportDraft() {
-      const blob = new Blob([JSON.stringify(getFormState())], { type: 'application/json' });
+      const blob = new Blob([JSON.stringify(getFormStateCompact(), null, 2)], { type: 'application/json' });
       const a = document.createElement('a');
       a.href = URL.createObjectURL(blob);
-      a.download = `moeen_draft.json`;
+      a.download = `moeen_draft_${new Date().toISOString().slice(0, 10)}.json`;
       a.click();
+    }
+
+    function importDraft(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        try {
+          const data = JSON.parse(e.target.result);
+          setFormStateCompact(data);
+          alert('تم تحميل الملف المحفوظ بنجاح! 🎉');
+        } catch (err) {
+          alert('تعذر قراءة الملف، يرجى التأكد من تحديد ملف JSON صحيح.');
+        }
+      };
+      reader.readAsText(file);
     }
 
     function downloadAsImage() {
@@ -517,6 +637,7 @@
       document.getElementById(id).classList.toggle('hidden');
     }
 
+    // التهيئة الأولى
     renderPreview();
   </script>
 </body>
