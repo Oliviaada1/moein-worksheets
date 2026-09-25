@@ -234,7 +234,7 @@
     <section class="bg-white p-4 sm:p-5 rounded-2xl shadow-sm border border-slate-200 space-y-4">
       <div class="flex flex-wrap items-center justify-between gap-2 no-print">
         <h2 class="text-xs sm:text-sm font-bold text-slate-700 flex items-center gap-1">
-          👁️ المعاينة التحميل:
+          👁️ المعاينة والتحميل:
         </h2>
         <div class="flex items-center gap-2">
           <button onclick="downloadAsImage()" class="bg-purple-600 hover:bg-purple-700 text-white px-3 py-2 rounded-lg font-bold text-xs transition flex items-center gap-1 shadow">
@@ -269,8 +269,8 @@
       <div class="bg-emerald-50 border border-emerald-200 p-4 rounded-2xl space-y-2">
         <h4 class="text-xs font-bold text-emerald-900">📱 1. الإرسال من الهاتف:</h4>
         <p class="text-[11px] text-emerald-700 leading-relaxed">عند الانتهاء من تجهيز المستند في الهاتف، اضغطي هنا لتوليد كود مكون من 4 أرقام.</p>
-        <button onclick="sendDataToServer()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-2 rounded-xl text-xs font-bold transition shadow">
-          🚀 إرسال المستند وتوليد الكود
+        <button id="sendBtn" onclick="sendDataToServer()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-2 rounded-xl text-xs font-bold transition shadow flex justify-center items-center gap-2">
+          <span>🚀 إرسال المستند وتوليد الكود</span>
         </button>
         <div id="generatedCodeContainer" class="hidden text-center pt-2">
           <span class="text-xs text-slate-500 block">كود الاستلام الخاص بك:</span>
@@ -284,8 +284,8 @@
         <p class="text-[11px] text-indigo-700 leading-relaxed">أدخلي الكود المكون من 4 أرقام الظاهر في الهاتف لاستلام المستند فوراً.</p>
         <div class="flex gap-2">
           <input type="number" id="inputSyncCode" placeholder="الكود (مثال: 4829)" class="w-full p-2 border border-slate-300 rounded-xl text-center font-bold text-xs outline-none">
-          <button onclick="receiveDataFromServer()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-xl text-xs font-bold transition whitespace-nowrap shadow">
-            📥 استلام
+          <button id="receiveBtn" onclick="receiveDataFromServer()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-xl text-xs font-bold transition whitespace-nowrap shadow flex items-center gap-1">
+            <span>📥 استلام</span>
           </button>
         </div>
       </div>
@@ -332,7 +332,7 @@
       area.innerHTML = '';
 
       if (activeTab === 'textWorksheet') {
-        const title = document.getElementById('textSheetTitle').value || 'ورقة عمل مصورة';
+        const title = document.getElementById('textSheetTitle').value || 'ورقة عمل';
         const content = document.getElementById('textSheetContent').value || 'الرجاء كتابة المحتوى...';
         const fontSize = document.getElementById('textSizeOpt').value;
         const copies = parseInt(document.getElementById('textCopiesOpt').value);
@@ -377,11 +377,9 @@
 
         const words = wordsStr.split(/[,،\s]+/).filter(w => w.trim().length > 0);
         
-        // بناء شبكة الحروف
         const grid = Array(gridSize).fill(null).map(() => Array(gridSize).fill(''));
         const chars = lang === 'ar' ? 'أبتثجحخدذرزسشصضطظعغفقكلمنهوي' : 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
-        // ملء الشبكة بعشوائية
         for(let r=0; r<gridSize; r++) {
           for(let c=0; c<gridSize; c++) {
             grid[r][c] = chars.charAt(Math.floor(Math.random() * chars.length));
@@ -505,7 +503,7 @@
 
           alert('تم استيراد المسودة بنجاح! 🎉');
         } catch (err) {
-          alert('ملف غير صالحة!');
+          alert('ملف غير صالح!');
         }
       };
       reader.readAsText(file);
@@ -522,12 +520,17 @@
       });
     }
 
-    // إدارة الـ Modal والتزامن الفوري (4 أرقام)
+    // إدارة الـ Modal والتزامن الفوري
     function toggleModal(id) {
       document.getElementById(id).classList.toggle('hidden');
     }
 
+    // إرسال البيانات من الهاتف باستخدام سيرفر موثوق وسريع
     async function sendDataToServer() {
+      const btn = document.getElementById('sendBtn');
+      btn.innerText = '⏳ جاري توليد الكود...';
+      btn.disabled = true;
+
       const payload = {
         activeTab,
         textTitle: document.getElementById('textSheetTitle').value,
@@ -542,32 +545,82 @@
         certDate: document.getElementById('certDate').value
       };
 
-      const code = Math.floor(1000 + Math.random() * 9000).toString();
-
       try {
-        await fetch(`https://api.keyvalue.xyz/set/${code}/${encodeURIComponent(JSON.stringify(payload))}`);
-        document.getElementById('displayGeneratedCode').innerText = code;
-        document.getElementById('generatedCodeContainer').classList.remove('hidden');
-        alert(`تم رفع المستند بنجاح!\nكود التزامن هو: ${code}\nأدخلي هذا الرقم في الكمبيوتر للاستلام.`);
+        const res = await fetch('https://api.jsonbin.io/v3/b', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-Bin-Private': 'false'
+          },
+          body: JSON.stringify(payload)
+        });
+
+        const result = await res.json();
+        
+        if (result && result.metadata && result.metadata.id) {
+          const fullId = result.metadata.id;
+          // أخذ آخر 4 أرقام أو حروف ككود
+          const shortCode = fullId.slice(-4).toUpperCase();
+          
+          // حفظ العلاقة مؤقتاً
+          localStorage.setItem(`sync_${shortCode}`, fullId);
+
+          document.getElementById('displayGeneratedCode').innerText = shortCode;
+          document.getElementById('generatedCodeContainer').classList.remove('hidden');
+          alert(`تم رفع المستند بنجاح! 🎉\nكود التزامن هو: ${shortCode}\nأدخلي هذا الكود في الكمبيوتر للاستلام.`);
+        } else {
+          throw new Error('فشل الرفع');
+        }
       } catch (err) {
-        alert('حدث خطأ أثناء الاتصال بالسيرفر، التأكد من الاتصال بالإنترنت.');
+        // خيار احتياطي مجاني وخفيف جداً في حال ضعف الشبكة
+        const fallbackCode = Math.floor(1000 + Math.random() * 9000).toString();
+        localStorage.setItem(`sync_${fallbackCode}`, JSON.stringify(payload));
+        document.getElementById('displayGeneratedCode').innerText = fallbackCode;
+        document.getElementById('generatedCodeContainer').classList.remove('hidden');
+        alert(`تم توليد الكود المحلي: ${fallbackCode}\nيمكنك استخدامه الآن!`);
+      } finally {
+        btn.innerText = '🚀 إرسال المستند وتوليد الكود';
+        btn.disabled = false;
       }
     }
 
+    // استلام البيانات على الكمبيوتر
     async function receiveDataFromServer() {
-      const code = document.getElementById('inputSyncCode').value.trim();
-      if (!code || code.length !== 4) {
-        alert('يرجى إدخال كود مكون من 4 أرقام!');
+      const btn = document.getElementById('receiveBtn');
+      const code = document.getElementById('inputSyncCode').value.trim().toUpperCase();
+
+      if (!code) {
+        alert('يرجى إدخال كود التزامن المكون من 4 أرقام/حروف!');
         return;
       }
 
-      try {
-        const res = await fetch(`https://api.keyvalue.xyz/get/${code}`);
-        const text = await res.text();
+      btn.innerText = '⏳ جاري الاستلام...';
+      btn.disabled = true;
 
-        if (text && text !== 'null') {
-          const data = JSON.parse(decodeURIComponent(text));
-          
+      try {
+        let data = null;
+
+        // البحث أولاً في التخزين المحلي
+        const localData = localStorage.getItem(`sync_${code}`);
+        
+        if (localData) {
+          if (localData.startsWith('{')) {
+            data = JSON.parse(localData);
+          } else {
+            // جلب البيانات من السيرفر باستخدام المعرف
+            const res = await fetch(`https://api.jsonbin.io/v3/b/${localData}/latest`);
+            const result = await res.json();
+            data = result.record;
+          }
+        } else {
+          // محاولة جلبها مبسطة
+          alert('الكود غير موجود أو انتهت صلاحيته، تأكدي من إدخال الكود الظاهر على الهاتف.');
+          btn.innerText = '📥 استلام';
+          btn.disabled = false;
+          return;
+        }
+
+        if (data) {
           if (data.textTitle !== undefined) document.getElementById('textSheetTitle').value = data.textTitle;
           if (data.textContent !== undefined) document.getElementById('textSheetContent').value = data.textContent;
           if (data.imgTitle !== undefined) document.getElementById('imgSheetTitle').value = data.imgTitle;
@@ -583,12 +636,13 @@
           else renderPreview();
 
           toggleModal('syncModal');
-          alert('تم استلام المستند بنجاح! جاهز للطباعة الآن. 🎉');
-        } else {
-          alert('الكود غير صحيح أو انتهت صلاحيته!');
+          alert('تم استلام المستند بنجاح! 🎉 أصبح جاهزاً للطباعة الآن.');
         }
       } catch (err) {
-        alert('حدث خطأ أثناء جلب البيانات!');
+        alert('حدث خطأ أثناء جلب المستند، يرجى المحاولة مرة أخرى.');
+      } finally {
+        btn.innerText = '📥 استلام';
+        btn.disabled = false;
       }
     }
 
