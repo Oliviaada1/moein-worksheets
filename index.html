@@ -7,21 +7,14 @@
   
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
-  
-  <!-- مكتبة توليد الـ QR Code -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-  
-  <!-- Tesseract.js لاستخراج النص من الصورة -->
-  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
 
   <!-- خطوط عربية -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
 
   <style>
     body { font-family: 'Tajawal', sans-serif; }
-    .print-font-amiri { font-family: 'Amiri', serif; }
     
     .a4-preview {
       width: 210mm;
@@ -32,47 +25,24 @@
       box-shadow: 0 0 10px rgba(0,0,0,0.1);
       box-sizing: border-box;
     }
-
-    /* تنسيقات خاصة بالطباعة للـ PDF و الطابعة المباشرة */
-    @media print {
-      body * {
-        visibility: hidden;
-      }
-      #printableArea, #printableArea * {
-        visibility: visible;
-      }
-      #printableArea {
-        position: absolute;
-        left: 0;
-        top: 0;
-        width: 100%;
-        margin: 0;
-        padding: 10mm;
-        box-shadow: none;
-      }
-      @page {
-        size: A4 portrait;
-        margin: 0;
-      }
-    }
   </style>
 </head>
 <body class="bg-slate-100 text-slate-800 pb-16">
 
   <!-- الهيدر -->
-  <header class="bg-gradient-to-r from-indigo-700 to-purple-700 text-white p-6 shadow-lg text-center print:hidden">
+  <header class="bg-gradient-to-r from-indigo-700 to-purple-700 text-white p-6 shadow-lg text-center">
     <h1 class="text-3xl font-bold flex items-center justify-center gap-2">
       <span>✨</span> منصة مُعِين التعليمية
     </h1>
     <p class="text-indigo-100 text-sm mt-2 max-w-xl mx-auto">
-      أوراق العمل المدرسية + ملاحظات المعلمة + طباعة مباشرة وحفظ PDF مضمون 100%
+      صانع أوراق العمل المدرسية وملاحظات المعلمة - تصدير مباشر لملفات Word ونسخ سريع
     </p>
   </header>
 
-  <main class="max-w-5xl mx-auto px-4 mt-6 space-y-8 print:m-0 print:p-0">
+  <main class="max-w-5xl mx-auto px-4 mt-6 space-y-8">
 
     <!-- تبويب الاختيار: أوراق عمل أم ملاحظات معلمة -->
-    <div class="flex border-b border-slate-300 bg-white rounded-t-2xl overflow-hidden p-1 gap-1 print:hidden">
+    <div class="flex border-b border-slate-300 bg-white rounded-t-2xl overflow-hidden p-1 gap-1">
       <button id="tabSheetBtn" onclick="switchTab('sheet')" class="flex-1 py-3 font-bold text-xs text-center rounded-xl bg-indigo-600 text-white transition">
         📝 صانع أوراق العمل والتمارين
       </button>
@@ -82,52 +52,39 @@
     </div>
 
     <!-- قسم أوراق العمل -->
-    <div id="sheetSection" class="space-y-6 print:hidden">
+    <div id="sheetSection" class="space-y-6">
       
       <!-- قوالب أوراق عمل -->
       <section class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
-        <h2 class="text-md font-bold text-slate-700 mb-3">📂 قوالب أوراق عمل جاهزة:</h2>
+        <h2 class="text-md font-bold text-slate-700 mb-3">📂 اختاري قالباً جاهزاً للتعديل السريع:</h2>
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
           <button onclick="applyTemplate('kindergarten')" class="p-4 border border-indigo-200 hover:border-indigo-500 rounded-xl text-right transition bg-slate-50">
             <span class="text-2xl">🎨</span>
-            <h3 class="font-bold text-indigo-900 text-sm mt-1">رياض الأطفال (3-5 سنوات)</h3>
-            <p class="text-xs text-slate-500">تتبع الخطوط، الأشكال والتلوين.</p>
+            <h3 class="font-bold text-indigo-900 text-sm mt-1">رياض الأطفال</h3>
+            <p class="text-xs text-slate-500">تتبع الخطوط والأشكال والتلوين.</p>
           </button>
 
           <button onclick="applyTemplate('math')" class="p-4 border border-emerald-200 hover:border-emerald-500 rounded-xl text-right transition bg-slate-50">
             <span class="text-2xl">🔢</span>
-            <h3 class="font-bold text-emerald-900 text-sm mt-1">الرياضيات (6-8 سنوات)</h3>
-            <p class="text-xs text-slate-500">تمارين الجمع والطرح والأرقام.</p>
+            <h3 class="font-bold text-emerald-900 text-sm mt-1">الرياضيات والحساب</h3>
+            <p class="text-xs text-slate-500">تمارين الجمع والطرح والجدول.</p>
           </button>
 
           <button onclick="applyTemplate('arabic')" class="p-4 border border-amber-200 hover:border-amber-500 rounded-xl text-right transition bg-slate-50">
             <span class="text-2xl">📝</span>
-            <h3 class="font-bold text-amber-900 text-sm mt-1">اللغة العربية (6-9 سنوات)</h3>
-            <p class="text-xs text-slate-500">الحروف والكلمات والربط بالصور.</p>
+            <h3 class="font-bold text-amber-900 text-sm mt-1">اللغة العربية</h3>
+            <p class="text-xs text-slate-500">الحروف، الكلمات والأرقام.</p>
           </button>
-        </div>
-      </section>
-
-      <!-- استخراج النص من صورة تلقائياً -->
-      <section class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-4">
-        <h2 class="text-md font-bold text-slate-700">📸 استخراج النص المكتوب من صورة:</h2>
-        <div class="p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-3">
-          <label class="block text-xs font-bold text-slate-700">رفع صورة ورقة عمل لاستخراج الكلام تلقائياً:</label>
-          <input type="file" id="imageInput" accept="image/*" class="w-full text-xs text-slate-500" />
-          <button onclick="processOCRImage()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2.5 rounded-lg font-bold text-xs transition flex justify-center items-center gap-2">
-            🔍 استخراج الكلام من الصورة
-          </button>
-          <div id="ocrStatus" class="text-xs font-bold text-indigo-700 text-center hidden"></div>
         </div>
       </section>
 
     </div>
 
     <!-- 📌 قسم ملاحظات وملخصات المعلمة -->
-    <div id="notesSection" class="hidden space-y-6 print:hidden">
+    <div id="notesSection" class="hidden space-y-6">
       <section class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-4">
         <h2 class="text-md font-bold text-slate-700 flex items-center gap-2">
-          <span>📌</span> كتابة ملاحظة أو ملخص درس:
+          <span>📌</span> إعداد ملاحظة أو إشعار لولي الأمر / الطالب:
         </h2>
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
@@ -140,27 +97,27 @@
             <input type="text" id="noteClass" placeholder="مثال: الصف الثاني - أ" oninput="updatePreview()" class="w-full p-2.5 border border-slate-300 rounded-lg text-xs" />
           </div>
           <div>
-            <label class="block text-xs font-bold text-slate-600 mb-1">التاريخ / الإشعار:</label>
+            <label class="block text-xs font-bold text-slate-600 mb-1">التاريخ / الأسبوع:</label>
             <input type="text" id="noteDate" placeholder="مثال: الأسبوع الرابع" oninput="updatePreview()" class="w-full p-2.5 border border-slate-300 rounded-lg text-xs" />
           </div>
         </div>
 
         <div>
-          <label class="block text-xs font-bold text-slate-600 mb-1">نص الملاحظة أو الملخص للطلاب/أولياء الأمور:</label>
-          <textarea id="noteContent" rows="5" oninput="updatePreview()" placeholder="اكتبي التنبيهات، الواجبات، أو الملاحظات هنا..." class="w-full p-3 border border-slate-300 rounded-lg text-xs leading-relaxed focus:ring-2 focus:ring-indigo-500"></textarea>
+          <label class="block text-xs font-bold text-slate-600 mb-1">نص الملاحظة أو التنبيهات:</label>
+          <textarea id="noteContent" rows="4" oninput="updatePreview()" placeholder="اكتبي التنبيهات، الواجبات، أو الملاحظات هنا..." class="w-full p-3 border border-slate-300 rounded-lg text-xs leading-relaxed focus:ring-2 focus:ring-indigo-500"></textarea>
         </div>
       </section>
     </div>
 
-    <!-- المحرر العام وإعدادات الطباعة -->
-    <section class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-4 print:hidden">
-      <h2 class="text-md font-bold text-slate-700">✍️ محرر المحتوى الشامل وإعدادات النسخ:</h2>
+    <!-- المحرر العام وإعدادات التنسيق -->
+    <section class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-4">
+      <h2 class="text-md font-bold text-slate-700">✍️ محرر المحتوى والتعديل المباشر:</h2>
       
       <div>
-        <textarea id="sheetContent" rows="6" oninput="updatePreview()" class="w-full p-3 border border-slate-300 rounded-lg text-xs leading-relaxed focus:ring-2 focus:ring-indigo-500" placeholder="المحتوى الذي سيظهر في الصفحة للطباعة..."></textarea>
+        <textarea id="sheetContent" rows="6" oninput="updatePreview()" class="w-full p-3 border border-slate-300 rounded-lg text-xs leading-relaxed focus:ring-2 focus:ring-indigo-500" placeholder="اكتبي محتوى الورقة هنا..."></textarea>
       </div>
 
-      <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <div>
           <label class="block text-xs font-bold text-slate-600 mb-1">حجم الخط:</label>
           <select id="fontSizeOpt" onchange="updatePreview()" class="w-full p-2 border border-slate-300 rounded-lg text-xs">
@@ -174,53 +131,37 @@
           <label class="block text-xs font-bold text-slate-600 mb-1">عدد النسخ في الصفحة (A4):</label>
           <select id="copiesOpt" onchange="updatePreview()" class="w-full p-2 border border-slate-300 rounded-lg text-xs">
             <option value="1" selected>نسخة واحدة (صفحة كاملة)</option>
-            <option value="2">نسختان (نصف صفحة لكل طالب - توفير)</option>
+            <option value="2">نسختان (توفير ورق)</option>
             <option value="4">4 نسخ (بطاقات تنبيه صغيرة)</option>
-          </select>
-        </div>
-
-        <div>
-          <label class="block text-xs font-bold text-slate-600 mb-1">نوع الخط:</label>
-          <select id="fontFamilyOpt" onchange="updatePreview()" class="w-full p-2 border border-slate-300 rounded-lg text-xs">
-            <option value="font-sans" selected>خط حديث (تجوال)</option>
-            <option value="print-font-amiri">خط نسخ (أميري)</option>
           </select>
         </div>
       </div>
     </section>
 
-    <!-- خيارات التصدير والمشاركة -->
-    <section class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-4 print:bg-transparent print:p-0 print:border-none">
-      <div class="flex flex-col sm:flex-row items-center justify-between gap-3 print:hidden">
-        <h2 class="text-md font-bold text-slate-700">👁️ معاينة ورقة العمل / الملاحظة:</h2>
+    <!-- المعاينة وخيارات التصدير المباشرة -->
+    <section class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-4">
+      <div class="flex flex-col sm:flex-row items-center justify-between gap-3">
+        <h2 class="text-md font-bold text-slate-700">👁️ معاينة الورقة والخيارات:</h2>
         
         <div class="flex flex-wrap gap-2 w-full sm:w-auto">
-          <!-- زر المشاركة عبر QR Code -->
-          <button onclick="generateQRCodeModal()" class="bg-amber-600 hover:bg-amber-700 text-white px-4 py-2 rounded-lg font-bold text-xs transition flex items-center gap-1">
-            📱 فتح الورقة على جهاز آخر (QR Code)
+          <!-- زر نسخ المحتوى منسقاً للصق المباشر في Word -->
+          <button onclick="copyRichText()" class="bg-slate-800 hover:bg-black text-white px-4 py-2 rounded-lg font-bold text-xs transition flex items-center gap-1">
+            📋 نسخ المنسق لصقه في Word
           </button>
           
-          <!-- زر الطباعة وحفظ PDF المباشر -->
-          <button onclick="triggerPrint()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-2 rounded-lg font-bold text-xs transition flex items-center gap-1">
-            🖨️ طباعة / حفظ كـ PDF
+          <!-- زر تنزيل مستند Word -->
+          <button onclick="downloadDocx()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-bold text-xs transition flex items-center gap-1">
+            📄 تحميل ملف Word (.doc)
           </button>
         </div>
       </div>
 
-      <!-- نافذة الـ QR Code (Modal) -->
-      <div id="codeModal" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50 print:hidden">
-        <div class="bg-white p-6 rounded-2xl max-w-sm w-full text-center space-y-4 shadow-2xl">
-          <h3 class="text-md font-bold text-slate-800">📲 امسحي الرمز لفتح الورقة:</h3>
-          <p class="text-xs text-slate-500">امسحي هذا الرمز بكاميرا الهاتف أو كمبيوتر المدرسة لفتح نفس هذه الورقة ومحتواها فوراً:</p>
-
-          <div id="qrcodeContainer" class="flex justify-center p-3 bg-white border border-slate-200 rounded-xl"></div>
-
-          <button onclick="closeCodeModal()" class="w-full bg-slate-800 text-white py-2 rounded-lg text-xs font-bold">إغلاق</button>
-        </div>
+      <div id="copyAlert" class="hidden p-3 bg-emerald-100 text-emerald-800 text-xs font-bold rounded-xl text-center">
+        ✅ تم نسخ النص بالتنسيق! يمكنك الآن الذهاب لبرنامج Word واختيار لصق (Ctrl + V).
       </div>
 
       <!-- المعاينة المباشرة A4 -->
-      <div class="overflow-x-auto bg-slate-200 p-4 rounded-xl print:bg-transparent print:p-0">
+      <div class="overflow-x-auto bg-slate-200 p-4 rounded-xl">
         <div id="printableArea" class="a4-preview flex flex-col justify-between">
           <!-- محتوى المعاينة -->
         </div>
@@ -231,20 +172,6 @@
 
   <script>
     let currentTab = 'sheet';
-
-    // القراءة التلقائية للبيانات إذا تم فتح الصفحة عبر رابط مشاركة
-    window.onload = function() {
-      const hash = window.location.hash.substring(1);
-      if (hash) {
-        try {
-          const decodedText = decodeURIComponent(atob(hash));
-          document.getElementById('sheetContent').value = decodedText;
-          updatePreview();
-        } catch(e) {
-          console.log("لا يوجد نص مشارك");
-        }
-      }
-    };
 
     function switchTab(tab) {
       currentTab = tab;
@@ -279,32 +206,6 @@
       updatePreview();
     }
 
-    async function processOCRImage() {
-      const fileInput = document.getElementById('imageInput');
-      const content = document.getElementById('sheetContent');
-      const ocrStatus = document.getElementById('ocrStatus');
-
-      if (!fileInput.files[0]) { 
-        alert('الرجاء اختيار صورة ورقة العمل أولاً.'); 
-        return; 
-      }
-
-      ocrStatus.classList.remove('hidden');
-      ocrStatus.innerText = "⏳ جاري استخراج النص من الصورة...";
-
-      try {
-        const file = fileInput.files[0];
-        const result = await Tesseract.recognize(file, 'ara+eng');
-
-        content.value = result.data.text;
-        ocrStatus.innerText = "✅ تم استخراج النص بنجاح!";
-        updatePreview();
-      } catch (e) {
-        alert('حدث خطأ أثناء قراءة الصورة: ' + e.message);
-        ocrStatus.classList.add('hidden');
-      }
-    }
-
     function updatePreview() {
       let mainText = "";
 
@@ -321,7 +222,6 @@
       }
 
       const fontSize = document.getElementById('fontSizeOpt').value;
-      const fontFam = document.getElementById('fontFamilyOpt').value;
       const copies = parseInt(document.getElementById('copiesOpt').value);
       const previewArea = document.getElementById('printableArea');
 
@@ -335,7 +235,7 @@
 
       for (let i = 0; i < copies; i++) {
         const block = document.createElement('div');
-        block.className = `flex-1 ${fontSize} ${fontFam} p-2 flex flex-col justify-between ${i < copies - 1 ? 'border-b-2 border-dashed border-slate-300 pb-4 mb-4' : ''}`;
+        block.className = `flex-1 ${fontSize} p-2 flex flex-col justify-between ${i < copies - 1 ? 'border-b-2 border-dashed border-slate-300 pb-4 mb-4' : ''}`;
         block.innerHTML = `
           <div>
             <div class="flex justify-between items-center mb-3 pb-2 border-b border-slate-200">
@@ -349,29 +249,39 @@
       }
     }
 
-    // أمر الطباعة وحفظ PDF النظيف والضمون
-    function triggerPrint() {
-      window.print();
+    // 📋 نسخ المحتوى بتنسيق جاهز للصق في برنامج Word
+    function copyRichText() {
+      const previewArea = document.getElementById('printableArea');
+      const range = document.createRange();
+      range.selectNode(previewArea);
+      window.getSelection().removeAllRanges();
+      window.getSelection().addRange(range);
+      document.execCommand('copy');
+      window.getSelection().removeAllRanges();
+
+      const alertBox = document.getElementById('copyAlert');
+      alertBox.classList.remove('hidden');
+      setTimeout(() => alertBox.classList.add('hidden'), 4000);
     }
 
-    // توليد QR Code يحتوي على البيانات المشفرة داخل الرابط فوراً
-    function generateQRCodeModal() {
-      const textData = document.getElementById('sheetContent').value;
-      if (!textData.trim()) { alert('الرجاء كتابة محتوى أولاً.'); return; }
+    // 📄 تنزيل مستند Word (.doc) أهلي ومضمون التنسيق
+    function downloadDocx() {
+      const content = document.getElementById('printableArea').innerHTML;
+      const header = "<html xmlns:o='urn:schemas-microsoft-com:office:office' "+
+            "xmlns:w='urn:schemas-microsoft-com:office:word' "+
+            "xmlns='http://www.w3.org/TR/REC-html40'>"+
+            "<head><meta charset='utf-8'><title>ورقة عمل</title></head><body dir='rtl' style='font-family:Arial;'>";
+      const footer = "</body></html>";
+      const sourceHTML = header + content + footer;
 
-      // تشفير النص داخل الـ URL Hash
-      const encodedText = btoa(encodeURIComponent(textData));
-      const shareableURL = `${window.location.origin}${window.location.pathname}#${encodedText}`;
-
-      const qrDiv = document.getElementById('qrcodeContainer');
-      qrDiv.innerHTML = "";
-      new QRCode(qrDiv, { text: shareableURL, width: 160, height: 160 });
-
-      document.getElementById('codeModal').classList.remove('hidden');
-    }
-
-    function closeCodeModal() {
-      document.getElementById('codeModal').classList.add('hidden');
+      const blob = new Blob(['\ufeff' + sourceHTML], { type: 'application/msword' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'ورقة_عمل_مُعِين.doc';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
     }
 
     updatePreview();
