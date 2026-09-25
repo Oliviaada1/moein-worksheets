@@ -3,18 +3,26 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>منصة مُعِين - نظام التزامن المباشر</title>
+  <title>منصة مُعِين التعليمية - نظام التزامن المباشر والطباعة</title>
   
+  <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+
+  <!-- html2canvas -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
-  <!-- Firebase SDK للتزامن المباشر -->
+  <!-- Firebase SDK للتزامن السريع -->
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
   <style>
     body { font-family: 'Tajawal', sans-serif; }
+    
     .a4-preview {
       width: 100%;
       max-width: 210mm;
@@ -24,42 +32,260 @@
       background: white;
       box-shadow: 0 4px 15px rgba(0,0,0,0.1);
       box-sizing: border-box;
+      position: relative;
+    }
+
+    .a4-landscape {
+      max-width: 297mm !important;
+      min-height: 210mm !important;
+    }
+
+    @media (max-width: 640px) {
+      .a4-preview {
+        padding: 5mm;
+        min-height: auto;
+      }
+    }
+
+    @media print {
+      body * { visibility: hidden; }
+      .no-print { display: none !important; }
+      #printableArea, #printableArea * { visibility: visible; }
+      #printableArea {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        margin: 0;
+        padding: 10mm;
+        box-shadow: none;
+      }
+    }
+
+    .certificate-border {
+      border: 10px double #b45309;
+      outline: 3px solid #f59e0b;
+      outline-offset: -14px;
     }
   </style>
 </head>
-<body class="bg-slate-100 text-slate-800 pb-16">
+<body class="bg-slate-100 text-slate-800 pb-16 min-h-screen">
 
-  <header class="bg-indigo-700 text-white p-4 shadow-lg">
-    <div class="max-w-5xl mx-auto flex justify-between items-center">
-      <h1 class="text-xl font-bold">✨ منصة مُعِين (تزامن الكود اللحظي)</h1>
-      <button onclick="openSyncModal()" class="bg-pink-500 hover:bg-pink-600 px-4 py-2 rounded-xl text-xs font-bold transition shadow">
-        📲 كود التزامن (4 أرقام)
-      </button>
+  <header class="bg-gradient-to-r from-indigo-700 via-purple-700 to-pink-700 text-white p-4 sm:p-6 shadow-lg no-print">
+    <div class="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
+      <div>
+        <h1 class="text-2xl sm:text-3xl font-extrabold flex items-center gap-2">
+          <span>✨</span> منصة مُعِين التعليمية
+        </h1>
+        <p class="text-indigo-100 text-xs mt-1">
+          المساعد الشامل للمعلمة: أوراق عمل، ألعاب تعليمية، شهادات تقدير وتزامن فورى
+        </p>
+      </div>
+
+      <div class="flex flex-wrap items-center gap-2 bg-white/10 p-2 rounded-2xl backdrop-blur-md w-full md:w-auto justify-center">
+        <button onclick="openSyncModal()" class="bg-pink-500 hover:bg-pink-600 text-white px-3 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1 shadow">
+          <span>⚡</span> كود التزامن الفوري (4 أرقام)
+        </button>
+
+        <button onclick="exportDraft()" class="bg-indigo-500 hover:bg-indigo-600 text-white px-3 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1 shadow">
+          <span>💾</span> حفظ مسودة
+        </button>
+        <button onclick="triggerImportDraft()" class="bg-purple-500 hover:bg-purple-600 text-white px-3 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1 shadow">
+          <span>📂</span> استيراد مسودة
+        </button>
+        <input type="file" id="draftFileInput" onchange="importDraft(event)" accept=".json" class="hidden" />
+      </div>
     </div>
   </header>
 
-  <main class="max-w-4xl mx-auto px-4 mt-6 space-y-6">
-    <section class="bg-white p-4 rounded-2xl shadow-sm space-y-3">
-      <label class="block text-xs font-bold text-slate-700">✍️ المحتوى النصي لورقة العمل:</label>
-      <textarea id="sheetContent" rows="4" oninput="updatePreview()" class="w-full p-3 border rounded-lg text-xs" placeholder="اكتبي نص ورقة العمل هنا..."></textarea>
+  <main class="max-w-6xl mx-auto px-2 sm:px-4 mt-6 space-y-6">
+
+    <div class="flex border-b border-slate-300 bg-white rounded-2xl overflow-hidden p-1.5 gap-1 shadow-sm no-print flex-wrap">
+      <button id="tabSheetBtn" onclick="switchTab('sheet')" class="flex-1 min-w-[100px] py-2.5 font-bold text-xs text-center rounded-xl bg-indigo-600 text-white transition">
+        📝 أوراق العمل
+      </button>
+      <button id="tabImgSheetBtn" onclick="switchTab('imgsheet')" class="flex-1 min-w-[100px] py-2.5 font-bold text-xs text-center rounded-xl bg-slate-100 text-slate-600 hover:bg-slate-200 transition">
+        🖼️ ورقة عمل مصوّرة
+      </button>
+      <button id="tabGamesBtn" onclick="switchTab('games')" class="flex-1 min-w-[100px] py-2.5 font-bold text-xs text-center rounded-xl bg-slate-100 text-slate-600 hover:bg-slate-200 transition">
+        🧩 ألعاب الحروف
+      </button>
+      <button id="tabCertBtn" onclick="switchTab('cert')" class="flex-1 min-w-[100px] py-2.5 font-bold text-xs text-center rounded-xl bg-slate-100 text-slate-600 hover:bg-slate-200 transition">
+        🎓 شهادات التقدير (A4)
+      </button>
+    </div>
+
+    <!-- 1️⃣ قسم أوراق العمل النصية والقوالب -->
+    <div id="sheetSection" class="space-y-6 no-print">
+      <section class="bg-white p-4 sm:p-5 rounded-2xl shadow-sm border border-slate-200">
+        <h2 class="text-xs sm:text-sm font-bold text-slate-700 mb-3 flex items-center gap-2">
+          <span>📂</span> قوالب سريعة وجاهزة للتعديل:
+        </h2>
+        <div class="grid grid-cols-2 sm:grid-cols-5 gap-2 sm:gap-3">
+          <button onclick="applyTemplate('kindergarten')" class="p-2.5 border border-indigo-200 hover:border-indigo-500 rounded-xl text-right transition bg-slate-50 hover:bg-indigo-50">
+            <span class="text-lg block">🎨</span>
+            <h3 class="font-bold text-indigo-900 text-xs mt-1">رياض الأطفال</h3>
+          </button>
+          <button onclick="applyTemplate('math')" class="p-2.5 border border-emerald-200 hover:border-emerald-500 rounded-xl text-right transition bg-slate-50 hover:bg-emerald-50">
+            <span class="text-lg block">🔢</span>
+            <h3 class="font-bold text-emerald-900 text-xs mt-1">الرياضيات</h3>
+          </button>
+          <button onclick="applyTemplate('arabic')" class="p-2.5 border border-amber-200 hover:border-amber-500 rounded-xl text-right transition bg-slate-50 hover:bg-amber-50">
+            <span class="text-lg block">📝</span>
+            <h3 class="font-bold text-amber-900 text-xs mt-1">اللغة العربية</h3>
+          </button>
+          <button onclick="applyTemplate('english')" class="p-2.5 border border-blue-200 hover:border-blue-500 rounded-xl text-right transition bg-slate-50 hover:bg-blue-50">
+            <span class="text-lg block">🔤</span>
+            <h3 class="font-bold text-blue-900 text-xs mt-1">English Worksheet</h3>
+          </button>
+          <button onclick="applyTemplate('exam')" class="p-2.5 border border-purple-200 hover:border-purple-500 rounded-xl text-right transition bg-slate-50 hover:bg-purple-50">
+            <span class="text-lg block">📋</span>
+            <h3 class="font-bold text-purple-900 text-xs mt-1">اختبار قصير</h3>
+          </button>
+        </div>
+      </section>
+    </div>
+
+    <!-- 2️⃣ قسم أوراق العمل المصوّرة -->
+    <div id="imgsheetSection" class="hidden space-y-6 no-print">
+      <section class="bg-white p-4 sm:p-5 rounded-2xl shadow-sm border border-slate-200 space-y-4">
+        <h2 class="text-xs sm:text-sm font-bold text-slate-700 flex items-center gap-2">
+          <span>🖼️</span> إدراج ورقة عمل كصورة (تمرين جاهز من الهاتف):
+        </h2>
+        <div>
+          <label class="block text-xs font-bold text-slate-600 mb-1">اختر صورة ورقة العمل أو التمرين:</label>
+          <input type="file" id="worksheetImgInput" accept="image/*" onchange="loadWorksheetImage(event)" class="w-full text-xs p-2 border rounded-lg" />
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-600 mb-1">عنوان ورقة العمل / الترويسة:</label>
+          <input type="text" id="imgWorksheetTitle" placeholder="مثال: ورقة عمل مادة العلوم - الصف الرابع" oninput="updatePreview()" class="w-full p-2.5 border border-slate-300 rounded-lg text-xs" />
+        </div>
+      </section>
+    </div>
+
+    <!-- 3️⃣ قسم ألعاب الحروف -->
+    <div id="gamesSection" class="hidden space-y-6 no-print">
+      <section class="bg-white p-4 sm:p-5 rounded-2xl shadow-sm border border-slate-200 space-y-4">
+        <h2 class="text-xs sm:text-sm font-bold text-slate-700 flex items-center gap-2">
+          <span>🧩</span> مولد لعبة البحث عن الكلمات (عربي / إنجليزي):
+        </h2>
+        <div>
+          <label class="block text-xs font-bold text-slate-600 mb-1">أدخلي الكلمات المفتاحية (مفصولة بفاصلة):</label>
+          <input type="text" id="gameWordsInput" placeholder="صورة, جامعة, ساعة, قلم أو Apple, Book" value="صورة, جامعة, ساعة, قلم" class="w-full p-2.5 border border-slate-300 rounded-lg text-xs" />
+        </div>
+        <button onclick="generateWordSearch()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs px-4 py-2.5 rounded-lg transition w-full sm:w-auto">
+          ⚡ توليد شبكة الكلمات
+        </button>
+      </section>
+    </div>
+
+    <!-- 4️⃣ قسم شهادات التقدير -->
+    <div id="certSection" class="hidden space-y-6 no-print">
+      <section class="bg-white p-4 sm:p-5 rounded-2xl shadow-sm border border-slate-200 space-y-4">
+        <div class="flex justify-between items-center">
+          <h2 class="text-xs sm:text-sm font-bold text-slate-700 flex items-center gap-2">
+            <span>🎓</span> بيانات شهادة التقدير (A4 الكامل):
+          </h2>
+          <div class="flex gap-1">
+            <button onclick="setCertLang('ar')" id="certLangArBtn" class="text-xs px-2.5 py-1 rounded-lg font-bold bg-amber-600 text-white">العربية</button>
+            <button onclick="setCertLang('en')" id="certLangEnBtn" class="text-xs px-2.5 py-1 rounded-lg font-bold bg-slate-200 text-slate-700">English</button>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-bold text-slate-600 mb-1">عنوان الشهادة:</label>
+            <input type="text" id="certTitle" value="شهادة تقدير وتميّز" oninput="updatePreview()" class="w-full p-2.5 border border-slate-300 rounded-lg text-xs" />
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-600 mb-1">اسم الطالب / الطالبة:</label>
+            <input type="text" id="certStudent" value="سارة أحمد" oninput="updatePreview()" class="w-full p-2.5 border border-slate-300 rounded-lg text-xs" />
+          </div>
+          <div class="sm:col-span-2">
+            <label class="block text-xs font-bold text-slate-600 mb-1">سبب التقدير / الإنجاز:</label>
+            <input type="text" id="certReason" value="للتفوق والتميّز الأكاديمي والالتزام بالواجبات المدرسيّة" oninput="updatePreview()" class="w-full p-2.5 border border-slate-300 rounded-lg text-xs" />
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-600 mb-1">اسم المعلمة:</label>
+            <input type="text" id="certTeacher" value="أ. أوليفيا" oninput="updatePreview()" class="w-full p-2.5 border border-slate-300 rounded-lg text-xs" />
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-600 mb-1">مديرة المدرسة:</label>
+            <input type="text" id="certPrincipal" value="إدارة المدرسة" oninput="updatePreview()" class="w-full p-2.5 border border-slate-300 rounded-lg text-xs" />
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- المحرر النصي والتعديلات -->
+    <section id="editorSection" class="bg-white p-4 sm:p-5 rounded-2xl shadow-sm border border-slate-200 space-y-4 no-print">
+      <div class="flex justify-between items-center">
+        <h2 class="text-xs sm:text-sm font-bold text-slate-700">✍️ كاتب المحتوى النصي:</h2>
+        <div class="flex gap-2">
+          <button onclick="setTextDirection('rtl')" class="text-xs bg-slate-100 hover:bg-slate-200 px-2 py-1 rounded font-bold">يمين (عربي)</button>
+          <button onclick="setTextDirection('ltr')" class="text-xs bg-slate-100 hover:bg-slate-200 px-2 py-1 rounded font-bold">Left (English)</button>
+        </div>
+      </div>
+      <textarea id="sheetContent" rows="5" oninput="updatePreview()" class="w-full p-3 border border-slate-300 rounded-lg text-xs leading-relaxed focus:ring-2 focus:ring-indigo-500" placeholder="اكتبي المحتوى هنا..."></textarea>
+      
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <div>
+          <label class="block text-xs font-bold text-slate-600 mb-1">حجم الخط:</label>
+          <select id="fontSizeOpt" onchange="updatePreview()" class="w-full p-2 border border-slate-300 rounded-lg text-xs">
+            <option value="text-sm">صغير</option>
+            <option value="text-base" selected>متوسط</option>
+            <option value="text-xl">كبير جداً</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-600 mb-1">عدد النسخ في الصفحة (A4):</label>
+          <select id="copiesOpt" onchange="updatePreview()" class="w-full p-2 border border-slate-300 rounded-lg text-xs">
+            <option value="1" selected>نسخة واحدة (صفحة كاملة)</option>
+            <option value="2">نسختان (توفير ورق)</option>
+            <option value="4">4 نسخ (بطاقات تنبيه صغيرة)</option>
+          </select>
+        </div>
+      </div>
     </section>
 
-    <section class="bg-white p-4 rounded-2xl shadow-sm">
-      <h2 class="text-xs font-bold text-slate-700 mb-3">👁️ المعاينة الحية (A4):</h2>
-      <div id="printableArea" class="a4-preview flex flex-col justify-between"></div>
+    <!-- المعاينة المباشرة وخيارات التصدير -->
+    <section class="bg-white p-4 sm:p-5 rounded-2xl shadow-sm border border-slate-200 space-y-4">
+      <div class="flex flex-col sm:flex-row items-center justify-between gap-3 no-print">
+        <h2 class="text-xs sm:text-sm font-bold text-slate-700">👁️ المعاينة والتحميل:</h2>
+        
+        <div class="flex flex-wrap gap-2 w-full sm:w-auto justify-stretch sm:justify-end">
+          <button onclick="window.print()" class="flex-1 sm:flex-initial bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-2 rounded-lg font-bold text-xs transition flex items-center justify-center gap-1 shadow">
+            🛈 طباعة / PDF
+          </button>
+          <button onclick="downloadAsImage()" class="flex-1 sm:flex-initial bg-purple-600 hover:bg-purple-700 text-white px-3 py-2 rounded-lg font-bold text-xs transition flex items-center justify-center gap-1 shadow">
+            🖼️ حفظ كصورة (للهاتف)
+          </button>
+          <button onclick="downloadDocx()" class="flex-1 sm:flex-initial bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-lg font-bold text-xs transition flex items-center justify-center gap-1 shadow">
+            📄 Word (.doc)
+          </button>
+        </div>
+      </div>
+
+      <div class="overflow-x-auto bg-slate-200 p-2 sm:p-4 rounded-xl flex justify-center">
+        <div id="printableArea" class="a4-preview flex flex-col justify-between">
+        </div>
+      </div>
     </section>
+
   </main>
 
-  <!-- Modal التزامن -->
-  <div id="syncModal" class="fixed inset-0 bg-black/50 hidden items-center justify-center p-4 z-50">
+  <!-- Modal: نظام التزامن المباشر والمنفذ السريع -->
+  <div id="syncModal" class="fixed inset-0 bg-black/50 hidden items-center justify-center p-4 z-50 no-print">
     <div class="bg-white w-full max-w-sm p-6 rounded-2xl shadow-2xl space-y-4">
-      <h3 class="font-bold text-indigo-900 text-sm border-b pb-2">🌐 ربط التلفون بالكمبيوتر بكود</h3>
+      <h3 class="font-bold text-indigo-900 text-sm border-b pb-2 flex items-center gap-2">
+        <span>🌐</span> ربط التلفون بالكمبيوتر بكود سريع
+      </h3>
       
-      <!-- القسم الأول: توليد الكود من التلفون -->
+      <!-- توليد الكود من التلفون -->
       <div class="p-3 bg-indigo-50 border border-indigo-200 rounded-xl text-center space-y-2">
-        <p class="text-xs text-indigo-800 font-medium">إذا كنتِ على التلفون:</p>
-        <button onclick="generateSyncCode()" id="genBtn" class="bg-pink-600 hover:bg-pink-700 text-white px-4 py-2 rounded-xl text-xs font-bold transition shadow w-full">
-          ⚡ توليد كود جديد
+        <p class="text-xs text-indigo-800 font-medium">1. إذا كنتِ على التلفون (أنشئي الكود):</p>
+        <button onclick="generateFastSyncCode()" id="genBtn" class="bg-pink-600 hover:bg-pink-700 text-white px-4 py-2 rounded-xl text-xs font-bold transition shadow w-full">
+          ⚡ توليد كود التزامن (لحظي)
         </button>
         <div id="codeDisplayBox" class="hidden mt-2 p-2 bg-white rounded-lg border border-indigo-300">
           <span class="text-[10px] text-slate-500 block">أدخلي هذا الرقم في الكمبيوتر:</span>
@@ -67,12 +293,12 @@
         </div>
       </div>
 
-      <!-- القسم الثاني: أدخل الكود على الكمبيوتر -->
+      <!-- سحب الكود على الكمبيوتر -->
       <div class="pt-2 border-t space-y-2">
-        <label class="text-xs font-bold text-slate-700 block">إذا كنتِ على الكمبيوتر:</label>
+        <label class="text-xs font-bold text-slate-700 block">2. إذا كنتِ على الكمبيوتر (ادخلي الرقم):</label>
         <div class="flex gap-2">
           <input type="text" id="codeInput" maxlength="4" placeholder="4 أرقام" class="flex-1 p-2 border rounded-lg text-xs font-mono text-center text-lg font-bold" />
-          <button onclick="fetchByCode()" id="fetchBtn" class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg text-xs font-bold transition">📥 سحب</button>
+          <button onclick="fetchByFastCode()" id="fetchBtn" class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg text-xs font-bold transition">📥 سحب</button>
         </div>
       </div>
 
@@ -83,67 +309,319 @@
   </div>
 
   <script>
-    // تهيئة قاعدة البيانات السحابية (Firebase)
-    const firebaseConfig = {
-      databaseURL: "https://sync-demo-default-rtdb.firebaseio.com/"
-    };
-    if (!firebase.apps.length) {
-      firebase.initializeApp(firebaseConfig);
-    }
+    // تهيئة السحابة الفورية السريعة (Firebase Realtime Database)
+    const firebaseConfig = { databaseURL: "https://sync-demo-default-rtdb.firebaseio.com/" };
+    if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
 
+    let currentTab = 'sheet';
+    let textDir = 'rtl';
+    let certLang = 'ar';
+    let uploadedWorksheetImg = null;
+
+    function switchTab(tab) {
+      currentTab = tab;
+      const sections = {
+        sheet: document.getElementById('sheetSection'),
+        imgsheet: document.getElementById('imgsheetSection'),
+        games: document.getElementById('gamesSection'),
+        cert: document.getElementById('certSection')
+      };
+      const buttons = {
+        sheet: document.getElementById('tabSheetBtn'),
+        imgsheet: document.getElementById('tabImgSheetBtn'),
+        games: document.getElementById('tabGamesBtn'),
+        cert: document.getElementById('tabCertBtn')
+      };
+      const editorSec = document.getElementById('editorSection');
+      const printableArea = document.getElementById('printableArea');
+
+      Object.keys(sections).forEach(key => {
+        if (key === tab) {
+          sections[key].classList.remove('hidden');
+          buttons[key].className = "flex-1 min-w-[100px] py-2.5 font-bold text-xs text-center rounded-xl bg-indigo-600 text-white transition";
+        } else {
+          sections[key].classList.add('hidden');
+          buttons[key].className = "flex-1 min-w-[100px] py-2.5 font-bold text-xs text-center rounded-xl bg-slate-100 text-slate-600 hover:bg-slate-200 transition";
+        }
+      });
+
+      if (tab === 'cert') {
+        printableArea.classList.add('a4-landscape');
+        editorSec.classList.add('hidden');
+      } else {
+        printableArea.classList.remove('a4-landscape');
+        if (tab === 'games' || tab === 'imgsheet') {
+          editorSec.classList.add('hidden');
+        } else {
+          editorSec.classList.remove('hidden');
+        }
+      }
+
+      if(tab === 'games') generateWordSearch();
+      else updatePreview();
+    }
+
+    function setCertLang(lang) {
+      certLang = lang;
+      const arBtn = document.getElementById('certLangArBtn');
+      const enBtn = document.getElementById('certLangEnBtn');
+      
+      if (lang === 'en') {
+        enBtn.className = "text-xs px-2.5 py-1 rounded-lg font-bold bg-amber-600 text-white";
+        arBtn.className = "text-xs px-2.5 py-1 rounded-lg font-bold bg-slate-200 text-slate-700";
+        document.getElementById('certTitle').value = "CERTIFICATE OF APPRECIATION";
+        document.getElementById('certStudent').value = "Sarah Ahmed";
+        document.getElementById('certReason').value = "For Outstanding Academic Excellence & Dedication";
+        document.getElementById('certTeacher').value = "Ms. Olivia";
+        document.getElementById('certPrincipal').value = "School Principal";
+      } else {
+        arBtn.className = "text-xs px-2.5 py-1 rounded-lg font-bold bg-amber-600 text-white";
+        enBtn.className = "text-xs px-2.5 py-1 rounded-lg font-bold bg-slate-200 text-slate-700";
+        document.getElementById('certTitle').value = "شهادة تقدير وتميّز";
+        document.getElementById('certStudent').value = "سارة أحمد";
+        document.getElementById('certReason').value = "للتفوق والتميّز الأكاديمي والالتزام بالواجبات المدرسيّة";
+        document.getElementById('certTeacher').value = "أ. أوليفيا";
+        document.getElementById('certPrincipal').value = "إدارة المدرسة";
+      }
+      updatePreview();
+    }
+
+    // ضغط الصورة تلقائياً لسرعة نقلها بالكود في لمح البصر
+    function loadWorksheetImage(e) {
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(evt) {
+          const img = new Image();
+          img.onload = function() {
+            const canvas = document.createElement('canvas');
+            const maxDim = 1000;
+            let w = img.width, h = img.height;
+            if (w > maxDim || h > maxDim) {
+              if (w > h) { h = Math.round((h * maxDim) / w); w = maxDim; }
+              else { w = Math.round((w * maxDim) / h); h = maxDim; }
+            }
+            canvas.width = w; canvas.height = h;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, w, h);
+            uploadedWorksheetImg = canvas.toDataURL('image/jpeg', 0.7);
+            updatePreview();
+          };
+          img.src = evt.target.result;
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+
+    function setTextDirection(dir) {
+      textDir = dir;
+      const editor = document.getElementById('sheetContent');
+      editor.dir = dir;
+      editor.className = dir === 'ltr' ? "w-full p-3 border border-slate-300 rounded-lg text-xs leading-relaxed focus:ring-2 focus:ring-indigo-500 text-left" : "w-full p-3 border border-slate-300 rounded-lg text-xs leading-relaxed focus:ring-2 focus:ring-indigo-500 text-right";
+      updatePreview();
+    }
+
+    function applyTemplate(type) {
+      const content = document.getElementById('sheetContent');
+      if (type === 'kindergarten') {
+        setTextDirection('rtl');
+        content.value = "الاسم: .......................................\tالتاريخ:  /  /\n\n1. تتبع الخطوط النقطية التالية:\n. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .\n\n2. لون الدائرة باللون الأحمـر والمعين باللون الأزرق.";
+      } else if (type === 'math') {
+        setTextDirection('rtl');
+        content.value = "الاسم: .......................................\tالمادة: رياضيات\n\nأوجد ناتج الجمع والطرح فيما يلي:\n\n 5 + 3 = [   ]\t\t 7 + 2 = [   ]\n 9 - 4 = [   ]\t\t 8 - 5 = [   ]";
+      } else if (type === 'arabic') {
+        setTextDirection('rtl');
+        content.value = "الاسم: .......................................\tالمادة: اللغة العربية\n\n1. اكتب الحرف الناقص للكلمات التالية:\n  ـمـس ( ش / س )\t\t كـتـا... ( ب / ت )";
+      } else if (type === 'english') {
+        setTextDirection('ltr');
+        content.value = "Name: .......................................\tDate:    /    /\nSubject: English Worksheet\n\nQ1: Choose the correct answer:\n1. She ( is / are / am ) a helpful teacher.\n2. They ( play / plays ) football every Friday.\n\nQ2: Fill in the missing letters:\n- B...ok ( o / a )\t\t- P...n ( e / i )";
+      } else if (type === 'exam') {
+        setTextDirection('rtl');
+        content.value = "الاسم: .......................................\tالدرجة: [   / 10 ]\n\nس1: ضع علامة (✓) أو (✕):\n1. (  ) الشمس تشرق من الشرق.\n2. (  ) الحوت من الطيور.\n\nس2: اختر الإجابة الصحيحة:\n- عاصمة ليبيا هي: ( طرابلس / بنغازي / مصراتة )";
+      }
+      updatePreview();
+    }
+
     function updatePreview() {
-      const text = document.getElementById('sheetContent').value;
-      const preview = document.getElementById('printableArea');
-      if (!text.trim()) {
-        preview.innerHTML = `<div class="text-center my-auto text-slate-400 text-xs">ستظهر المعاينة هنا...</div>`;
+      const previewArea = document.getElementById('printableArea');
+      
+      if (currentTab === 'imgsheet') {
+        const title = document.getElementById('imgWorksheetTitle').value || "ورقة عمل مصورة";
+        previewArea.innerHTML = `
+          <div class="h-full flex flex-col justify-between">
+            <div>
+              <div class="flex justify-between items-center pb-2 mb-4 border-b-2 border-indigo-900" dir="rtl">
+                <h2 class="text-sm font-bold text-indigo-900">${title}</h2>
+                <span class="text-[10px] text-slate-500">الاسم: .................... | التاريخ:   /   /</span>
+              </div>
+              ${uploadedWorksheetImg ? `<img src="${uploadedWorksheetImg}" class="max-w-full max-h-[220mm] mx-auto object-contain rounded-lg border" />` : `<div class="p-12 text-center text-slate-400 border-2 border-dashed rounded-xl my-8">الرجاء اختيار صورة ورقة العمل من الأعلى...</div>`}
+            </div>
+            <div class="text-center text-[10px] text-slate-400 pt-2 border-t">منصة مُعِين التعليمية</div>
+          </div>
+        `;
         return;
       }
-      preview.innerHTML = `
-        <div class="p-2 border-b text-[10px] text-slate-400 flex justify-between">
-          <span>منصة مُعِين التعليمية</span>
-          <span>الاسم: ..........................</span>
+
+      if (currentTab === 'cert') {
+        const title = document.getElementById('certTitle').value;
+        const student = document.getElementById('certStudent').value;
+        const reason = document.getElementById('certReason').value;
+        const teacher = document.getElementById('certTeacher').value;
+        const principal = document.getElementById('certPrincipal').value;
+        const isEn = certLang === 'en';
+
+        previewArea.innerHTML = `
+          <div class="certificate-border h-full w-full p-8 sm:p-12 flex flex-col justify-between text-center bg-amber-50/20 my-auto" dir="${isEn ? 'ltr' : 'rtl'}">
+            <div class="space-y-3">
+              <h1 class="text-3xl sm:text-4xl font-extrabold text-amber-800 tracking-wide">${title}</h1>
+              <p class="text-xs sm:text-sm text-amber-900 font-medium">${isEn ? 'This certificate is proudly presented to' : 'تُمنح هذه الشهادة بكل فخر واعتزاز للطالب/ـة'}</p>
+            </div>
+            
+            <div class="my-6">
+              <h2 class="text-2xl sm:text-3xl font-extrabold text-indigo-900 border-b-4 border-amber-400 inline-block px-12 py-2">${student}</h2>
+              <p class="text-xs sm:text-sm text-slate-700 mt-6 max-w-xl mx-auto leading-relaxed">${reason}</p>
+            </div>
+
+            <div class="flex justify-between items-center text-xs sm:text-sm text-slate-700 mt-8 pt-4 border-t-2 border-amber-200">
+              <div class="text-center">
+                <p class="font-bold text-amber-900">${isEn ? 'Teacher:' : 'معلمة المادة:'}</p>
+                <p class="mt-1 font-semibold">${teacher}</p>
+              </div>
+              <div class="text-center">
+                <p class="font-bold text-amber-900">${isEn ? 'Principal:' : 'مديرة المدرسة:'}</p>
+                <p class="mt-1 font-semibold">${principal}</p>
+              </div>
+            </div>
+          </div>
+        `;
+        return;
+      }
+
+      if (currentTab === 'games') return;
+
+      let mainText = document.getElementById('sheetContent').value;
+      const fontSize = document.getElementById('fontSizeOpt').value;
+      const copies = parseInt(document.getElementById('copiesOpt').value);
+
+      if (!mainText.trim()) {
+        previewArea.innerHTML = `<div class="text-center my-auto text-slate-400 text-sm">المعاينة ستظهر هنا عند الكتابة...</div>`;
+        return;
+      }
+
+      previewArea.innerHTML = "";
+      const formattedText = mainText.replace(/\n/g, '<br/>');
+
+      for (let i = 0; i < copies; i++) {
+        const block = document.createElement('div');
+        block.dir = textDir;
+        block.className = `flex-1 ${fontSize} p-2 flex flex-col justify-between ${i < copies - 1 ? 'border-b-2 border-dashed border-slate-300 pb-4 mb-4' : ''} ${textDir === 'ltr' ? 'text-left' : 'text-right'}`;
+        block.innerHTML = `
+          <div>
+            <div class="flex justify-between items-center mb-3 pb-1 border-b border-slate-200 text-[10px] text-slate-400" dir="rtl">
+              <span class="font-bold text-indigo-900">مُعِين - منصة أوراق العمل</span>
+              <span>نسخة ${i+1} من ${copies}</span>
+            </div>
+            <div class="leading-relaxed whitespace-pre-wrap">${formattedText}</div>
+          </div>
+        `;
+        previewArea.appendChild(block);
+      }
+    }
+
+    function generateWordSearch() {
+      const input = document.getElementById('gameWordsInput').value;
+      const rawWords = input.split(/[,،\s]+/).map(w => w.trim()).filter(w => w.length > 0);
+      if (rawWords.length === 0) return;
+
+      const isArabic = /[\u0600-\u06FF]/.test(rawWords[0]);
+      const alphabet = isArabic ? "أبتثجحخدذرزسشصضطظعغفقكلمنهوي" : "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+      const size = 8;
+      let grid = Array(size).fill(null).map(() => Array(size).fill(''));
+
+      let processedWords = rawWords.map(w => isArabic ? w.replace(/\s+/g, '') : w.replace(/\s+/g, '').toUpperCase());
+
+      processedWords.forEach((word, idx) => {
+        let row = idx % size;
+        let lettersArr = Array.from(word);
+        if(lettersArr.length <= size) {
+          for(let i = 0; i < lettersArr.length; i++) {
+            grid[row][i] = lettersArr[i];
+          }
+        }
+      });
+
+      for (let r = 0; r < size; r++) {
+        for (let c = 0; c < size; c++) {
+          if (!grid[r][c]) {
+            grid[r][c] = alphabet.charAt(Math.floor(Math.random() * alphabet.length));
+          }
+        }
+      }
+
+      let gridHtml = `<div class="grid grid-cols-8 gap-1 border-2 border-indigo-900 p-2 bg-indigo-50/50 rounded-xl max-w-sm mx-auto" dir="${isArabic ? 'rtl' : 'ltr'}">`;
+      for (let r = 0; r < size; r++) {
+        for (let c = 0; c < size; c++) {
+          gridHtml += `<div class="aspect-square flex items-center justify-center font-bold text-sm bg-white border border-slate-200 rounded">${grid[r][c]}</div>`;
+        }
+      }
+      gridHtml += `</div>`;
+
+      const wordsListHtml = rawWords.map(w => `<span class="bg-indigo-100 text-indigo-900 px-2 py-1 rounded text-xs font-bold">${w}</span>`).join(' ');
+
+      const previewArea = document.getElementById('printableArea');
+      previewArea.innerHTML = `
+        <div class="space-y-6 text-center my-auto" dir="${isArabic ? 'rtl' : 'ltr'}">
+          <div>
+            <h2 class="text-xl font-bold text-indigo-900">🧩 ${isArabic ? 'لعبة البحث عن الكلمات' : 'Word Search Game'}</h2>
+            <p class="text-xs text-slate-500 mt-1">${isArabic ? 'ابحث عن الكلمات التالية وظللها داخل الشبكة:' : 'Find and circle the following words:'}</p>
+          </div>
+          <div class="flex flex-wrap justify-center gap-2 max-w-sm mx-auto">${wordsListHtml}</div>
+          ${gridHtml}
+          <div class="text-[10px] text-slate-400 mt-8" dir="rtl">الاسم: ....................................... | التاريخ:    /    /</div>
         </div>
-        <div class="my-4 text-xs leading-relaxed whitespace-pre-wrap">${text}</div>
-        <div class="text-center text-[10px] text-slate-400 border-t pt-2">صفحة A4 جاهزة للطباعة</div>
       `;
     }
 
-    // 1️⃣ إرسال البيانات وتوليد كود من 4 أرقام (التلفون)
-    function generateSyncCode() {
+    // ⚡ توليد كود التزامن الفوري والسريع جداً
+    function generateFastSyncCode() {
       const btn = document.getElementById('genBtn');
       btn.innerText = "جاري التوليد...";
       btn.disabled = true;
 
-      // توليد كود من 4 أرقام
       const randomCode = Math.floor(1000 + Math.random() * 9000).toString();
-      const content = document.getElementById('sheetContent').value;
+      
+      const payload = {
+        tab: currentTab,
+        content: document.getElementById('sheetContent').value,
+        certTitle: document.getElementById('certTitle').value,
+        certStudent: document.getElementById('certStudent').value,
+        certReason: document.getElementById('certReason').value,
+        certTeacher: document.getElementById('certTeacher').value,
+        certPrincipal: document.getElementById('certPrincipal').value,
+        certLang: certLang,
+        imgWorksheetTitle: document.getElementById('imgWorksheetTitle').value,
+        worksheetImg: uploadedWorksheetImg
+      };
 
-      // حفظ البيانات تحت رقم الكود في السحابة
-      db.ref('sessions/' + randomCode).set({
-        content: content,
-        timestamp: Date.now()
-      }, (error) => {
-        btn.innerText = "⚡ توليد كود جديد";
+      db.ref('sessions/' + randomCode).set(payload, (error) => {
+        btn.innerText = "⚡ توليد كود التزامن (لحظي)";
         btn.disabled = false;
         if (!error) {
           document.getElementById('syncCodeNum').innerText = randomCode;
           document.getElementById('codeDisplayBox').classList.remove('hidden');
         } else {
-          alert("حدث خطأ في الاتصال بالسحابة!");
+          alert("خطأ في شبكة الإنترنت!");
         }
       });
     }
 
-    // 2️⃣ سحب البيانات باستخدام الكود (الكمبيوتر)
-    function fetchByCode() {
+    // 📥 سحب البيانات بالكود المكون من 4 أرقام
+    function fetchByFastCode() {
       const code = document.getElementById('codeInput').value.trim();
       const btn = document.getElementById('fetchBtn');
 
-      if (code.length !== 4) {
-        alert("يرجى إدخال الكود المكون من 4 أرقام!");
-        return;
-      }
+      if (code.length !== 4) { alert("أدخلي الكود المكون من 4 أرقام!"); return; }
 
       btn.innerText = "جاري السحب...";
       btn.disabled = true;
@@ -154,10 +632,9 @@
 
         if (snapshot.exists()) {
           const data = snapshot.val();
-          document.getElementById('sheetContent').value = data.content;
-          updatePreview();
+          applyDataToPage(data);
           closeSyncModal();
-          alert("✅ تم سحب ورقة العمل بنجاح!");
+          alert("✅ تم سحب البيانات بنجاح في أقل من ثانية!");
         } else {
           alert("❌ الكود غير صحيح أو انتهت صلاحيته!");
         }
@@ -168,8 +645,103 @@
       });
     }
 
+    function applyDataToPage(data) {
+      if (data.content !== undefined) document.getElementById('sheetContent').value = data.content;
+      if (data.certTitle) document.getElementById('certTitle').value = data.certTitle;
+      if (data.certStudent) document.getElementById('certStudent').value = data.certStudent;
+      if (data.certReason) document.getElementById('certReason').value = data.certReason;
+      if (data.certTeacher) document.getElementById('certTeacher').value = data.certTeacher;
+      if (data.certPrincipal) document.getElementById('certPrincipal').value = data.certPrincipal;
+      if (data.imgWorksheetTitle) document.getElementById('imgWorksheetTitle').value = data.imgWorksheetTitle;
+      if (data.worksheetImg) uploadedWorksheetImg = data.worksheetImg;
+      if (data.certLang) certLang = data.certLang;
+
+      if (data.tab) switchTab(data.tab);
+    }
+
+    function exportDraft() {
+      const draftData = {
+        tab: currentTab,
+        content: document.getElementById('sheetContent').value,
+        certTitle: document.getElementById('certTitle').value,
+        certStudent: document.getElementById('certStudent').value,
+        certReason: document.getElementById('certReason').value,
+        certTeacher: document.getElementById('certTeacher').value,
+        certPrincipal: document.getElementById('certPrincipal').value,
+        certLang: certLang,
+        imgWorksheetTitle: document.getElementById('imgWorksheetTitle').value,
+        worksheetImg: uploadedWorksheetImg
+      };
+
+      const blob = new Blob([JSON.stringify(draftData)], { type: 'application/json' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'مسودة_ورقة_عمل_معين.json';
+      a.click();
+    }
+
+    function triggerImportDraft() { document.getElementById('draftFileInput').click(); }
+
+    function importDraft(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(evt) {
+        try {
+          const data = JSON.parse(evt.target.result);
+          applyDataToPage(data);
+          alert("✅ تم استيراد المسودة بنجاح!");
+        } catch (err) {
+          alert("خطأ في قراءة ملف المسودة!");
+        }
+      };
+      reader.readAsText(file);
+    }
+
     function openSyncModal() { document.getElementById('syncModal').classList.remove('hidden'); document.getElementById('syncModal').classList.add('flex'); }
     function closeSyncModal() { document.getElementById('syncModal').classList.add('hidden'); }
+
+    function downloadAsImage() {
+      const element = document.getElementById('printableArea');
+      html2canvas(element, { scale: 2 }).then(canvas => {
+        const link = document.createElement('a');
+        link.download = 'ورقة_عمل_معين.png';
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+      });
+    }
+
+    function downloadDocx() {
+      const content = document.getElementById('printableArea').innerHTML;
+      const isLtr = textDir === 'ltr';
+      
+      const docContent = `
+        <html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
+        <head>
+          <meta charset='utf-8'>
+          <title>Worksheet</title>
+          <style>
+            @page { size: 21cm 29.7cm; margin: 2cm; }
+            body { font-family: 'Arial', sans-serif; direction: ${isLtr ? 'ltr' : 'rtl'}; text-align: ${isLtr ? 'left' : 'right'}; }
+          </style>
+        </head>
+        <body>
+          ${content}
+        </body>
+        </html>
+      `;
+
+      const blob = new Blob(['\ufeff' + docContent], { type: 'application/msword;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'ورقة_عمل_مُعِين.doc';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
 
     updatePreview();
   </script>
