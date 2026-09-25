@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>منصة مُعِين التعليمية - نظام التزامن المباشر والطباعة</title>
+  <title>منصة مُعِين التعليمية - نظام التزامن السريع والطباعة</title>
   
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -16,7 +16,7 @@
   <!-- html2canvas -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
-  <!-- Firebase SDK للتزامن السريع -->
+  <!-- Firebase SDK -->
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
@@ -260,9 +260,6 @@
           <button onclick="downloadAsImage()" class="flex-1 sm:flex-initial bg-purple-600 hover:bg-purple-700 text-white px-3 py-2 rounded-lg font-bold text-xs transition flex items-center justify-center gap-1 shadow">
             🖼️ حفظ كصورة (للهاتف)
           </button>
-          <button onclick="downloadDocx()" class="flex-1 sm:flex-initial bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-lg font-bold text-xs transition flex items-center justify-center gap-1 shadow">
-            📄 Word (.doc)
-          </button>
         </div>
       </div>
 
@@ -278,12 +275,12 @@
   <div id="syncModal" class="fixed inset-0 bg-black/50 hidden items-center justify-center p-4 z-50 no-print">
     <div class="bg-white w-full max-w-sm p-6 rounded-2xl shadow-2xl space-y-4">
       <h3 class="font-bold text-indigo-900 text-sm border-b pb-2 flex items-center gap-2">
-        <span>🌐</span> ربط التلفون بالكمبيوتر بكود سريع
+        <span>🌐</span> ربط الهاتف بالكمبيوتر بكود سريع
       </h3>
       
-      <!-- توليد الكود من التلفون -->
+      <!-- توليد الكود من الهاتف -->
       <div class="p-3 bg-indigo-50 border border-indigo-200 rounded-xl text-center space-y-2">
-        <p class="text-xs text-indigo-800 font-medium">1. إذا كنتِ على التلفون (أنشئي الكود):</p>
+        <p class="text-xs text-indigo-800 font-medium">1. إذا كنتِ على الهاتف (أنشئي الكود):</p>
         <button onclick="generateFastSyncCode()" id="genBtn" class="bg-pink-600 hover:bg-pink-700 text-white px-4 py-2 rounded-xl text-xs font-bold transition shadow w-full">
           ⚡ توليد كود التزامن (لحظي)
         </button>
@@ -318,6 +315,16 @@
     let textDir = 'rtl';
     let certLang = 'ar';
     let uploadedWorksheetImg = null;
+
+    function openSyncModal() {
+      document.getElementById('syncModal').classList.remove('hidden');
+      document.getElementById('syncModal').classList.add('flex');
+    }
+
+    function closeSyncModal() {
+      document.getElementById('syncModal').classList.add('hidden');
+      document.getElementById('syncModal').classList.remove('flex');
+    }
 
     function switchTab(tab) {
       currentTab = tab;
@@ -387,7 +394,7 @@
       updatePreview();
     }
 
-    // ضغط الصورة تلقائياً لسرعة نقلها بالكود في لمح البصر
+    // ضغط الصورة وتصغير حجمها لسرعة الفائقة في التزامن
     function loadWorksheetImage(e) {
       const file = e.target.files[0];
       if (file) {
@@ -396,7 +403,7 @@
           const img = new Image();
           img.onload = function() {
             const canvas = document.createElement('canvas');
-            const maxDim = 1000;
+            const maxDim = 800; // تقليل القطر الأقصى لتقليل الحجم
             let w = img.width, h = img.height;
             if (w > maxDim || h > maxDim) {
               if (w > h) { h = Math.round((h * maxDim) / w); w = maxDim; }
@@ -405,7 +412,7 @@
             canvas.width = w; canvas.height = h;
             const ctx = canvas.getContext('2d');
             ctx.drawImage(img, 0, 0, w, h);
-            uploadedWorksheetImg = canvas.toDataURL('image/jpeg', 0.7);
+            uploadedWorksheetImg = canvas.toDataURL('image/jpeg', 0.6); // ضغط الصورة بنسبة 60%
             updatePreview();
           };
           img.src = evt.target.result;
@@ -432,7 +439,7 @@
         content.value = "الاسم: .......................................\tالمادة: رياضيات\n\nأوجد ناتج الجمع والطرح فيما يلي:\n\n 5 + 3 = [   ]\t\t 7 + 2 = [   ]\n 9 - 4 = [   ]\t\t 8 - 5 = [   ]";
       } else if (type === 'arabic') {
         setTextDirection('rtl');
-        content.value = "الاسم: .......................................\tالمادة: اللغة العربية\n\n1. اكتب الحرف الناقص للكلمات التالية:\n  ـمـس ( ش / س )\t\t كـتـا... ( ب / ت )";
+        content.value = "الاسم: .......................................\tالمادة: اللغة العربية\n\n1. اكتب الحرف الناقص للكلمات التالية:\n ـمـس ( ش / س )\t\t كـتـا... ( ب / ت )";
       } else if (type === 'english') {
         setTextDirection('ltr');
         content.value = "Name: .......................................\tDate:    /    /\nSubject: English Worksheet\n\nQ1: Choose the correct answer:\n1. She ( is / are / am ) a helpful teacher.\n2. They ( play / plays ) football every Friday.\n\nQ2: Fill in the missing letters:\n- B...ok ( o / a )\t\t- P...n ( e / i )";
@@ -453,7 +460,7 @@
             <div>
               <div class="flex justify-between items-center pb-2 mb-4 border-b-2 border-indigo-900" dir="rtl">
                 <h2 class="text-sm font-bold text-indigo-900">${title}</h2>
-                <span class="text-[10px] text-slate-500">الاسم: .................... | التاريخ:   /   /</span>
+                <span class="text-[10px] text-slate-500">الاسم: .................... | التاريخ:    /    /</span>
               </div>
               ${uploadedWorksheetImg ? `<img src="${uploadedWorksheetImg}" class="max-w-full max-h-[220mm] mx-auto object-contain rounded-lg border" />` : `<div class="p-12 text-center text-slate-400 border-2 border-dashed rounded-xl my-8">الرجاء اختيار صورة ورقة العمل من الأعلى...</div>`}
             </div>
@@ -583,8 +590,8 @@
       `;
     }
 
-    // ⚡ توليد كود التزامن الفوري والسريع جداً
-    function generateFastSyncCode() {
+    // ⚡ توليد كود التزامن الفوري بشكل غير متزامن Asynchronous
+    async function generateFastSyncCode() {
       const btn = document.getElementById('genBtn');
       btn.innerText = "جاري التوليد...";
       btn.disabled = true;
@@ -601,23 +608,24 @@
         certPrincipal: document.getElementById('certPrincipal').value,
         certLang: certLang,
         imgWorksheetTitle: document.getElementById('imgWorksheetTitle').value,
-        worksheetImg: uploadedWorksheetImg
+        worksheetImg: uploadedWorksheetImg || null
       };
 
-      db.ref('sessions/' + randomCode).set(payload, (error) => {
+      try {
+        await db.ref('sessions/' + randomCode).set(payload);
         btn.innerText = "⚡ توليد كود التزامن (لحظي)";
         btn.disabled = false;
-        if (!error) {
-          document.getElementById('syncCodeNum').innerText = randomCode;
-          document.getElementById('codeDisplayBox').classList.remove('hidden');
-        } else {
-          alert("خطأ في شبكة الإنترنت!");
-        }
-      });
+        document.getElementById('syncCodeNum').innerText = randomCode;
+        document.getElementById('codeDisplayBox').classList.remove('hidden');
+      } catch (error) {
+        btn.innerText = "⚡ توليد كود التزامن (لحظي)";
+        btn.disabled = false;
+        alert("حدث خطأ أثناء الاتصال بالخادم!");
+      }
     }
 
-    // 📥 سحب البيانات بالكود المكون من 4 أرقام
-    function fetchByFastCode() {
+    // 📥 سحب البيانات غير متزامن وقريب من اللحظي Async Fetch
+    async function fetchByFastCode() {
       const code = document.getElementById('codeInput').value.trim();
       const btn = document.getElementById('fetchBtn');
 
@@ -626,123 +634,49 @@
       btn.innerText = "جاري السحب...";
       btn.disabled = true;
 
-      db.ref('sessions/' + code).once('value').then((snapshot) => {
-        btn.innerText = "📥 سحب";
-        btn.disabled = false;
+      try {
+        const snapshot = await db.ref('sessions/' + code).once('value');
+        const data = snapshot.val();
 
-        if (snapshot.exists()) {
-          const data = snapshot.val();
-          applyDataToPage(data);
+        if (data) {
+          if (data.content !== undefined) document.getElementById('sheetContent').value = data.content;
+          if (data.certTitle !== undefined) document.getElementById('certTitle').value = data.certTitle;
+          if (data.certStudent !== undefined) document.getElementById('certStudent').value = data.certStudent;
+          if (data.certReason !== undefined) document.getElementById('certReason').value = data.certReason;
+          if (data.certTeacher !== undefined) document.getElementById('certTeacher').value = data.certTeacher;
+          if (data.certPrincipal !== undefined) document.getElementById('certPrincipal').value = data.certPrincipal;
+          if (data.imgWorksheetTitle !== undefined) document.getElementById('imgWorksheetTitle').value = data.imgWorksheetTitle;
+          if (data.worksheetImg !== undefined) uploadedWorksheetImg = data.worksheetImg;
+          if (data.certLang !== undefined) certLang = data.certLang;
+
+          if (data.tab) switchTab(data.tab);
+          else updatePreview();
+
           closeSyncModal();
-          alert("✅ تم سحب البيانات بنجاح في أقل من ثانية!");
+          alert("تم سحب البيانات بنجاح! 🚀");
         } else {
-          alert("❌ الكود غير صحيح أو انتهت صلاحيته!");
+          alert("الكود غير صحيح أو انتهت صلاحيته!");
         }
-      }).catch(() => {
+      } catch (error) {
+        alert("حدث خطأ أثناء سحب البيانات!");
+      } finally {
         btn.innerText = "📥 سحب";
         btn.disabled = false;
-        alert("تعذر الاتصال بالشبكة!");
-      });
+      }
     }
 
-    function applyDataToPage(data) {
-      if (data.content !== undefined) document.getElementById('sheetContent').value = data.content;
-      if (data.certTitle) document.getElementById('certTitle').value = data.certTitle;
-      if (data.certStudent) document.getElementById('certStudent').value = data.certStudent;
-      if (data.certReason) document.getElementById('certReason').value = data.certReason;
-      if (data.certTeacher) document.getElementById('certTeacher').value = data.certTeacher;
-      if (data.certPrincipal) document.getElementById('certPrincipal').value = data.certPrincipal;
-      if (data.imgWorksheetTitle) document.getElementById('imgWorksheetTitle').value = data.imgWorksheetTitle;
-      if (data.worksheetImg) uploadedWorksheetImg = data.worksheetImg;
-      if (data.certLang) certLang = data.certLang;
-
-      if (data.tab) switchTab(data.tab);
-    }
-
-    function exportDraft() {
-      const draftData = {
-        tab: currentTab,
-        content: document.getElementById('sheetContent').value,
-        certTitle: document.getElementById('certTitle').value,
-        certStudent: document.getElementById('certStudent').value,
-        certReason: document.getElementById('certReason').value,
-        certTeacher: document.getElementById('certTeacher').value,
-        certPrincipal: document.getElementById('certPrincipal').value,
-        certLang: certLang,
-        imgWorksheetTitle: document.getElementById('imgWorksheetTitle').value,
-        worksheetImg: uploadedWorksheetImg
-      };
-
-      const blob = new Blob([JSON.stringify(draftData)], { type: 'application/json' });
-      const a = document.createElement('a');
-      a.href = URL.createObjectURL(blob);
-      a.download = 'مسودة_ورقة_عمل_معين.json';
-      a.click();
-    }
-
-    function triggerImportDraft() { document.getElementById('draftFileInput').click(); }
-
-    function importDraft(e) {
-      const file = e.target.files[0];
-      if (!file) return;
-
-      const reader = new FileReader();
-      reader.onload = function(evt) {
-        try {
-          const data = JSON.parse(evt.target.result);
-          applyDataToPage(data);
-          alert("✅ تم استيراد المسودة بنجاح!");
-        } catch (err) {
-          alert("خطأ في قراءة ملف المسودة!");
-        }
-      };
-      reader.readAsText(file);
-    }
-
-    function openSyncModal() { document.getElementById('syncModal').classList.remove('hidden'); document.getElementById('syncModal').classList.add('flex'); }
-    function closeSyncModal() { document.getElementById('syncModal').classList.add('hidden'); }
-
+    // حفظ صورة الصفحة للطباعة
     function downloadAsImage() {
       const element = document.getElementById('printableArea');
       html2canvas(element, { scale: 2 }).then(canvas => {
         const link = document.createElement('a');
-        link.download = 'ورقة_عمل_معين.png';
-        link.href = canvas.toDataURL('image/png');
+        link.download = 'moeen-worksheet.png';
+        link.href = canvas.toDataURL();
         link.click();
       });
     }
 
-    function downloadDocx() {
-      const content = document.getElementById('printableArea').innerHTML;
-      const isLtr = textDir === 'ltr';
-      
-      const docContent = `
-        <html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
-        <head>
-          <meta charset='utf-8'>
-          <title>Worksheet</title>
-          <style>
-            @page { size: 21cm 29.7cm; margin: 2cm; }
-            body { font-family: 'Arial', sans-serif; direction: ${isLtr ? 'ltr' : 'rtl'}; text-align: ${isLtr ? 'left' : 'right'}; }
-          </style>
-        </head>
-        <body>
-          ${content}
-        </body>
-        </html>
-      `;
-
-      const blob = new Blob(['\ufeff' + docContent], { type: 'application/msword;charset=utf-8' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'ورقة_عمل_مُعِين.doc';
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
-    }
-
+    // تهيئة الصفحة
     updatePreview();
   </script>
 </body>
