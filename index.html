@@ -72,10 +72,10 @@
         <p class="text-indigo-100 text-xs sm:text-sm mt-1">المساعد الشامل للمعلمة: أوراق عمل، ألعاب تعليمية، شهادات تقدير ونقل سريع</p>
       </div>
 
-      <!-- أدوات التحكم والنقل بالكود المختصر -->
+      <!-- أدوات التحكم والنقل بالكود الرقمي -->
       <div class="flex flex-wrap items-center gap-2 justify-center">
-        <button onclick="exportCode()" class="bg-pink-500 hover:bg-pink-600 text-white px-3.5 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5 shadow">
-          <span>📲</span> إنشاء كود الربط
+        <button onclick="exportNumericCode()" class="bg-pink-500 hover:bg-pink-600 text-white px-3.5 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5 shadow">
+          <span>📲</span> إنشاء كود الربط (6 أرقام)
         </button>
         <button onclick="toggleModal('importModal')" class="bg-amber-500 hover:bg-amber-600 text-white px-3.5 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5 shadow">
           <span>📥</span> إدخال كود الربط
@@ -279,29 +279,35 @@
 
   </main>
 
-  <!-- 1. نافذة عرض كود الربط (على الهاتف) -->
+  <!-- 1. نافذة عرض كود الربط الرقمي -->
   <div id="exportModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden no-print">
     <div class="bg-white rounded-3xl p-6 max-w-sm w-full shadow-2xl space-y-4 text-center">
-      <h3 class="font-bold text-slate-800 text-sm">📲 كود الربط المباشر</h3>
-      <p class="text-xs text-slate-500">انسخي هذا الكود المكتنز وأرسليه للكمبيوتر لفتح المستند فوراً:</p>
-      <input type="text" id="generatedSyncCode" readonly class="w-full p-3 border border-indigo-200 rounded-xl text-xs font-mono bg-indigo-50/50 text-indigo-700 font-bold text-center select-all" onclick="this.select()">
+      <h3 class="font-bold text-slate-800 text-sm">📲 كود الربط المباشر (6 أرقام)</h3>
+      <p class="text-xs text-slate-500">اكتبي هذا الرقم المكون من 6 أرقام في جهاز الكمبيوتر لاسترجاع ورقة العمل فوراً:</p>
+      
+      <div id="loadingCode" class="text-indigo-600 text-xs font-bold animate-pulse py-2">جاري توليد الكود الرقمي...</div>
+      
+      <input type="text" id="generatedSyncCode" readonly class="w-full p-3 border-2 border-indigo-500 rounded-xl text-2xl font-mono bg-indigo-50/50 text-indigo-700 font-extrabold text-center tracking-widest select-all cursor-pointer" onclick="this.select()">
+      
       <div class="flex gap-2">
-        <button onclick="copyGeneratedCode()" class="flex-1 bg-pink-500 hover:bg-pink-600 text-white py-2.5 rounded-xl text-xs font-bold transition shadow">📋 نسخ الكود</button>
+        <button onclick="copyGeneratedCode()" class="flex-1 bg-pink-500 hover:bg-pink-600 text-white py-2.5 rounded-xl text-xs font-bold transition shadow flex items-center justify-center gap-1">
+          <span>📋</span> نسخ الرقم
+        </button>
         <button onclick="toggleModal('exportModal')" class="bg-slate-100 hover:bg-slate-200 text-slate-600 px-4 py-2.5 rounded-xl text-xs font-bold transition">إغلاق</button>
       </div>
     </div>
   </div>
 
-  <!-- 2. نافذة إدخال كود الربط (على الكمبيوتر) -->
+  <!-- 2. نافذة إدخال كود الربط الرقمي -->
   <div id="importModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden no-print">
-    <div class="bg-white rounded-3xl p-6 max-w-sm w-full shadow-2xl space-y-4">
+    <div class="bg-white rounded-3xl p-6 max-w-sm w-full shadow-2xl space-y-4 text-center">
       <div class="flex justify-between items-center border-b pb-2">
         <h3 class="font-bold text-slate-800 text-sm">📥 إدخال كود الربط</h3>
         <button onclick="toggleModal('importModal')" class="text-slate-400 hover:text-slate-600 font-bold">✕</button>
       </div>
-      <p class="text-xs text-slate-600">الصقي الكود المختصر المرسل من الهاتف هنا:</p>
-      <input type="text" id="inputSyncCode" class="w-full p-3 border border-slate-300 rounded-xl text-xs font-mono bg-slate-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-center" placeholder="الصقي الكود هنا...">
-      <button onclick="importCode()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2.5 rounded-xl text-xs font-bold transition shadow">✨ فتح المستند فوراً</button>
+      <p class="text-xs text-slate-600">ادخلي الأرقام الـ 6 الظاهرة في الهاتف لنقل العمل هنا:</p>
+      <input type="number" id="inputSyncCode" maxlength="6" class="w-full p-3 border-2 border-indigo-400 rounded-xl text-2xl font-mono bg-slate-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-center tracking-widest font-bold" placeholder="000000">
+      <button onclick="importNumericCode()" id="importBtn" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2.5 rounded-xl text-xs font-bold transition shadow">✨ فتح المستند فوراً</button>
     </div>
   </div>
 
@@ -341,7 +347,6 @@
     function generateWordSearchGrid(words, size, lang) {
       const grid = Array(size).fill(null).map(() => Array(size).fill(''));
       const chars = lang === 'ar' ? 'أبتثجحخدذرزسشصضطظعغفقكلمنهوي' : 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-      
       const directions = [[0, 1], [1, 0], [1, 1], [-1, 1]];
 
       words.forEach(rawWord => {
@@ -520,86 +525,111 @@
       }
     }
 
-    // --- 🚀 منطق التشفير الفائق الضغط لتقليل طول الكود إلى 15-40 حرفاً ---
-    
-    function getFormStateCompact() {
-      const state = {};
-      if (activeTab !== 'textWorksheet') state.t = activeTab;
+    // --- 🚀 منطق توليد ونقل الـ 6 أرقام سحابياً وفورياً ---
 
-      const tt = document.getElementById('textSheetTitle').value;
-      const tc = document.getElementById('textSheetContent').value;
-      const it = document.getElementById('imgSheetTitle').value;
-      const gt = document.getElementById('gameTitle').value;
-      const gw = document.getElementById('gameWords').value;
-      const cs = document.getElementById('certStudentName').value;
-      const cr = document.getElementById('certReason').value;
-      const ct = document.getElementById('certTeacher').value;
-      const cd = document.getElementById('certDate').value;
-
-      if (tt) state.tt = tt;
-      if (tc) state.tc = tc;
-      if (it) state.it = it;
-      if (uploadedImageData) state.img = uploadedImageData;
-      if (gt && gt !== 'لعبة البحث عن الكلمات المختبئة') state.gt = gt;
-      if (gw && gw !== 'مدرسة, علم, قلم, كتاب, معلم') state.gw = gw;
-      if (cs) state.cs = cs;
-      if (cr) state.cr = cr;
-      if (ct) state.ct = ct;
-      if (cd) state.cd = cd;
-
-      return state;
+    function getFormState() {
+      return {
+        t: activeTab,
+        tt: document.getElementById('textSheetTitle').value,
+        tc: document.getElementById('textSheetContent').value,
+        it: document.getElementById('imgSheetTitle').value,
+        img: uploadedImageData,
+        gt: document.getElementById('gameTitle').value,
+        gw: document.getElementById('gameWords').value,
+        gl: document.getElementById('gameLang').value,
+        gs: document.getElementById('gameGridSize').value,
+        cs: document.getElementById('certStudentName').value,
+        cr: document.getElementById('certReason').value,
+        ct: document.getElementById('certTeacher').value,
+        cd: document.getElementById('certDate').value,
+        cg: document.getElementById('certGender') ? document.getElementById('certGender').value : 'female'
+      };
     }
 
-    function setFormStateCompact(data) {
+    function setFormState(data) {
+      if (!data) return;
       document.getElementById('textSheetTitle').value = data.tt || '';
       document.getElementById('textSheetContent').value = data.tc || '';
       document.getElementById('imgSheetTitle').value = data.it || '';
       uploadedImageData = data.img || '';
       document.getElementById('gameTitle').value = data.gt || 'لعبة البحث عن الكلمات المختبئة';
       document.getElementById('gameWords').value = data.gw || 'مدرسة, علم, قلم, كتاب, معلم';
+      if(data.gl) document.getElementById('gameLang').value = data.gl;
+      if(data.gs) document.getElementById('gameGridSize').value = data.gs;
       document.getElementById('certStudentName').value = data.cs || '';
       document.getElementById('certReason').value = data.cr || '';
       document.getElementById('certTeacher').value = data.ct || '';
       document.getElementById('certDate').value = data.cd || '';
+      if(data.cg && document.getElementById('certGender')) document.getElementById('certGender').value = data.cg;
 
       switchTab(data.t || 'textWorksheet');
     }
 
-    function exportCode() {
-      const compactData = getFormStateCompact();
-      const jsonStr = JSON.stringify(compactData);
-      
-      // تشفير آمن للبث النظيف بأقصر طول
-      const encodedCode = btoa(encodeURIComponent(jsonStr).replace(/%([0-9A-F]{2})/g, (match, p1) => String.fromCharCode('0x' + p1)));
-      
-      document.getElementById('generatedSyncCode').value = encodedCode;
+    async function exportNumericCode() {
       toggleModal('exportModal');
+      document.getElementById('loadingCode').classList.remove('hidden');
+      document.getElementById('generatedSyncCode').value = '...';
+
+      const formData = getFormState();
+      
+      try {
+        // توليد رمز رقمي عشوائي من 6 أرقام
+        const sixDigitCode = Math.floor(100000 + Math.random() * 900000).toString();
+        
+        // رفع البيانات السحابية السريعة
+        const res = await fetch(`https://keyvalue.imsky.org/set?key=moeen_${sixDigitCode}&value=${encodeURIComponent(JSON.stringify(formData))}`);
+        
+        document.getElementById('loadingCode').classList.add('hidden');
+        document.getElementById('generatedSyncCode').value = sixDigitCode;
+      } catch (err) {
+        document.getElementById('loadingCode').classList.add('hidden');
+        alert('تعذر إنشاء الكود السحابي، يرجى التأكد من الاتصال بالإنترنت.');
+      }
+    }
+
+    async function importNumericCode() {
+      const code = document.getElementById('inputSyncCode').value.trim();
+      if (!code || code.length < 6) return alert('يرجى أدخال كود مكون من 6 أرقام صحيح!');
+
+      const btn = document.getElementById('importBtn');
+      btn.innerText = 'جاري التحميل...';
+      btn.disabled = true;
+
+      try {
+        const res = await fetch(`https://keyvalue.imsky.org/get?key=moeen_${code}`);
+        const textData = await res.text();
+        
+        if (!textData || textData === "null") {
+          alert('الكود غير صحيح أو انتهت صلاحيته!');
+        } else {
+          const data = JSON.parse(decodeURIComponent(textData));
+          setFormState(data);
+          toggleModal('importModal');
+          alert('تم استرجاع المستند بنجاح! 🎉');
+        }
+      } catch (e) {
+        alert('تعذر جلب المستند، يرجى التأكد من الرقم والاتصال بالإنترنت.');
+      } finally {
+        btn.innerText = '✨ فتح المستند فوراً';
+        btn.disabled = false;
+      }
     }
 
     function copyGeneratedCode() {
       const codeInput = document.getElementById('generatedSyncCode');
-      codeInput.select();
-      document.execCommand('copy');
-      alert('تم نسخ كود الربط المباشر بنجاح! 📋');
-    }
-
-    function importCode() {
-      const code = document.getElementById('inputSyncCode').value.trim();
-      if (!code) return alert('يرجى لصق الكود أولاً!');
-
-      try {
-        const decodedStr = decodeURIComponent(Array.prototype.map.call(atob(code), c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join(''));
-        const data = JSON.parse(decodedStr);
-        setFormStateCompact(data);
-        toggleModal('importModal');
-        alert('تم فتح المستند بنجاح! 🎉');
-      } catch (e) {
-        alert('الكود غير صحيح، يرجى التأكد من نسخ كامل الكود المرسل.');
-      }
+      if (!codeInput.value || codeInput.value === '...') return;
+      
+      navigator.clipboard.writeText(codeInput.value).then(() => {
+        alert('تم نسخ الرمز الرقمي (' + codeInput.value + ') بنجاح! 📋');
+      }).catch(() => {
+        codeInput.select();
+        document.execCommand('copy');
+        alert('تم النسخ!');
+      });
     }
 
     function exportDraft() {
-      const blob = new Blob([JSON.stringify(getFormStateCompact(), null, 2)], { type: 'application/json' });
+      const blob = new Blob([JSON.stringify(getFormState(), null, 2)], { type: 'application/json' });
       const a = document.createElement('a');
       a.href = URL.createObjectURL(blob);
       a.download = `moeen_draft_${new Date().toISOString().slice(0, 10)}.json`;
@@ -614,7 +644,7 @@
       reader.onload = function(e) {
         try {
           const data = JSON.parse(e.target.result);
-          setFormStateCompact(data);
+          setFormState(data);
           alert('تم تحميل الملف المحفوظ بنجاح! 🎉');
         } catch (err) {
           alert('تعذر قراءة الملف، يرجى التأكد من تحديد ملف JSON صحيح.');
