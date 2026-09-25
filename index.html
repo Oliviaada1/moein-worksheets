@@ -75,7 +75,7 @@
       <!-- أدوات التحكم والنقل بالكود الرقمي -->
       <div class="flex flex-wrap items-center gap-2 justify-center">
         <button onclick="exportNumericCode()" class="bg-pink-500 hover:bg-pink-600 text-white px-3.5 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5 shadow">
-          <span>📲</span> إنشاء كود الربط (6 أرقام)
+          <span>📲</span> إنشاء كود الربط
         </button>
         <button onclick="toggleModal('importModal')" class="bg-amber-500 hover:bg-amber-600 text-white px-3.5 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5 shadow">
           <span>📥</span> إدخال كود الربط
@@ -149,7 +149,7 @@
     <!-- 2️⃣ قسم ورقة العمل المصورة -->
     <section id="section-imageWorksheet" class="tab-content hidden bg-white p-4 sm:p-5 rounded-2xl shadow-sm border border-slate-200 space-y-4 no-print">
       <h2 class="text-xs sm:text-sm font-bold text-indigo-900 border-b pb-2 flex items-center gap-1">
-        <span>🖼️</span> إدراج ورقة عمل كصورة (تمرين جاهز من الهاتف):
+        <span>🖼️</span> إدراج ورقة عمل كصورة:
       </h2>
       
       <div class="space-y-3">
@@ -279,19 +279,19 @@
 
   </main>
 
-  <!-- 1. نافذة عرض كود الربط الرقمي المباشر -->
+  <!-- 1. نافذة عرض كود الربط الرقمي -->
   <div id="exportModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden no-print">
     <div class="bg-white rounded-3xl p-6 max-w-sm w-full shadow-2xl space-y-4 text-center">
-      <h3 class="font-bold text-slate-800 text-sm">📲 كود الربط الرقمي (6 أرقام)</h3>
-      <p class="text-xs text-slate-500">اكتبي هذا الرقم المكون من 6 أرقام في جهاز الكمبيوتر لنقل العمل فوراً:</p>
+      <h3 class="font-bold text-slate-800 text-sm">📲 كود الربط السريع</h3>
+      <p class="text-xs text-slate-500">انسخي هذا الكود المولد وضعيه في الكمبيوتر لنقل البيانات فوراً:</p>
       
-      <div id="loadingCode" class="text-indigo-600 text-xs font-bold animate-pulse py-2">جاري توليد الكود الرقمي...</div>
+      <div id="loadingCode" class="text-indigo-600 text-xs font-bold animate-pulse py-2">جاري انشاء الكود...</div>
       
-      <input type="text" id="generatedSyncCode" readonly class="w-full p-3 border-2 border-indigo-500 rounded-xl text-3xl font-mono bg-indigo-50/50 text-indigo-700 font-extrabold text-center tracking-widest select-all cursor-pointer" onclick="this.select()">
+      <textarea id="generatedSyncCode" readonly class="w-full p-3 border-2 border-indigo-500 rounded-xl text-xs font-mono bg-indigo-50/50 text-indigo-700 font-bold text-center select-all cursor-pointer h-24" onclick="this.select()"></textarea>
       
       <div class="flex gap-2">
         <button onclick="copyGeneratedCode()" class="flex-1 bg-pink-500 hover:bg-pink-600 text-white py-2.5 rounded-xl text-xs font-bold transition shadow flex items-center justify-center gap-1">
-          <span>📋</span> نسخ الرقم
+          <span>📋</span> نسخ الكود
         </button>
         <button onclick="toggleModal('exportModal')" class="bg-slate-100 hover:bg-slate-200 text-slate-600 px-4 py-2.5 rounded-xl text-xs font-bold transition">إغلاق</button>
       </div>
@@ -305,9 +305,9 @@
         <h3 class="font-bold text-slate-800 text-sm">📥 إدخال كود الربط</h3>
         <button onclick="toggleModal('importModal')" class="text-slate-400 hover:text-slate-600 font-bold">✕</button>
       </div>
-      <p class="text-xs text-slate-600">ادخلي الأرقام الـ 6 الظاهرة في الهاتف لاسترجاع الورقة:</p>
-      <input type="text" id="inputSyncCode" class="w-full p-3 border-2 border-indigo-400 rounded-xl text-2xl font-mono bg-slate-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-center tracking-widest font-bold" placeholder="000000">
-      <button onclick="importNumericCode()" id="importBtn" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2.5 rounded-xl text-xs font-bold transition shadow">✨ فتح المستند فوراً</button>
+      <p class="text-xs text-slate-600">الصقي الكود المنسوخ هنا لمستندك مباشرة:</p>
+      <textarea id="inputSyncCode" class="w-full p-3 border-2 border-indigo-400 rounded-xl text-xs font-mono bg-slate-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-center font-bold h-24" placeholder="الصقي الكود هنا..."></textarea>
+      <button onclick="importNumericCode()" id="importBtn" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2.5 rounded-xl text-xs font-bold transition shadow">✨ استرجاع المستند فوراً</button>
     </div>
   </div>
 
@@ -564,7 +564,7 @@
       switchTab(data.t || 'textWorksheet');
     }
 
-    // توليد كود سحابي محمي ومجاني يتجاوز حظر CORS
+    // توليد كود سحابي أو مشفر بطريقة نظيفة
     async function exportNumericCode() {
       toggleModal('exportModal');
       document.getElementById('loadingCode').classList.remove('hidden');
@@ -573,62 +573,36 @@
       const formData = getFormState();
 
       try {
-        const response = await fetch('https://api.myjson.online/v1/records', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ data: formData })
-        });
+        // ضغط مباشر وآمن دون التسبب بنصوص تشفير معقدة في المتصفح
+        const jsonStr = JSON.stringify(formData);
+        const encoded = btoa(encodeURIComponent(jsonStr));
         
-        const result = await response.json();
-        if (result && result.data && result.data.id) {
-          // استخراج رقم مختصر من المعرف المولد
-          const id = result.data.id;
-          document.getElementById('loadingCode').classList.add('hidden');
-          document.getElementById('generatedSyncCode').value = id;
-        } else {
-          throw new Error('فشل التوليد السحابي');
-        }
-      } catch (err) {
-        // خيار احتياطي آمن وسريع جداً بدون الحاجة لسيرفر خارجي (مفرغ ومضغوط)
-        const compressed = btoa(encodeURIComponent(JSON.stringify(formData)));
         document.getElementById('loadingCode').classList.add('hidden');
-        document.getElementById('generatedSyncCode').value = compressed;
+        document.getElementById('generatedSyncCode').value = encoded;
+      } catch (err) {
+        document.getElementById('loadingCode').classList.add('hidden');
+        alert('حدث خطأ أثناء توليد الكود، يرجى المحاولة مرة أخرى.');
       }
     }
 
-    async function importNumericCode() {
-      const code = document.getElementById('inputSyncCode').value.trim();
-      if (!code) return alert('يرجى إدخال الكود المولد من الهاتف!');
+    function importNumericCode() {
+      let code = document.getElementById('inputSyncCode').value.trim();
+      if (!code) return alert('يرجى إدخال الكود أولاً!');
 
-      const btn = document.getElementById('importBtn');
-      btn.innerText = 'جاري الجلب...';
-      btn.disabled = true;
-
-      // محاولة الجلب السحابي أولاً
       try {
-        if(code.length < 20 && !code.includes('=')) {
-          const res = await fetch(`https://api.myjson.online/v1/records/${code}`);
-          const resData = await res.json();
-          if (resData && resData.data && resData.data.data) {
-            setFormState(resData.data.data);
-            toggleModal('importModal');
-            alert('تم استرجاع المستند بنجاح! 🎉');
-            return;
-          }
+        // معالجة كافة أنماط التشفير وقراءتها تلقائياً
+        if (code.includes('%')) {
+          code = decodeURIComponent(code);
         }
-      } catch(e) {}
+        
+        const jsonString = decodeURIComponent(atob(code));
+        const data = JSON.parse(jsonString);
 
-      // محاولة فك الكود الاحتياطي
-      try {
-        const decoded = JSON.parse(decodeURIComponent(atob(code)));
-        setFormState(decoded);
+        setFormState(data);
         toggleModal('importModal');
-        alert('تم استرجاع المستند بنجاح! 🎉');
+        alert('تم استرجاع المستند وتنسيقه بنجاح! 🎉');
       } catch (e) {
-        alert('الكود غير صحيح أو انتهت صلاحيته، يرجى التأكد وإعادة المحاولة.');
-      } finally {
-        btn.innerText = '✨ فتح المستند فوراً';
-        btn.disabled = false;
+        alert('تعذر فك الكود، يرجى التأكد من نسخ الكود بالكامل من الهاتف.');
       }
     }
 
