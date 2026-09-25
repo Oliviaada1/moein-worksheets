@@ -68,21 +68,20 @@
         <h1 class="text-2xl sm:text-3xl font-extrabold flex items-center gap-2">
           <span>✨</span> منصة مُعِين التعليمية
         </h1>
-        <p class="text-indigo-100 text-xs sm:text-sm mt-1">المساعد الشامل للمعلمة: أوراق عمل، ألعاب تعليمية، شهادات تقدير وتزامُن فوري</p>
+        <p class="text-indigo-100 text-xs sm:text-sm mt-1">المساعد الشامل للمعلمة: أوراق عمل، ألعاب تعليمية، شهادات تقدير ونقل سريع</p>
       </div>
 
-      <!-- أدوات التحكم والمزامنة -->
+      <!-- أدوات التحكم والنقل بالكود -->
       <div class="flex flex-wrap items-center gap-2 justify-center">
-        <button onclick="toggleModal('syncModal')" class="bg-pink-500 hover:bg-pink-600 text-white px-3 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1 shadow">
-          ⚡ كود التزامن الفوري (4 أرقام)
+        <button onclick="copyDocumentCode()" class="bg-pink-500 hover:bg-pink-600 text-white px-3 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1 shadow">
+          📋 نسخ كود المستند (من الهاتف)
+        </button>
+        <button onclick="toggleModal('importCodeModal')" class="bg-amber-500 hover:bg-amber-600 text-white px-3 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1 shadow">
+          📥 إدخال الكود (في الكمبيوتر)
         </button>
         <button onclick="exportDraft()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1 shadow">
-          💾 حفظ مسودة
+          💾 حفظ ملف
         </button>
-        <label class="bg-amber-500 hover:bg-amber-600 text-white px-3 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1 shadow cursor-pointer">
-          📂 استيراد مسودة
-          <input type="file" id="importDraftFile" onchange="importDraft(event)" class="hidden" accept=".json">
-        </label>
       </div>
     </div>
   </header>
@@ -161,7 +160,7 @@
       </div>
     </section>
 
-    <!-- 3️⃣ قسم ألعاب الحروف (لعبة البحث عن الكلمات) -->
+    <!-- 3️⃣ قسم ألعاب الحروف -->
     <section id="section-wordGame" class="tab-content hidden bg-white p-4 sm:p-5 rounded-2xl shadow-sm border border-slate-200 space-y-4 no-print">
       <h2 class="text-xs sm:text-sm font-bold text-indigo-900 border-b pb-2 flex items-center gap-1">
         <span>🧩</span> لعبة البحث عن الكلمات والحروف:
@@ -238,7 +237,7 @@
         </h2>
         <div class="flex items-center gap-2">
           <button onclick="downloadAsImage()" class="bg-purple-600 hover:bg-purple-700 text-white px-3 py-2 rounded-lg font-bold text-xs transition flex items-center gap-1 shadow">
-            🖼️ حفظ كصورة (للهاتف)
+            🖼️ حفظ كصورة
           </button>
           <button onclick="window.print()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg font-bold text-xs transition flex items-center gap-1 shadow">
             🛈 طباعة / PDF
@@ -248,47 +247,28 @@
 
       <div class="overflow-x-auto bg-slate-200 p-2 sm:p-4 rounded-xl flex justify-center">
         <div id="printableArea" class="a4-preview flex flex-col justify-between">
-          <!-- سيتم توليد المحتوى هنا ديناميكياً -->
+          <!-- محتوى الصفحة -->
         </div>
       </div>
     </section>
 
   </main>
 
-  <!-- Modal التزامن الفوري (4 أرقام) -->
-  <div id="syncModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden no-print">
-    <div class="bg-white rounded-3xl p-6 max-w-md w-full shadow-2xl space-y-5">
-      <div class="flex justify-between items-center border-b pb-3">
-        <h3 class="font-extrabold text-slate-800 text-base flex items-center gap-2">
-          <span>⚡</span> التزامن السريع بالكود (4 أرقام)
-        </h3>
-        <button onclick="toggleModal('syncModal')" class="text-slate-400 hover:text-slate-600 font-bold">✕</button>
+  <!-- Modal إدخال الكود في الكمبيوتر -->
+  <div id="importCodeModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden no-print">
+    <div class="bg-white rounded-3xl p-6 max-w-md w-full shadow-2xl space-y-4">
+      <div class="flex justify-between items-center border-b pb-2">
+        <h3 class="font-bold text-slate-800 text-sm">📥 إدخال كود المستند</h3>
+        <button onclick="toggleModal('importCodeModal')" class="text-slate-400 hover:text-slate-600 font-bold">✕</button>
       </div>
 
-      <!-- إرسال من الهاتف -->
-      <div class="bg-emerald-50 border border-emerald-200 p-4 rounded-2xl space-y-2">
-        <h4 class="text-xs font-bold text-emerald-900">📱 1. الإرسال من الهاتف:</h4>
-        <p class="text-[11px] text-emerald-700 leading-relaxed">عند الانتهاء من تجهيز المستند في الهاتف، اضغطي هنا لتوليد كود مكون من 4 أرقام.</p>
-        <button id="sendBtn" onclick="sendDataToServer()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-2 rounded-xl text-xs font-bold transition shadow flex justify-center items-center gap-2">
-          <span>🚀 إرسال المستند وتوليد الكود</span>
-        </button>
-        <div id="generatedCodeContainer" class="hidden text-center pt-2">
-          <span class="text-xs text-slate-500 block">كود الاستلام الخاص بك:</span>
-          <span id="displayGeneratedCode" class="text-3xl font-extrabold text-emerald-800 tracking-widest bg-white px-4 py-1 rounded-xl border inline-block mt-1">----</span>
-        </div>
-      </div>
+      <p class="text-xs text-slate-600">الصقي الكود الذي نسختيه من الهاتف هنا:</p>
+      
+      <textarea id="pastedSyncCode" rows="4" class="w-full p-2.5 border border-slate-300 rounded-xl text-xs font-mono bg-slate-50 focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="الصقي الكود هنا..."></textarea>
 
-      <!-- استلام في الكمبيوتر -->
-      <div class="bg-indigo-50 border border-indigo-200 p-4 rounded-2xl space-y-2">
-        <h4 class="text-xs font-bold text-indigo-900">💻 2. الاستلام في الكمبيوتر:</h4>
-        <p class="text-[11px] text-indigo-700 leading-relaxed">أدخلي الكود المكون من 4 أرقام الظاهر في الهاتف لاستلام المستند فوراً.</p>
-        <div class="flex gap-2">
-          <input type="number" id="inputSyncCode" placeholder="الكود (مثال: 4829)" class="w-full p-2 border border-slate-300 rounded-xl text-center font-bold text-xs outline-none">
-          <button id="receiveBtn" onclick="receiveDataFromServer()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-xl text-xs font-bold transition whitespace-nowrap shadow flex items-center gap-1">
-            <span>📥 استلام</span>
-          </button>
-        </div>
-      </div>
+      <button onclick="applyPastedCode()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2.5 rounded-xl text-xs font-bold transition shadow">
+        ✨ فتح المستند فوراً
+      </button>
     </div>
   </div>
 
@@ -296,7 +276,6 @@
     let activeTab = 'textWorksheet';
     let uploadedImageData = '';
 
-    // التنقل بين التبويبات
     function switchTab(tabId) {
       activeTab = tabId;
       document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
@@ -313,7 +292,6 @@
       renderPreview();
     }
 
-    // التعامل مع رفع الصورة
     function handleImageUpload(e) {
       const file = e.target.files[0];
       if (file) {
@@ -326,7 +304,6 @@
       }
     }
 
-    // توليد المعاينة في صفحة A4
     function renderPreview() {
       const area = document.getElementById('printableArea');
       area.innerHTML = '';
@@ -356,7 +333,6 @@
 
       } else if (activeTab === 'imageWorksheet') {
         const title = document.getElementById('imgSheetTitle').value || 'ورقة عمل مصورة';
-        
         area.innerHTML = `
           <div class="flex flex-col h-full">
             <div class="flex justify-between items-center mb-3 pb-2 border-b-2 border-indigo-900">
@@ -376,7 +352,6 @@
         const gridSize = parseInt(document.getElementById('gameGridSize').value);
 
         const words = wordsStr.split(/[,،\s]+/).filter(w => w.trim().length > 0);
-        
         const grid = Array(gridSize).fill(null).map(() => Array(gridSize).fill(''));
         const chars = lang === 'ar' ? 'أبتثجحخدذرزسشصضطظعغفقكلمنهوي' : 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
@@ -456,9 +431,8 @@
       }
     }
 
-    // حفظ واستيراد المسودة
-    function exportDraft() {
-      const data = {
+    function getCurrentData() {
+      return {
         activeTab,
         textTitle: document.getElementById('textSheetTitle').value,
         textContent: document.getElementById('textSheetContent').value,
@@ -471,45 +445,66 @@
         certTeacher: document.getElementById('certTeacher').value,
         certDate: document.getElementById('certDate').value
       };
+    }
 
-      const blob = new Blob([JSON.stringify(data)], { type: 'application/json' });
+    function applyData(data) {
+      if (data.textTitle !== undefined) document.getElementById('textSheetTitle').value = data.textTitle;
+      if (data.textContent !== undefined) document.getElementById('textSheetContent').value = data.textContent;
+      if (data.imgTitle !== undefined) document.getElementById('imgSheetTitle').value = data.imgTitle;
+      if (data.uploadedImageData !== undefined) uploadedImageData = data.uploadedImageData;
+      if (data.gameTitle !== undefined) document.getElementById('gameTitle').value = data.gameTitle;
+      if (data.gameWords !== undefined) document.getElementById('gameWords').value = data.gameWords;
+      if (data.certStudentName !== undefined) document.getElementById('certStudentName').value = data.certStudentName;
+      if (data.certReason !== undefined) document.getElementById('certReason').value = data.certReason;
+      if (data.certTeacher !== undefined) document.getElementById('certTeacher').value = data.certTeacher;
+      if (data.certDate !== undefined) document.getElementById('certDate').value = data.certDate;
+
+      if (data.activeTab) switchTab(data.activeTab);
+      else renderPreview();
+    }
+
+    // 1. نسخ الكود من الهاتف
+    function copyDocumentCode() {
+      const data = JSON.stringify(getCurrentData());
+      
+      // استخدام الحافظة المؤقتة
+      const dummy = document.createElement("textarea");
+      document.body.appendChild(dummy);
+      dummy.value = data;
+      dummy.select();
+      document.execCommand("copy");
+      document.body.removeChild(dummy);
+
+      alert("تم نسخ كود المستند بنجاح! 📋\nأرسلي النص المنسوخ إلى كمبيوترك (عبر واتساب أو حفظ الرسائل)، ثم اضغطي هناك على 'إدخال الكود'.");
+    }
+
+    // 2. تطبيق الكود الملصوق في الكمبيوتر
+    function applyPastedCode() {
+      const pastedText = document.getElementById('pastedSyncCode').value.trim();
+      if (!pastedText) {
+        alert("يرجى لصق الكود أولاً!");
+        return;
+      }
+
+      try {
+        const data = JSON.parse(pastedText);
+        applyData(data);
+        toggleModal('importCodeModal');
+        alert("تم فتح المستند بنجاح! 🎉 أصبح جاهزاً للطباعة.");
+      } catch (err) {
+        alert("الكود غير صحيح، يرجى التأكد من نسخ كامل النص المرسل من الهاتف.");
+      }
+    }
+
+    function exportDraft() {
+      const payload = getCurrentData();
+      const blob = new Blob([JSON.stringify(payload)], { type: 'application/json' });
       const a = document.createElement('a');
       a.href = URL.createObjectURL(blob);
-      a.download = `moeen_draft_${Date.now()}.json`;
+      a.download = `moeen_draft.json`;
       a.click();
     }
 
-    function importDraft(event) {
-      const file = event.target.files[0];
-      if (!file) return;
-
-      const reader = new FileReader();
-      reader.onload = function(e) {
-        try {
-          const data = JSON.parse(e.target.result);
-          if (data.textTitle !== undefined) document.getElementById('textSheetTitle').value = data.textTitle;
-          if (data.textContent !== undefined) document.getElementById('textSheetContent').value = data.textContent;
-          if (data.imgTitle !== undefined) document.getElementById('imgSheetTitle').value = data.imgTitle;
-          if (data.uploadedImageData !== undefined) uploadedImageData = data.uploadedImageData;
-          if (data.gameTitle !== undefined) document.getElementById('gameTitle').value = data.gameTitle;
-          if (data.gameWords !== undefined) document.getElementById('gameWords').value = data.gameWords;
-          if (data.certStudentName !== undefined) document.getElementById('certStudentName').value = data.certStudentName;
-          if (data.certReason !== undefined) document.getElementById('certReason').value = data.certReason;
-          if (data.certTeacher !== undefined) document.getElementById('certTeacher').value = data.certTeacher;
-          if (data.certDate !== undefined) document.getElementById('certDate').value = data.certDate;
-
-          if (data.activeTab) switchTab(data.activeTab);
-          else renderPreview();
-
-          alert('تم استيراد المسودة بنجاح! 🎉');
-        } catch (err) {
-          alert('ملف غير صالح!');
-        }
-      };
-      reader.readAsText(file);
-    }
-
-    // تنزيل كصورة
     function downloadAsImage() {
       const node = document.getElementById('printableArea');
       html2canvas(node, { scale: 2 }).then(canvas => {
@@ -520,133 +515,10 @@
       });
     }
 
-    // إدارة الـ Modal والتزامن الفوري
     function toggleModal(id) {
       document.getElementById(id).classList.toggle('hidden');
     }
 
-    // إرسال البيانات من الهاتف باستخدام سيرفر موثوق وسريع
-    async function sendDataToServer() {
-      const btn = document.getElementById('sendBtn');
-      btn.innerText = '⏳ جاري توليد الكود...';
-      btn.disabled = true;
-
-      const payload = {
-        activeTab,
-        textTitle: document.getElementById('textSheetTitle').value,
-        textContent: document.getElementById('textSheetContent').value,
-        imgTitle: document.getElementById('imgSheetTitle').value,
-        uploadedImageData,
-        gameTitle: document.getElementById('gameTitle').value,
-        gameWords: document.getElementById('gameWords').value,
-        certStudentName: document.getElementById('certStudentName').value,
-        certReason: document.getElementById('certReason').value,
-        certTeacher: document.getElementById('certTeacher').value,
-        certDate: document.getElementById('certDate').value
-      };
-
-      try {
-        const res = await fetch('https://api.jsonbin.io/v3/b', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'X-Bin-Private': 'false'
-          },
-          body: JSON.stringify(payload)
-        });
-
-        const result = await res.json();
-        
-        if (result && result.metadata && result.metadata.id) {
-          const fullId = result.metadata.id;
-          // أخذ آخر 4 أرقام أو حروف ككود
-          const shortCode = fullId.slice(-4).toUpperCase();
-          
-          // حفظ العلاقة مؤقتاً
-          localStorage.setItem(`sync_${shortCode}`, fullId);
-
-          document.getElementById('displayGeneratedCode').innerText = shortCode;
-          document.getElementById('generatedCodeContainer').classList.remove('hidden');
-          alert(`تم رفع المستند بنجاح! 🎉\nكود التزامن هو: ${shortCode}\nأدخلي هذا الكود في الكمبيوتر للاستلام.`);
-        } else {
-          throw new Error('فشل الرفع');
-        }
-      } catch (err) {
-        // خيار احتياطي مجاني وخفيف جداً في حال ضعف الشبكة
-        const fallbackCode = Math.floor(1000 + Math.random() * 9000).toString();
-        localStorage.setItem(`sync_${fallbackCode}`, JSON.stringify(payload));
-        document.getElementById('displayGeneratedCode').innerText = fallbackCode;
-        document.getElementById('generatedCodeContainer').classList.remove('hidden');
-        alert(`تم توليد الكود المحلي: ${fallbackCode}\nيمكنك استخدامه الآن!`);
-      } finally {
-        btn.innerText = '🚀 إرسال المستند وتوليد الكود';
-        btn.disabled = false;
-      }
-    }
-
-    // استلام البيانات على الكمبيوتر
-    async function receiveDataFromServer() {
-      const btn = document.getElementById('receiveBtn');
-      const code = document.getElementById('inputSyncCode').value.trim().toUpperCase();
-
-      if (!code) {
-        alert('يرجى إدخال كود التزامن المكون من 4 أرقام/حروف!');
-        return;
-      }
-
-      btn.innerText = '⏳ جاري الاستلام...';
-      btn.disabled = true;
-
-      try {
-        let data = null;
-
-        // البحث أولاً في التخزين المحلي
-        const localData = localStorage.getItem(`sync_${code}`);
-        
-        if (localData) {
-          if (localData.startsWith('{')) {
-            data = JSON.parse(localData);
-          } else {
-            // جلب البيانات من السيرفر باستخدام المعرف
-            const res = await fetch(`https://api.jsonbin.io/v3/b/${localData}/latest`);
-            const result = await res.json();
-            data = result.record;
-          }
-        } else {
-          // محاولة جلبها مبسطة
-          alert('الكود غير موجود أو انتهت صلاحيته، تأكدي من إدخال الكود الظاهر على الهاتف.');
-          btn.innerText = '📥 استلام';
-          btn.disabled = false;
-          return;
-        }
-
-        if (data) {
-          if (data.textTitle !== undefined) document.getElementById('textSheetTitle').value = data.textTitle;
-          if (data.textContent !== undefined) document.getElementById('textSheetContent').value = data.textContent;
-          if (data.imgTitle !== undefined) document.getElementById('imgSheetTitle').value = data.imgTitle;
-          if (data.uploadedImageData !== undefined) uploadedImageData = data.uploadedImageData;
-          if (data.gameTitle !== undefined) document.getElementById('gameTitle').value = data.gameTitle;
-          if (data.gameWords !== undefined) document.getElementById('gameWords').value = data.gameWords;
-          if (data.certStudentName !== undefined) document.getElementById('certStudentName').value = data.certStudentName;
-          if (data.certReason !== undefined) document.getElementById('certReason').value = data.certReason;
-          if (data.certTeacher !== undefined) document.getElementById('certTeacher').value = data.certTeacher;
-          if (data.certDate !== undefined) document.getElementById('certDate').value = data.certDate;
-
-          if (data.activeTab) switchTab(data.activeTab);
-          else renderPreview();
-
-          toggleModal('syncModal');
-          alert('تم استلام المستند بنجاح! 🎉 أصبح جاهزاً للطباعة الآن.');
-        }
-      } catch (err) {
-        alert('حدث خطأ أثناء جلب المستند، يرجى المحاولة مرة أخرى.');
-      } finally {
-        btn.innerText = '📥 استلام';
-        btn.disabled = false;
-      }
-    }
-
-    // التهيئة الأولى
     renderPreview();
   </script>
 </body>
