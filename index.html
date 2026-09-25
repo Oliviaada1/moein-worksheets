@@ -11,13 +11,7 @@
   <!-- مكتبة توليد الـ QR Code -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   
-  <!-- html2pdf.js لتصدير الـ PDF -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-  
-  <!-- html-docx-js لتصدير الـ Word -->
-  <script src="https://cdn.jsdelivr.net/npm/html-docx-js-typescript@1.5.5/dist/html-docx.min.js"></script>
-
-  <!-- Tesseract.js لاستخراج النص من الصورة بدون API Key -->
+  <!-- Tesseract.js لاستخراج النص من الصورة -->
   <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
 
   <!-- خطوط عربية -->
@@ -38,40 +32,47 @@
       box-shadow: 0 0 10px rgba(0,0,0,0.1);
       box-sizing: border-box;
     }
+
+    /* تنسيقات خاصة بالطباعة للـ PDF و الطابعة المباشرة */
+    @media print {
+      body * {
+        visibility: hidden;
+      }
+      #printableArea, #printableArea * {
+        visibility: visible;
+      }
+      #printableArea {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        margin: 0;
+        padding: 10mm;
+        box-shadow: none;
+      }
+      @page {
+        size: A4 portrait;
+        margin: 0;
+      }
+    }
   </style>
 </head>
 <body class="bg-slate-100 text-slate-800 pb-16">
 
   <!-- الهيدر -->
-  <header class="bg-gradient-to-r from-indigo-700 to-purple-700 text-white p-6 shadow-lg text-center">
+  <header class="bg-gradient-to-r from-indigo-700 to-purple-700 text-white p-6 shadow-lg text-center print:hidden">
     <h1 class="text-3xl font-bold flex items-center justify-center gap-2">
       <span>✨</span> منصة مُعِين التعليمية
     </h1>
     <p class="text-indigo-100 text-sm mt-2 max-w-xl mx-auto">
-      أوراق العمل المدرسية + ملاحظات المعلمة + خدمة الطباعة السريعة بكود قصير للطابعات القديمة!
+      أوراق العمل المدرسية + ملاحظات المعلمة + طباعة مباشرة وحفظ PDF مضمون 100%
     </p>
   </header>
 
-  <main class="max-w-5xl mx-auto px-4 mt-6 space-y-8">
-
-    <!-- 🌟 قسم الطباعة السريعة بالكود القصير -->
-    <section class="bg-amber-500 text-white p-5 rounded-2xl shadow-md border border-amber-600 flex flex-col md:flex-row items-center justify-between gap-4">
-      <div>
-        <h2 class="text-lg font-bold flex items-center gap-2">
-          <span>🖨️</span> طباعة سريعة على كمبيوتر المدرسة (بدون تسجيل دخول):
-        </h2>
-        <p class="text-xs text-amber-100 mt-1">أدخلي الكود المكون من 4 أرقام المكتوب في هاتفك لفتح الورقة وطباعتها فوراً هنا!</p>
-      </div>
-      <div class="flex gap-2 w-full md:w-auto">
-        <input type="text" id="fetchCodeInput" placeholder="مثال: B492" class="p-2.5 text-center text-slate-800 font-bold uppercase rounded-xl text-sm w-32 tracking-widest focus:ring-2 focus:ring-amber-300" maxlength="4" />
-        <button onclick="fetchSheetByCode()" class="bg-slate-900 hover:bg-black text-white px-5 py-2.5 rounded-xl font-bold text-xs transition">
-          🚀 فتح للطباعة
-        </button>
-      </div>
-    </section>
+  <main class="max-w-5xl mx-auto px-4 mt-6 space-y-8 print:m-0 print:p-0">
 
     <!-- تبويب الاختيار: أوراق عمل أم ملاحظات معلمة -->
-    <div class="flex border-b border-slate-300 bg-white rounded-t-2xl overflow-hidden p-1 gap-1">
+    <div class="flex border-b border-slate-300 bg-white rounded-t-2xl overflow-hidden p-1 gap-1 print:hidden">
       <button id="tabSheetBtn" onclick="switchTab('sheet')" class="flex-1 py-3 font-bold text-xs text-center rounded-xl bg-indigo-600 text-white transition">
         📝 صانع أوراق العمل والتمارين
       </button>
@@ -81,7 +82,7 @@
     </div>
 
     <!-- قسم أوراق العمل -->
-    <div id="sheetSection" class="space-y-6">
+    <div id="sheetSection" class="space-y-6 print:hidden">
       
       <!-- قوالب أوراق عمل -->
       <section class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
@@ -107,11 +108,11 @@
         </div>
       </section>
 
-      <!-- استخراج النص من صورة تلقائياً (بدون API) -->
+      <!-- استخراج النص من صورة تلقائياً -->
       <section class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-4">
         <h2 class="text-md font-bold text-slate-700">📸 استخراج النص المكتوب من صورة:</h2>
         <div class="p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-3">
-          <label class="block text-xs font-bold text-slate-700">رفع صورة ورقة عمل لاستخراج الكلام تلقائياً مجاناً:</label>
+          <label class="block text-xs font-bold text-slate-700">رفع صورة ورقة عمل لاستخراج الكلام تلقائياً:</label>
           <input type="file" id="imageInput" accept="image/*" class="w-full text-xs text-slate-500" />
           <button onclick="processOCRImage()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2.5 rounded-lg font-bold text-xs transition flex justify-center items-center gap-2">
             🔍 استخراج الكلام من الصورة
@@ -123,10 +124,10 @@
     </div>
 
     <!-- 📌 قسم ملاحظات وملخصات المعلمة -->
-    <div id="notesSection" class="hidden space-y-6">
+    <div id="notesSection" class="hidden space-y-6 print:hidden">
       <section class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-4">
         <h2 class="text-md font-bold text-slate-700 flex items-center gap-2">
-          <span>📌</span> كتابة ملاحظة أو ملخص درس وتحويله لـ PDF / Word:
+          <span>📌</span> كتابة ملاحظة أو ملخص درس:
         </h2>
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
@@ -146,13 +147,13 @@
 
         <div>
           <label class="block text-xs font-bold text-slate-600 mb-1">نص الملاحظة أو الملخص للطلاب/أولياء الأمور:</label>
-          <textarea id="noteContent" rows="5" oninput="updatePreview()" placeholder="اكتبي التنبيهات، الواجبات، أو الملاحظات هنا... مراجعة الفصل الأول، احضار دفتر التلوين غداً..." class="w-full p-3 border border-slate-300 rounded-lg text-xs leading-relaxed focus:ring-2 focus:ring-indigo-500"></textarea>
+          <textarea id="noteContent" rows="5" oninput="updatePreview()" placeholder="اكتبي التنبيهات، الواجبات، أو الملاحظات هنا..." class="w-full p-3 border border-slate-300 rounded-lg text-xs leading-relaxed focus:ring-2 focus:ring-indigo-500"></textarea>
         </div>
       </section>
     </div>
 
     <!-- المحرر العام وإعدادات الطباعة -->
-    <section class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-4">
+    <section class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-4 print:hidden">
       <h2 class="text-md font-bold text-slate-700">✍️ محرر المحتوى الشامل وإعدادات النسخ:</h2>
       
       <div>
@@ -188,45 +189,38 @@
       </div>
     </section>
 
-    <!-- خيارات التصدير وتوليد الكود القصير للطباعة -->
-    <section class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-4">
-      <div class="flex flex-col sm:flex-row items-center justify-between gap-3">
+    <!-- خيارات التصدير والمشاركة -->
+    <section class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-4 print:bg-transparent print:p-0 print:border-none">
+      <div class="flex flex-col sm:flex-row items-center justify-between gap-3 print:hidden">
         <h2 class="text-md font-bold text-slate-700">👁️ معاينة ورقة العمل / الملاحظة:</h2>
         
         <div class="flex flex-wrap gap-2 w-full sm:w-auto">
-          <!-- زر توليد الكود القصير -->
-          <button onclick="generateShareCode()" class="bg-amber-600 hover:bg-amber-700 text-white px-4 py-2 rounded-lg font-bold text-xs transition flex items-center gap-1">
-            📱 إنشاء كود طباعة للمدرسة
+          <!-- زر المشاركة عبر QR Code -->
+          <button onclick="generateQRCodeModal()" class="bg-amber-600 hover:bg-amber-700 text-white px-4 py-2 rounded-lg font-bold text-xs transition flex items-center gap-1">
+            📱 فتح الورقة على جهاز آخر (QR Code)
           </button>
           
-          <button onclick="downloadPDF()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg font-bold text-xs transition">
-            📥 تحميل PDF
-          </button>
-          <button onclick="downloadWord()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-bold text-xs transition">
-            📝 تحميل Word
+          <!-- زر الطباعة وحفظ PDF المباشر -->
+          <button onclick="triggerPrint()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-2 rounded-lg font-bold text-xs transition flex items-center gap-1">
+            🖨️ طباعة / حفظ كـ PDF
           </button>
         </div>
       </div>
 
-      <!-- نافذة الكود القصير (Modal/Popup) -->
-      <div id="codeModal" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
+      <!-- نافذة الـ QR Code (Modal) -->
+      <div id="codeModal" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50 print:hidden">
         <div class="bg-white p-6 rounded-2xl max-w-sm w-full text-center space-y-4 shadow-2xl">
-          <h3 class="text-md font-bold text-slate-800">🎉 كود الطباعة السريع جاهز!</h3>
-          <p class="text-xs text-slate-500">ادخلي هذا الكود المكون من 4 أرقام في كمبيوتر المدرسة لفتح هذه الورقة وطباعتها فوراً:</p>
-          
-          <div id="displayQuickCode" class="text-4xl font-black text-amber-600 tracking-widest bg-amber-50 p-4 rounded-xl border border-amber-200">
-            ----
-          </div>
+          <h3 class="text-md font-bold text-slate-800">📲 امسحي الرمز لفتح الورقة:</h3>
+          <p class="text-xs text-slate-500">امسحي هذا الرمز بكاميرا الهاتف أو كمبيوتر المدرسة لفتح نفس هذه الورقة ومحتواها فوراً:</p>
 
-          <!-- الـ QR Code -->
-          <div id="qrcodeContainer" class="flex justify-center p-2 bg-white rounded-lg"></div>
+          <div id="qrcodeContainer" class="flex justify-center p-3 bg-white border border-slate-200 rounded-xl"></div>
 
           <button onclick="closeCodeModal()" class="w-full bg-slate-800 text-white py-2 rounded-lg text-xs font-bold">إغلاق</button>
         </div>
       </div>
 
       <!-- المعاينة المباشرة A4 -->
-      <div class="overflow-x-auto bg-slate-200 p-4 rounded-xl">
+      <div class="overflow-x-auto bg-slate-200 p-4 rounded-xl print:bg-transparent print:p-0">
         <div id="printableArea" class="a4-preview flex flex-col justify-between">
           <!-- محتوى المعاينة -->
         </div>
@@ -237,6 +231,20 @@
 
   <script>
     let currentTab = 'sheet';
+
+    // القراءة التلقائية للبيانات إذا تم فتح الصفحة عبر رابط مشاركة
+    window.onload = function() {
+      const hash = window.location.hash.substring(1);
+      if (hash) {
+        try {
+          const decodedText = decodeURIComponent(atob(hash));
+          document.getElementById('sheetContent').value = decodedText;
+          updatePreview();
+        } catch(e) {
+          console.log("لا يوجد نص مشارك");
+        }
+      }
+    };
 
     function switchTab(tab) {
       currentTab = tab;
@@ -259,7 +267,6 @@
       updatePreview();
     }
 
-    // تطبيق القوالب
     function applyTemplate(type) {
       const content = document.getElementById('sheetContent');
       if (type === 'kindergarten') {
@@ -272,7 +279,6 @@
       updatePreview();
     }
 
-    // استخراج OCR من صورة مجاناً وبدون API باستخدام Tesseract.js
     async function processOCRImage() {
       const fileInput = document.getElementById('imageInput');
       const content = document.getElementById('sheetContent');
@@ -284,17 +290,11 @@
       }
 
       ocrStatus.classList.remove('hidden');
-      ocrStatus.innerText = "⏳ جاري استخراج النص من الصورة (قد يستغرق لحظات)...";
+      ocrStatus.innerText = "⏳ جاري استخراج النص من الصورة...";
 
       try {
         const file = fileInput.files[0];
-        const result = await Tesseract.recognize(file, 'ara+eng', {
-          logger: m => {
-            if (m.status === 'recognizing text') {
-              ocrStatus.innerText = `⏳ جاري تحليل النص... ${Math.round(m.progress * 100)}%`;
-            }
-          }
-        });
+        const result = await Tesseract.recognize(file, 'ara+eng');
 
         content.value = result.data.text;
         ocrStatus.innerText = "✅ تم استخراج النص بنجاح!";
@@ -305,7 +305,6 @@
       }
     }
 
-    // تحديث المعاينة المباشرة
     function updatePreview() {
       let mainText = "";
 
@@ -350,87 +349,29 @@
       }
     }
 
-    // 🌟 إنشاء كود طباعة سريع (Quick Share Code)
-    async function generateShareCode() {
+    // أمر الطباعة وحفظ PDF النظيف والضمون
+    function triggerPrint() {
+      window.print();
+    }
+
+    // توليد QR Code يحتوي على البيانات المشفرة داخل الرابط فوراً
+    function generateQRCodeModal() {
       const textData = document.getElementById('sheetContent').value;
       if (!textData.trim()) { alert('الرجاء كتابة محتوى أولاً.'); return; }
 
-      // كود عشوائي من 4 خانات
-      const randomCode = Math.random().toString(36).substring(2, 6).toUpperCase();
-      
-      try {
-        // حفظ مؤقت للمحتوى في خادم سحابي مجاني
-        await fetch(`https://api.jsonbin.io/v3/b`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'X-Bin-Private': 'false',
-            'X-Bin-Name': randomCode
-          },
-          body: JSON.stringify({ code: randomCode, content: textData })
-        });
+      // تشفير النص داخل الـ URL Hash
+      const encodedText = btoa(encodeURIComponent(textData));
+      const shareableURL = `${window.location.origin}${window.location.pathname}#${encodedText}`;
 
-        document.getElementById('displayQuickCode').innerText = randomCode;
-        
-        // توليد الـ QR Code
-        const qrDiv = document.getElementById('qrcodeContainer');
-        qrDiv.innerHTML = "";
-        new QRCode(qrDiv, { text: randomCode, width: 128, height: 128 });
+      const qrDiv = document.getElementById('qrcodeContainer');
+      qrDiv.innerHTML = "";
+      new QRCode(qrDiv, { text: shareableURL, width: 160, height: 160 });
 
-        document.getElementById('codeModal').classList.remove('hidden');
-
-      } catch (err) {
-        alert('حدث خطأ أثناء حفظ الكود السريع، يمكنك استخدام التنزيل المباشر.');
-      }
-    }
-
-    // 🌟 جلب ورقة عمل بكود قصير من كمبيوتر المدرسة
-    async function fetchSheetByCode() {
-      const code = document.getElementById('fetchCodeInput').value.trim().toUpperCase();
-      if (!code || code.length !== 4) { alert('الرجاء كتابة كود مكون من 4 أرقام/حروف.'); return; }
-
-      try {
-        const res = await fetch(`https://api.jsonbin.io/v3/b?name=${code}`);
-        const data = await res.json();
-        
-        if (data && data.length > 0) {
-          const item = data[0];
-          document.getElementById('sheetContent').value = item.record.content;
-          updatePreview();
-          alert('✅ تم فتح ورقة العمل بنجاح! يمكنك الآن الضغط على "تحميل PDF" أو الطباعة مباشرة.');
-        } else {
-          alert('❌ لم يتم العثور على ورقة بهذا الكود. تأكدي من نقل الكود بشكل صحيح.');
-        }
-      } catch (e) {
-        alert('حدث خطأ أثناء البحث عن الكود.');
-      }
+      document.getElementById('codeModal').classList.remove('hidden');
     }
 
     function closeCodeModal() {
       document.getElementById('codeModal').classList.add('hidden');
-    }
-
-    // تصدير PDF
-    function downloadPDF() {
-      const element = document.getElementById('printableArea');
-      html2pdf().set({
-        margin: 0,
-        filename: 'ورقة_عمل_مُعِين.pdf',
-        image: { type: 'jpeg', quality: 0.98 },
-        html2canvas: { scale: 2 },
-        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-      }).from(element).save();
-    }
-
-    // تصدير Word
-    function downloadWord() {
-      const content = document.getElementById('printableArea').innerHTML;
-      const htmlString = `<html dir="rtl" lang="ar"><head><meta charset="utf-8"></head><body>${content}</body></html>`;
-      const converted = htmlDocx.asBlob(htmlString);
-      const a = document.createElement('a');
-      a.href = URL.createObjectURL(converted);
-      a.download = 'ورقة_عمل_مُعِين.docx';
-      a.click();
     }
 
     updatePreview();
