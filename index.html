@@ -254,7 +254,7 @@
       </div>
     </section>
 
-    <!-- 👁️ قسم المعاينة والطباعة -->
+    <!-- 👁️ قسم المعاينة والتحميل -->
     <section class="bg-white p-4 sm:p-5 rounded-2xl shadow-sm border border-slate-200 space-y-4">
       <div class="flex flex-wrap items-center justify-between gap-2 no-print">
         <h2 class="text-xs sm:text-sm font-bold text-slate-700 flex items-center gap-1">
@@ -279,15 +279,15 @@
 
   </main>
 
-  <!-- 1. نافذة عرض كود الربط الرقمي -->
+  <!-- 1. نافذة عرض كود الربط الرقمي المباشر -->
   <div id="exportModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden no-print">
     <div class="bg-white rounded-3xl p-6 max-w-sm w-full shadow-2xl space-y-4 text-center">
-      <h3 class="font-bold text-slate-800 text-sm">📲 كود الربط المباشر (6 أرقام)</h3>
-      <p class="text-xs text-slate-500">اكتبي هذا الرقم المكون من 6 أرقام في جهاز الكمبيوتر لاسترجاع ورقة العمل فوراً:</p>
+      <h3 class="font-bold text-slate-800 text-sm">📲 كود الربط الرقمي (6 أرقام)</h3>
+      <p class="text-xs text-slate-500">اكتبي هذا الرقم المكون من 6 أرقام في جهاز الكمبيوتر لنقل العمل فوراً:</p>
       
       <div id="loadingCode" class="text-indigo-600 text-xs font-bold animate-pulse py-2">جاري توليد الكود الرقمي...</div>
       
-      <input type="text" id="generatedSyncCode" readonly class="w-full p-3 border-2 border-indigo-500 rounded-xl text-2xl font-mono bg-indigo-50/50 text-indigo-700 font-extrabold text-center tracking-widest select-all cursor-pointer" onclick="this.select()">
+      <input type="text" id="generatedSyncCode" readonly class="w-full p-3 border-2 border-indigo-500 rounded-xl text-3xl font-mono bg-indigo-50/50 text-indigo-700 font-extrabold text-center tracking-widest select-all cursor-pointer" onclick="this.select()">
       
       <div class="flex gap-2">
         <button onclick="copyGeneratedCode()" class="flex-1 bg-pink-500 hover:bg-pink-600 text-white py-2.5 rounded-xl text-xs font-bold transition shadow flex items-center justify-center gap-1">
@@ -305,13 +305,16 @@
         <h3 class="font-bold text-slate-800 text-sm">📥 إدخال كود الربط</h3>
         <button onclick="toggleModal('importModal')" class="text-slate-400 hover:text-slate-600 font-bold">✕</button>
       </div>
-      <p class="text-xs text-slate-600">ادخلي الأرقام الـ 6 الظاهرة في الهاتف لنقل العمل هنا:</p>
+      <p class="text-xs text-slate-600">ادخلي الأرقام الـ 6 الظاهرة في الهاتف لاسترجاع الورقة:</p>
       <input type="number" id="inputSyncCode" maxlength="6" class="w-full p-3 border-2 border-indigo-400 rounded-xl text-2xl font-mono bg-slate-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-center tracking-widest font-bold" placeholder="000000">
       <button onclick="importNumericCode()" id="importBtn" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2.5 rounded-xl text-xs font-bold transition shadow">✨ فتح المستند فوراً</button>
     </div>
   </div>
 
   <script>
+    // تنظيف خزن المتصفح من الأكواد القديمة الطويلة جداً عند الفتح
+    try { localStorage.removeItem('moeen_draft_data'); } catch(e){}
+
     let activeTab = 'textWorksheet';
     let uploadedImageData = '';
 
@@ -343,7 +346,6 @@
       }
     }
 
-    // توليد شبكة الكلمات
     function generateWordSearchGrid(words, size, lang) {
       const grid = Array(size).fill(null).map(() => Array(size).fill(''));
       const chars = lang === 'ar' ? 'أبتثجحخدذرزسشصضطظعغفقكلمنهوي' : 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
@@ -576,14 +578,14 @@
         // توليد رمز رقمي عشوائي من 6 أرقام
         const sixDigitCode = Math.floor(100000 + Math.random() * 900000).toString();
         
-        // رفع البيانات السحابية السريعة
-        const res = await fetch(`https://keyvalue.imsky.org/set?key=moeen_${sixDigitCode}&value=${encodeURIComponent(JSON.stringify(formData))}`);
+        // رفع البيانات للخدمة السحابية
+        await fetch(`https://keyvalue.imsky.org/set?key=moeen_${sixDigitCode}&value=${encodeURIComponent(JSON.stringify(formData))}`);
         
         document.getElementById('loadingCode').classList.add('hidden');
         document.getElementById('generatedSyncCode').value = sixDigitCode;
       } catch (err) {
         document.getElementById('loadingCode').classList.add('hidden');
-        alert('تعذر إنشاء الكود السحابي، يرجى التأكد من الاتصال بالإنترنت.');
+        alert('تعذر إنشاء الكود الرقمي، يرجى التأكد من اتصال الهاتف بالإنترنت.');
       }
     }
 
@@ -592,7 +594,7 @@
       if (!code || code.length < 6) return alert('يرجى أدخال كود مكون من 6 أرقام صحيح!');
 
       const btn = document.getElementById('importBtn');
-      btn.innerText = 'جاري التحميل...';
+      btn.innerText = 'جاري الجلب...';
       btn.disabled = true;
 
       try {
@@ -605,10 +607,10 @@
           const data = JSON.parse(decodeURIComponent(textData));
           setFormState(data);
           toggleModal('importModal');
-          alert('تم استرجاع المستند بنجاح! 🎉');
+          alert('تم استرجاع ورقة العمل بنجاح! 🎉');
         }
       } catch (e) {
-        alert('تعذر جلب المستند، يرجى التأكد من الرقم والاتصال بالإنترنت.');
+        alert('تعذر جلب المستند، يرجى التأكد من الرقم المكون من 6 أرقام والاتصال بالإنترنت.');
       } finally {
         btn.innerText = '✨ فتح المستند فوراً';
         btn.disabled = false;
