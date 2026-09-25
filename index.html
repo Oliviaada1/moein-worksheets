@@ -60,7 +60,7 @@
 </head>
 <body class="bg-slate-100 text-slate-800 pb-16 min-h-screen">
 
-  <!-- الهيدر الرئيسي (مع أدوات الحصة) -->
+  <!-- الهيدر الرئيسي -->
   <header class="bg-gradient-to-r from-indigo-700 via-purple-700 to-pink-700 text-white p-6 shadow-lg no-print">
     <div class="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
       <div>
@@ -121,7 +121,7 @@
         <h2 class="text-sm font-bold text-slate-700 mb-3 flex items-center gap-2">
           <span>📂</span> قوالب سريعة وجاهزة للتعديل:
         </h2>
-        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+        <div class="grid grid-cols-2 sm:grid-cols-5 gap-3">
           <button onclick="applyTemplate('kindergarten')" class="p-3 border border-indigo-200 hover:border-indigo-500 rounded-xl text-right transition bg-slate-50 hover:bg-indigo-50">
             <span class="text-xl block">🎨</span>
             <h3 class="font-bold text-indigo-900 text-xs mt-1">رياض الأطفال</h3>
@@ -137,6 +137,11 @@
             <h3 class="font-bold text-amber-900 text-xs mt-1">اللغة العربية</h3>
             <p class="text-[10px] text-slate-500">إكمال الكلمات والحروف.</p>
           </button>
+          <button onclick="applyTemplate('english')" class="p-3 border border-blue-200 hover:border-blue-500 rounded-xl text-right transition bg-slate-50 hover:bg-blue-50">
+            <span class="text-xl block">🔤</span>
+            <h3 class="font-bold text-blue-900 text-xs mt-1">English Worksheet</h3>
+            <p class="text-[10px] text-slate-500">Grammar & Vocabulary.</p>
+          </button>
           <button onclick="applyTemplate('exam')" class="p-3 border border-purple-200 hover:border-purple-500 rounded-xl text-right transition bg-slate-50 hover:bg-purple-50">
             <span class="text-xl block">📋</span>
             <h3 class="font-bold text-purple-900 text-xs mt-1">اختبار قصير</h3>
@@ -146,18 +151,18 @@
       </section>
     </div>
 
-    <!-- 2️⃣ قسم مولد الألعاب (البحث عن الكلمات) -->
+    <!-- 2️⃣ قسم مولد الألعاب -->
     <div id="gamesSection" class="hidden space-y-6 no-print">
       <section class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 space-y-4">
         <h2 class="text-sm font-bold text-slate-700 flex items-center gap-2">
-          <span>🧩</span> مولد لعبة البحث عن الكلمات المخبأة:
+          <span>🧩</span> مولد لعبة البحث عن الكلمات (عربي / English):
         </h2>
         <div>
-          <label class="block text-xs font-bold text-slate-600 mb-1">أدخلي الكلمات المفتاحية (مفصولة بفاصلة أو مسافة):</label>
-          <input type="text" id="gameWordsInput" placeholder="مثال: تفاح، موز، برتقال، عنب" value="مدرسة, معلِّم, قلم, كتاب, علم" class="w-full p-2.5 border border-slate-300 rounded-lg text-xs" />
+          <label class="block text-xs font-bold text-slate-600 mb-1">أدخلي الكلمات المفتاحية (مفصولة بفاصلة):</label>
+          <input type="text" id="gameWordsInput" placeholder="مثال: Apple, Banana, Orange, Grape" value="SCHOOL, TEACHER, BOOK, PEN, CLASS" class="w-full p-2.5 border border-slate-300 rounded-lg text-xs text-left" dir="ltr" />
         </div>
         <button onclick="generateWordSearch()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs px-4 py-2.5 rounded-lg transition">
-          ⚡ توليد شبكة البحث عن الكلمات
+          ⚡ توليد شبكة الكلمات
         </button>
       </section>
     </div>
@@ -171,19 +176,19 @@
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div>
             <label class="block text-xs font-bold text-slate-600 mb-1">اسم الطالب / الطالبة:</label>
-            <input type="text" id="certStudent" placeholder="مثال: أحمد محمد علي" oninput="updatePreview()" class="w-full p-2.5 border border-slate-300 rounded-lg text-xs" />
+            <input type="text" id="certStudent" placeholder="مثال: Sarah Ahmed" oninput="updatePreview()" class="w-full p-2.5 border border-slate-300 rounded-lg text-xs" />
           </div>
           <div>
             <label class="block text-xs font-bold text-slate-600 mb-1">سبب التقدير / الإنجاز:</label>
-            <input type="text" id="certReason" placeholder="مثال: لتفوقه في مادة الرياضيات" oninput="updatePreview()" class="w-full p-2.5 border border-slate-300 rounded-lg text-xs" />
+            <input type="text" id="certReason" placeholder="مثال: For Excellence in English Language" oninput="updatePreview()" class="w-full p-2.5 border border-slate-300 rounded-lg text-xs" />
           </div>
           <div>
             <label class="block text-xs font-bold text-slate-600 mb-1">اسم المعلمة:</label>
-            <input type="text" id="certTeacher" placeholder="أ. خديجة" oninput="updatePreview()" class="w-full p-2.5 border border-slate-300 rounded-lg text-xs" />
+            <input type="text" id="certTeacher" placeholder="Ms. Olivia" oninput="updatePreview()" class="w-full p-2.5 border border-slate-300 rounded-lg text-xs" />
           </div>
           <div>
             <label class="block text-xs font-bold text-slate-600 mb-1">مديرة المدرسة:</label>
-            <input type="text" id="certPrincipal" placeholder="أ. فاطمة" oninput="updatePreview()" class="w-full p-2.5 border border-slate-300 rounded-lg text-xs" />
+            <input type="text" id="certPrincipal" placeholder="School Principal" oninput="updatePreview()" class="w-full p-2.5 border border-slate-300 rounded-lg text-xs" />
           </div>
         </div>
       </section>
@@ -198,11 +203,11 @@
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
           <div>
             <label class="block text-xs font-bold text-slate-600 mb-1">العنوان:</label>
-            <input type="text" id="noteSubject" placeholder="ملاحظة أسبوعية" oninput="updatePreview()" class="w-full p-2.5 border border-slate-300 rounded-lg text-xs" />
+            <input type="text" id="noteSubject" placeholder="Weekly Progress Note" oninput="updatePreview()" class="w-full p-2.5 border border-slate-300 rounded-lg text-xs" />
           </div>
           <div>
             <label class="block text-xs font-bold text-slate-600 mb-1">الصف / الفصل:</label>
-            <input type="text" id="noteClass" placeholder="الصف الثاني (1)" oninput="updatePreview()" class="w-full p-2.5 border border-slate-300 rounded-lg text-xs" />
+            <input type="text" id="noteClass" placeholder="Grade 3 (A)" oninput="updatePreview()" class="w-full p-2.5 border border-slate-300 rounded-lg text-xs" />
           </div>
           <div>
             <label class="block text-xs font-bold text-slate-600 mb-1">التاريخ:</label>
@@ -212,10 +217,17 @@
       </section>
     </div>
 
-    <!-- المحرر النصي والتعديلات (يظهر في أوراق العمل والملاحظات) -->
+    <!-- المحرر النصي والتعديلات -->
     <section id="editorSection" class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 space-y-4 no-print">
-      <h2 class="text-sm font-bold text-slate-700">✍️ كاتب المحتوى:</h2>
-      <textarea id="sheetContent" rows="5" oninput="updatePreview()" class="w-full p-3 border border-slate-300 rounded-lg text-xs leading-relaxed focus:ring-2 focus:ring-indigo-500" placeholder="اكتبي محتوى الورقة هنا..."></textarea>
+      <div class="flex justify-between items-center">
+        <h2 class="text-sm font-bold text-slate-700">✍️ كاتب المحتوى:</h2>
+        <!-- أزرار اختيار اتجاه الكتابة -->
+        <div class="flex gap-2">
+          <button onclick="setTextDirection('rtl')" class="text-xs bg-slate-100 hover:bg-slate-200 px-2 py-1 rounded font-bold">يمين (عربي)</button>
+          <button onclick="setTextDirection('ltr')" class="text-xs bg-slate-100 hover:bg-slate-200 px-2 py-1 rounded font-bold">Left (English)</button>
+        </div>
+      </div>
+      <textarea id="sheetContent" rows="5" oninput="updatePreview()" class="w-full p-3 border border-slate-300 rounded-lg text-xs leading-relaxed focus:ring-2 focus:ring-indigo-500" placeholder="Write content or paste your text here..."></textarea>
       
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <div>
@@ -253,7 +265,7 @@
             📋 نسخ إلى Word
           </button>
           
-          <!-- تحميل Word مباشر -->
+          <!-- تحميل Word مباشر معدل -->
           <button onclick="downloadDocx()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-bold text-xs transition flex items-center gap-1 shadow">
             📄 تحميل Word (.doc)
           </button>
@@ -264,7 +276,7 @@
         ✅ تم نسخ النص بالتنسيق! يمكنك الآن فتح برنامج Word واختيار لصق (Ctrl + V).
       </div>
 
-      <!-- منطقة ورقة الـ A4 المقاوسة -->
+      <!-- منطقة ورقة الـ A4 المقاسة -->
       <div class="overflow-x-auto bg-slate-200 p-4 rounded-xl">
         <div id="printableArea" class="a4-preview flex flex-col justify-between">
           <!-- المحتوى الديناميكي يظهر هنا -->
@@ -311,8 +323,16 @@
 
   <script>
     let currentTab = 'sheet';
+    let textDir = 'rtl';
 
-    // التبديل بين الأقسام
+    function setTextDirection(dir) {
+      textDir = dir;
+      const editor = document.getElementById('sheetContent');
+      editor.dir = dir;
+      editor.className = dir === 'ltr' ? "w-full p-3 border border-slate-300 rounded-lg text-xs leading-relaxed focus:ring-2 focus:ring-indigo-500 text-left" : "w-full p-3 border border-slate-300 rounded-lg text-xs leading-relaxed focus:ring-2 focus:ring-indigo-500 text-right";
+      updatePreview();
+    }
+
     function switchTab(tab) {
       currentTab = tab;
       const sections = {
@@ -348,36 +368,41 @@
       updatePreview();
     }
 
-    // القوالب الجاهزة
     function applyTemplate(type) {
       const content = document.getElementById('sheetContent');
       if (type === 'kindergarten') {
+        setTextDirection('rtl');
         content.value = "الاسم: .......................................\tالتاريخ:  /  /\n\n1. تتبع الخطوط النقطية التالية:\n. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .\n\n2. لون الدائرة باللون الأحمـر والمعين باللون الأزرق.";
       } else if (type === 'math') {
+        setTextDirection('rtl');
         content.value = "الاسم: .......................................\tالمادة: رياضيات\n\nأوجد ناتج الجمع والطرح فيما يلي:\n\n 5 + 3 = [   ]\t\t 7 + 2 = [   ]\n 9 - 4 = [   ]\t\t 8 - 5 = [   ]";
       } else if (type === 'arabic') {
+        setTextDirection('rtl');
         content.value = "الاسم: .......................................\tالمادة: اللغة العربية\n\n1. اكتب الحرف الناقص للكلمات التالية:\n  ـمـس ( ش / س )\t\t كـتـا... ( ب / ت )";
+      } else if (type === 'english') {
+        setTextDirection('ltr');
+        content.value = "Name: .......................................\tDate:    /    /\nSubject: English Worksheet\n\nQ1: Choose the correct answer:\n1. She ( is / are / am ) a helpful teacher.\n2. They ( play / plays ) football every Friday.\n\nQ2: Fill in the missing letters:\n- B...ok ( o / a )\t\t- P...n ( e / i )";
       } else if (type === 'exam') {
+        setTextDirection('rtl');
         content.value = "الاسم: .......................................\tالدرجة: [   / 10 ]\n\nس1: ضع علامة (✓) أو (✕):\n1. (  ) الشمس تشرق من الشرق.\n2. (  ) الحوت من الطيور.\n\nس2: اختر الإجابة الصحيحة:\n- عاصمة ليبيا هي: ( طرابلس / بنغازي / مصراتة )";
       }
       updatePreview();
     }
 
-    // حديث المعاينة
     function updatePreview() {
       const previewArea = document.getElementById('printableArea');
       
       if (currentTab === 'cert') {
-        const student = document.getElementById('certStudent').value || "اسم الطالب/ـة";
-        const reason = document.getElementById('certReason').value || "لتفوقه العلمي والتميز في الأنشطة المدرسية";
-        const teacher = document.getElementById('certTeacher').value || "أ. المعلمة";
-        const principal = document.getElementById('certPrincipal').value || "أ. المديرة";
+        const student = document.getElementById('certStudent').value || "Sarah Ahmed";
+        const reason = document.getElementById('certReason').value || "For Academic Excellence & Outstanding Performance";
+        const teacher = document.getElementById('certTeacher').value || "Ms. Olivia";
+        const principal = document.getElementById('certPrincipal').value || "School Principal";
 
         previewArea.innerHTML = `
           <div class="certificate-border h-full p-8 flex flex-col justify-between text-center bg-amber-50/20 my-auto">
             <div class="space-y-2">
-              <h1 class="text-3xl font-extrabold text-amber-800">🎓 شهادة تقدير وتميز</h1>
-              <p class="text-xs text-amber-900">تتقدم إدارة المدرسة بوافر الشكر والتقدير لـ</p>
+              <h1 class="text-3xl font-extrabold text-amber-800">🎓 Certificate of Appreciation</h1>
+              <p class="text-xs text-amber-900">This certificate is proudly presented to</p>
             </div>
             
             <div class="my-6">
@@ -387,11 +412,11 @@
 
             <div class="flex justify-between items-center text-xs text-slate-700 mt-8 pt-4 border-t border-amber-200">
               <div>
-                <p class="font-bold">معلمة المادة:</p>
+                <p class="font-bold">Teacher:</p>
                 <p class="mt-1">${teacher}</p>
               </div>
               <div>
-                <p class="font-bold">مديرة المدرسة:</p>
+                <p class="font-bold">Principal:</p>
                 <p class="mt-1">${principal}</p>
               </div>
             </div>
@@ -400,16 +425,14 @@
         return;
       }
 
-      if (currentTab === 'games') {
-        return; // يتم توليدها بزر منفصل
-      }
+      if (currentTab === 'games') return;
 
       let mainText = "";
       if (currentTab === 'notes') {
-        const subj = document.getElementById('noteSubject').value || "ملاحظة أسبوعية";
+        const subj = document.getElementById('noteSubject').value || "Weekly Note";
         const cls = document.getElementById('noteClass').value || "";
         const dt = document.getElementById('noteDate').value || "";
-        mainText = `📌 ${subj} ${cls ? '('+cls+')' : ''}\t${dt}\n\n` + (document.getElementById('sheetContent').value || "اكتبي نص الملاحظة هنا...");
+        mainText = `📌 ${subj} ${cls ? '('+cls+')' : ''}\t${dt}\n\n` + (document.getElementById('sheetContent').value || "Write note here...");
       } else {
         mainText = document.getElementById('sheetContent').value;
       }
@@ -427,10 +450,11 @@
 
       for (let i = 0; i < copies; i++) {
         const block = document.createElement('div');
-        block.className = `flex-1 ${fontSize} p-2 flex flex-col justify-between ${i < copies - 1 ? 'border-b-2 border-dashed border-slate-300 pb-4 mb-4' : ''}`;
+        block.dir = textDir;
+        block.className = `flex-1 ${fontSize} p-2 flex flex-col justify-between ${i < copies - 1 ? 'border-b-2 border-dashed border-slate-300 pb-4 mb-4' : ''} ${textDir === 'ltr' ? 'text-left' : 'text-right'}`;
         block.innerHTML = `
           <div>
-            <div class="flex justify-between items-center mb-3 pb-1 border-b border-slate-200 text-[10px] text-slate-400">
+            <div class="flex justify-between items-center mb-3 pb-1 border-b border-slate-200 text-[10px] text-slate-400" dir="rtl">
               <span class="font-bold text-indigo-900">مُعِين - منصة أوراق العمل</span>
               <span>نسخة ${i+1} من ${copies}</span>
             </div>
@@ -441,28 +465,26 @@
       }
     }
 
-    // توليد لعبة البحث عن الكلمات
     function generateWordSearch() {
       const input = document.getElementById('gameWordsInput').value;
-      const words = input.split(/[,،\s]+/).filter(w => w.trim().length > 0);
+      const words = input.toUpperCase().split(/[,،\s]+/).filter(w => w.trim().length > 0);
       
       if (words.length === 0) {
-        alert("يرجى إدخال كلمة واحدة على الأقل!");
+        alert("Enter at least one word!");
         return;
       }
 
-      const letters = "اأإبتثجحخدذرزسشصضطظعغفقكلمنهويا";
+      const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
       const size = 8;
       let grid = Array(size).fill(null).map(() => Array(size).fill(''));
 
-      // ملء شبكة عشوائية
       for (let r = 0; r < size; r++) {
         for (let c = 0; c < size; c++) {
           grid[r][c] = letters.charAt(Math.floor(Math.random() * letters.length));
         }
       }
 
-      let gridHtml = `<div class="grid grid-cols-8 gap-1 border-2 border-indigo-900 p-2 bg-indigo-50/50 rounded-xl max-w-md mx-auto">`;
+      let gridHtml = `<div class="grid grid-cols-8 gap-1 border-2 border-indigo-900 p-2 bg-indigo-50/50 rounded-xl max-w-md mx-auto" dir="ltr">`;
       for (let r = 0; r < size; r++) {
         for (let c = 0; c < size; c++) {
           gridHtml += `<div class="aspect-square flex items-center justify-center font-bold text-sm bg-white border border-slate-200 rounded">${grid[r][c]}</div>`;
@@ -474,10 +496,10 @@
 
       const previewArea = document.getElementById('printableArea');
       previewArea.innerHTML = `
-        <div class="space-y-6 text-center my-auto">
+        <div class="space-y-6 text-center my-auto" dir="ltr">
           <div>
-            <h2 class="text-xl font-bold text-indigo-900">🧩 لعبة ابحث عن الكلمات المخبأة</h2>
-            <p class="text-xs text-slate-500 mt-1">ابحث عن الكلمات التالية وقم بوضع دائرة حولها:</p>
+            <h2 class="text-xl font-bold text-indigo-900">🧩 Word Search Game</h2>
+            <p class="text-xs text-slate-500 mt-1">Find and circle the following words:</p>
           </div>
 
           <div class="flex flex-wrap justify-center gap-2 max-w-md mx-auto">
@@ -486,12 +508,11 @@
 
           ${gridHtml}
 
-          <div class="text-[10px] text-slate-400 mt-8">الاسم: ....................................... | التاريخ:    /    /</div>
+          <div class="text-[10px] text-slate-400 mt-8" dir="rtl">الاسم: ....................................... | التاريخ:    /    /</div>
         </div>
       `;
     }
 
-    // نسخ النص المنسق
     function copyRichText() {
       const previewArea = document.getElementById('printableArea');
       const range = document.createRange();
@@ -506,12 +527,37 @@
       setTimeout(() => alertBox.classList.add('hidden'), 3000);
     }
 
-    // تنزيل ملف Word
+    // ⭐ الدالة المحدثة لتصدير ملف Word يفتح بدقة على الموبايل والكمبيوتر
     function downloadDocx() {
       const content = document.getElementById('printableArea').innerHTML;
-      const header = "<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'><head><meta charset='utf-8'><title>ورقة عمل</title></head><body dir='rtl' style='font-family:Arial;'>";
-      const footer = "</body></html>";
-      const blob = new Blob(['\ufeff' + header + content + footer], { type: 'application/msword' });
+      const isLtr = textDir === 'ltr';
+      
+      const docContent = `
+        <html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
+        <head>
+          <meta charset='utf-8'>
+          <title>Worksheet</title>
+          <!--[if gte mso 9]>
+          <xml>
+            <w:WordDocument>
+              <w:View>Print</w:View>
+              <w:Zoom>100</w:Zoom>
+              <w:DoNotOptimizeForBrowser/>
+            </w:WordDocument>
+          </xml>
+          <![endif]-->
+          <style>
+            @page { size: 21cm 29.7cm; margin: 2cm; }
+            body { font-family: 'Arial', sans-serif; direction: ${isLtr ? 'ltr' : 'rtl'}; text-align: ${isLtr ? 'left' : 'right'}; }
+          </style>
+        </head>
+        <body>
+          ${content}
+        </body>
+        </html>
+      `;
+
+      const blob = new Blob(['\ufeff' + docContent], { type: 'application/msword;charset=utf-8' });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
@@ -519,9 +565,9 @@
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
+      URL.revokeObjectURL(url);
     }
 
-    // المؤقت
     let timerSeconds = 600;
     let timerInterval = null;
     function toggleTimer() {
@@ -540,7 +586,7 @@
             document.getElementById('timerDisplay').innerText = `${m}:${s}`;
           } else {
             clearInterval(timerInterval);
-            alert("⏰ انتهى وقت التمريـن!");
+            alert("⏰ انتهى الوقت!");
           }
         }, 1000);
         btn.innerText = "إيقاف";
@@ -556,7 +602,6 @@
       document.getElementById('timerBtn').className = "bg-emerald-500 text-white text-[10px] px-1.5 py-0.5 rounded";
     }
 
-    // Modal القرعة
     function openPickerModal() { document.getElementById('pickerModal').classList.remove('hidden'); document.getElementById('pickerModal').classList.add('flex'); }
     function closePickerModal() { document.getElementById('pickerModal').classList.add('hidden'); }
     function pickRandomStudent() {
@@ -568,7 +613,6 @@
       display.classList.remove('hidden');
     }
 
-    // Modal الحاسبة
     function openCalcModal() { document.getElementById('calcModal').classList.remove('hidden'); document.getElementById('calcModal').classList.add('flex'); }
     function closeCalcModal() { document.getElementById('calcModal').classList.add('hidden'); }
     function calculateGrades() {
