@@ -71,16 +71,16 @@
         <p class="text-indigo-100 text-xs sm:text-sm mt-1">المساعد الشامل للمعلمة: أوراق عمل، ألعاب تعليمية، شهادات تقدير ونقل سريع</p>
       </div>
 
-      <!-- أدوات التحكم والنقل بالكود -->
+      <!-- أدوات التحكم والنقل بالكود المختصر -->
       <div class="flex flex-wrap items-center gap-2 justify-center">
-        <button onclick="copyDocumentCode()" class="bg-pink-500 hover:bg-pink-600 text-white px-3 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1 shadow">
-          📋 نسخ كود المستند (من الهاتف)
+        <button onclick="exportCode()" class="bg-pink-500 hover:bg-pink-600 text-white px-3.5 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5 shadow">
+          <span>📲</span> إنشاء كود الربط
         </button>
-        <button onclick="toggleModal('importCodeModal')" class="bg-amber-500 hover:bg-amber-600 text-white px-3 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1 shadow">
-          📥 إدخال الكود (في الكمبيوتر)
+        <button onclick="toggleModal('importModal')" class="bg-amber-500 hover:bg-amber-600 text-white px-3.5 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5 shadow">
+          <span>📥</span> إدخال كود الربط
         </button>
-        <button onclick="exportDraft()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1 shadow">
-          💾 حفظ ملف
+        <button onclick="exportDraft()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-3.5 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5 shadow">
+          <span>💾</span> حفظ ملف
         </button>
       </div>
     </div>
@@ -254,21 +254,29 @@
 
   </main>
 
-  <!-- Modal إدخال الكود في الكمبيوتر -->
-  <div id="importCodeModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden no-print">
-    <div class="bg-white rounded-3xl p-6 max-w-md w-full shadow-2xl space-y-4">
-      <div class="flex justify-between items-center border-b pb-2">
-        <h3 class="font-bold text-slate-800 text-sm">📥 إدخال كود المستند</h3>
-        <button onclick="toggleModal('importCodeModal')" class="text-slate-400 hover:text-slate-600 font-bold">✕</button>
+  <!-- 1. نافذة عرض كود الربط (على الهاتف) -->
+  <div id="exportModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden no-print">
+    <div class="bg-white rounded-3xl p-6 max-w-sm w-full shadow-2xl space-y-4 text-center">
+      <h3 class="font-bold text-slate-800 text-sm">📲 كود الربط المباشر</h3>
+      <p class="text-xs text-slate-500">انسخي هذا الكود المكتنز وأرسليه للكمبيوتر لفتح المستند فوراً:</p>
+      <input type="text" id="generatedSyncCode" readonly class="w-full p-3 border border-indigo-200 rounded-xl text-xs font-mono bg-indigo-50/50 text-indigo-700 font-bold text-center select-all" onclick="this.select()">
+      <div class="flex gap-2">
+        <button onclick="copyGeneratedCode()" class="flex-1 bg-pink-500 hover:bg-pink-600 text-white py-2.5 rounded-xl text-xs font-bold transition shadow">📋 نسخ الكود</button>
+        <button onclick="toggleModal('exportModal')" class="bg-slate-100 hover:bg-slate-200 text-slate-600 px-4 py-2.5 rounded-xl text-xs font-bold transition">إغلاق</button>
       </div>
+    </div>
+  </div>
 
-      <p class="text-xs text-slate-600">الصقي الكود الذي نسختيه من الهاتف هنا:</p>
-      
-      <textarea id="pastedSyncCode" rows="4" class="w-full p-2.5 border border-slate-300 rounded-xl text-xs font-mono bg-slate-50 focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="الصقي الكود هنا..."></textarea>
-
-      <button onclick="applyPastedCode()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2.5 rounded-xl text-xs font-bold transition shadow">
-        ✨ فتح المستند فوراً
-      </button>
+  <!-- 2. نافذة إدخال كود الربط (على الكمبيوتر) -->
+  <div id="importModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden no-print">
+    <div class="bg-white rounded-3xl p-6 max-w-sm w-full shadow-2xl space-y-4">
+      <div class="flex justify-between items-center border-b pb-2">
+        <h3 class="font-bold text-slate-800 text-sm">📥 إدخال كود الربط</h3>
+        <button onclick="toggleModal('importModal')" class="text-slate-400 hover:text-slate-600 font-bold">✕</button>
+      </div>
+      <p class="text-xs text-slate-600">الصقي الكود المختصر المرسل من الهاتف هنا:</p>
+      <input type="text" id="inputSyncCode" class="w-full p-3 border border-slate-300 rounded-xl text-xs font-mono bg-slate-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-center" placeholder="الصقي الكود هنا...">
+      <button onclick="importCode()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2.5 rounded-xl text-xs font-bold transition shadow">✨ فتح المستند فوراً</button>
     </div>
   </div>
 
@@ -313,7 +321,6 @@
         const content = document.getElementById('textSheetContent').value || 'الرجاء كتابة المحتوى...';
         const fontSize = document.getElementById('textSizeOpt').value;
         const copies = parseInt(document.getElementById('textCopiesOpt').value);
-
         const formattedText = content.replace(/\n/g, '<br/>');
 
         for (let i = 0; i < copies; i++) {
@@ -352,19 +359,13 @@
         const gridSize = parseInt(document.getElementById('gameGridSize').value);
 
         const words = wordsStr.split(/[,،\s]+/).filter(w => w.trim().length > 0);
-        const grid = Array(gridSize).fill(null).map(() => Array(gridSize).fill(''));
         const chars = lang === 'ar' ? 'أبتثجحخدذرزسشصضطظعغفقكلمنهوي' : 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-
-        for(let r=0; r<gridSize; r++) {
-          for(let c=0; c<gridSize; c++) {
-            grid[r][c] = chars.charAt(Math.floor(Math.random() * chars.length));
-          }
-        }
 
         let gridHtml = `<div class="grid gap-1 justify-center my-4" style="grid-template-columns: repeat(${gridSize}, minmax(0, 1fr)); width: fit-content; margin-left: auto; margin-right: auto;">`;
         for(let r=0; r<gridSize; r++) {
           for(let c=0; c<gridSize; c++) {
-            gridHtml += `<div class="word-grid-cell text-sm">${grid[r][c]}</div>`;
+            const char = chars.charAt(Math.floor(Math.random() * chars.length));
+            gridHtml += `<div class="word-grid-cell text-sm">${char}</div>`;
           }
         }
         gridHtml += `</div>`;
@@ -396,7 +397,6 @@
         const reason = document.getElementById('certReason').value || (lang === 'ar' ? 'للتفوق والتميز الدراسي' : 'For academic excellence');
         const teacher = document.getElementById('certTeacher').value || (lang === 'ar' ? 'معلمة المادة' : 'Teacher');
         const date = document.getElementById('certDate').value || '2026/09/25';
-
         const isAr = lang === 'ar';
 
         area.innerHTML = `
@@ -431,80 +431,85 @@
       }
     }
 
-    function getCurrentData() {
+    // --- 🚀 منطق التزامن المبسط والمشفر خفيف الوزن ---
+    
+    // الحصول على البيانات بتنسيق خفيف
+    function getFormState() {
       return {
-        activeTab,
-        textTitle: document.getElementById('textSheetTitle').value,
-        textContent: document.getElementById('textSheetContent').value,
-        imgTitle: document.getElementById('imgSheetTitle').value,
-        uploadedImageData,
-        gameTitle: document.getElementById('gameTitle').value,
-        gameWords: document.getElementById('gameWords').value,
-        certStudentName: document.getElementById('certStudentName').value,
-        certReason: document.getElementById('certReason').value,
-        certTeacher: document.getElementById('certTeacher').value,
-        certDate: document.getElementById('certDate').value
+        tab: activeTab,
+        tt: document.getElementById('textSheetTitle').value,
+        tc: document.getElementById('textSheetContent').value,
+        it: document.getElementById('imgSheetTitle').value,
+        img: uploadedImageData,
+        gt: document.getElementById('gameTitle').value,
+        gw: document.getElementById('gameWords').value,
+        cs: document.getElementById('certStudentName').value,
+        cr: document.getElementById('certReason').value,
+        ct: document.getElementById('certTeacher').value,
+        cd: document.getElementById('certDate').value
       };
     }
 
-    function applyData(data) {
-      if (data.textTitle !== undefined) document.getElementById('textSheetTitle').value = data.textTitle;
-      if (data.textContent !== undefined) document.getElementById('textSheetContent').value = data.textContent;
-      if (data.imgTitle !== undefined) document.getElementById('imgSheetTitle').value = data.imgTitle;
-      if (data.uploadedImageData !== undefined) uploadedImageData = data.uploadedImageData;
-      if (data.gameTitle !== undefined) document.getElementById('gameTitle').value = data.gameTitle;
-      if (data.gameWords !== undefined) document.getElementById('gameWords').value = data.gameWords;
-      if (data.certStudentName !== undefined) document.getElementById('certStudentName').value = data.certStudentName;
-      if (data.certReason !== undefined) document.getElementById('certReason').value = data.certReason;
-      if (data.certTeacher !== undefined) document.getElementById('certTeacher').value = data.certTeacher;
-      if (data.certDate !== undefined) document.getElementById('certDate').value = data.certDate;
+    // تطبيق البيانات على الاستمارة
+    function setFormState(data) {
+      if (data.tt !== undefined) document.getElementById('textSheetTitle').value = data.tt;
+      if (data.tc !== undefined) document.getElementById('textSheetContent').value = data.tc;
+      if (data.it !== undefined) document.getElementById('imgSheetTitle').value = data.it;
+      if (data.img !== undefined) uploadedImageData = data.img;
+      if (data.gt !== undefined) document.getElementById('gameTitle').value = data.gt;
+      if (data.gw !== undefined) document.getElementById('gameWords').value = data.gw;
+      if (data.cs !== undefined) document.getElementById('certStudentName').value = data.cs;
+      if (data.cr !== undefined) document.getElementById('certReason').value = data.cr;
+      if (data.ct !== undefined) document.getElementById('certTeacher').value = data.ct;
+      if (data.cd !== undefined) document.getElementById('certDate').value = data.cd;
 
-      if (data.activeTab) switchTab(data.activeTab);
+      if (data.tab) switchTab(data.tab);
       else renderPreview();
     }
 
-    // 1. نسخ الكود من الهاتف
-    function copyDocumentCode() {
-      const data = JSON.stringify(getCurrentData());
+    // 1️⃣ إنشاء كود مشفر خفيف الوزن (Base64)
+    function exportCode() {
+      const jsonStr = JSON.stringify(getFormState());
+      const encodedCode = btoa(encodeURIComponent(jsonStr));
       
-      // استخدام الحافظة المؤقتة
-      const dummy = document.createElement("textarea");
-      document.body.appendChild(dummy);
-      dummy.value = data;
-      dummy.select();
-      document.execCommand("copy");
-      document.body.removeChild(dummy);
-
-      alert("تم نسخ كود المستند بنجاح! 📋\nأرسلي النص المنسوخ إلى كمبيوترك (عبر واتساب أو حفظ الرسائل)، ثم اضغطي هناك على 'إدخال الكود'.");
+      document.getElementById('generatedSyncCode').value = encodedCode;
+      toggleModal('exportModal');
     }
 
-    // 2. تطبيق الكود الملصوق في الكمبيوتر
-    function applyPastedCode() {
-      const pastedText = document.getElementById('pastedSyncCode').value.trim();
-      if (!pastedText) {
-        alert("يرجى لصق الكود أولاً!");
-        return;
-      }
+    // نسخ الكود للذاكرة
+    function copyGeneratedCode() {
+      const codeInput = document.getElementById('generatedSyncCode');
+      codeInput.select();
+      document.execCommand('copy');
+      alert('تم نسخ كود الربط المباشر بنجاح! 📋');
+    }
+
+    // 2️⃣ فك التشفير واستيراد الكود
+    function importCode() {
+      const code = document.getElementById('inputSyncCode').value.trim();
+      if (!code) return alert('يرجى لصق الكود أولاً!');
 
       try {
-        const data = JSON.parse(pastedText);
-        applyData(data);
-        toggleModal('importCodeModal');
-        alert("تم فتح المستند بنجاح! 🎉 أصبح جاهزاً للطباعة.");
-      } catch (err) {
-        alert("الكود غير صحيح، يرجى التأكد من نسخ كامل النص المرسل من الهاتف.");
+        const decodedStr = decodeURIComponent(atob(code));
+        const data = JSON.parse(decodedStr);
+        setFormState(data);
+        toggleModal('importModal');
+        alert('تم فتح المستند بنجاح! 🎉');
+      } catch (e) {
+        alert('الكود غير صحيح، يرجى التأكد من نسخ كامل الكود المرسل.');
       }
     }
 
+    // حفظ ملف مسبق
     function exportDraft() {
-      const payload = getCurrentData();
-      const blob = new Blob([JSON.stringify(payload)], { type: 'application/json' });
+      const blob = new Blob([JSON.stringify(getFormState())], { type: 'application/json' });
       const a = document.createElement('a');
       a.href = URL.createObjectURL(blob);
       a.download = `moeen_draft.json`;
       a.click();
     }
 
+    // تحميل الصورة
     function downloadAsImage() {
       const node = document.getElementById('printableArea');
       html2canvas(node, { scale: 2 }).then(canvas => {
