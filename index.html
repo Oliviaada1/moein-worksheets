@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>منصة مُعِين - صانع أوراق العمل والأنشطة والشهادات</title>
+  <title>منصة مُعِين التعليمية - صانع أوراق العمل والأنشطة والشهادات</title>
   
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -11,6 +11,8 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <!-- Lucide Icons -->
   <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- html2canvas للحفظ كصورة -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap');
@@ -31,41 +33,36 @@
       <div class="flex items-center space-x-3 space-x-reverse">
         <i data-lucide="sparkles" class="w-8 h-8 text-amber-300"></i>
         <div>
-          <h1 class="text-2xl font-bold">منصة مُعِين</h1>
-          <p class="text-xs text-indigo-200">أوراق عمل، ألعاب تفاعلية، وشهادات تقدير</p>
+          <h1 class="text-2xl font-bold">✨ منصة مُعِين التعليمية</h1>
+          <p class="text-xs text-indigo-200">مزامنة سحابية بين الأجهزة، أوراق عمل، شهادات، وألعاب تعليمية</p>
         </div>
       </div>
 
       <!-- أزرار الإجراءات والحفظ -->
       <div class="flex flex-wrap items-center gap-2">
-        <!-- زر الحفظ السحابي -->
         <button onclick="toggleModal('saveCloudModal')" class="bg-emerald-500 hover:bg-emerald-600 px-3 py-2 rounded-lg text-sm font-semibold flex items-center gap-1 shadow transition">
           <i data-lucide="cloud-upload" class="w-4 h-4"></i>
-          <span>حفظ أونلاين (الهاتف)</span>
+          <span>حفظ بالإنتظرنت (للنقل)</span>
         </button>
 
-        <!-- زر الفتح السحابي -->
         <button onclick="toggleModal('loadCloudModal')" class="bg-indigo-800 hover:bg-indigo-900 px-3 py-2 rounded-lg text-sm font-semibold flex items-center gap-1 shadow transition">
           <i data-lucide="cloud-download" class="w-4 h-4"></i>
-          <span>فتح أونلاين (الكمبيوتر)</span>
+          <span>فتح بالبحث السحابي</span>
         </button>
 
         <span class="text-indigo-400">|</span>
 
-        <!-- تنزيل ملف محلي -->
         <button onclick="exportJSON()" class="bg-indigo-500 hover:bg-indigo-400 px-3 py-2 rounded-lg text-sm font-medium flex items-center gap-1 transition">
           <i data-lucide="download" class="w-4 h-4"></i>
-          <span>تنزيل ملف</span>
+          <span>تنزيل ملف / حفظ مسودة</span>
         </button>
 
-        <!-- رفع ملف محلي -->
         <label class="bg-indigo-500 hover:bg-indigo-400 px-3 py-2 rounded-lg text-sm font-medium flex items-center gap-1 cursor-pointer transition">
           <i data-lucide="upload" class="w-4 h-4"></i>
-          <span>رفع ملف</span>
+          <span>رفع ملف / استيراد</span>
           <input type="file" id="jsonInput" accept=".json" class="hidden" onchange="importJSON(event)">
         </label>
 
-        <!-- طباعة / PDF -->
         <button onclick="window.print()" class="bg-amber-500 hover:bg-amber-600 px-4 py-2 rounded-lg text-sm font-bold flex items-center gap-1 shadow transition">
           <i data-lucide="printer" class="w-4 h-4"></i>
           <span>طباعة / PDF</span>
@@ -74,38 +71,49 @@
     </div>
   </header>
 
-  <!-- تبويبات التبديل بين الأقسام -->
+  <!-- تبويبات التبديل بين الأقسام (تغطي كافة الخيارات بالصور) -->
   <div class="bg-indigo-100 border-b border-indigo-200 no-print">
-    <div class="max-w-7xl mx-auto px-4 flex gap-4">
-      <button onclick="switchTab('worksheet')" id="tabWorksheet" class="py-3 px-4 font-bold border-b-2 border-indigo-600 text-indigo-700 flex items-center gap-2">
+    <div class="max-w-7xl mx-auto px-4 flex flex-wrap gap-2 py-2">
+      <button onclick="switchTab('worksheet')" id="tabWorksheet" class="py-2 px-4 font-bold rounded-lg border-b-2 border-indigo-600 text-indigo-700 bg-white flex items-center gap-2">
         <i data-lucide="file-text" class="w-4 h-4"></i>
-        <span>أوراق العمل</span>
+        <span>📝 أوراق العمل</span>
       </button>
-      <button onclick="switchTab('games')" id="tabGames" class="py-3 px-4 font-bold text-slate-600 border-b-2 border-transparent hover:text-indigo-600 flex items-center gap-2">
+      <button onclick="switchTab('imageWorksheet')" id="tabImageWorksheet" class="py-2 px-4 font-bold rounded-lg text-slate-600 hover:text-indigo-600 flex items-center gap-2">
+        <i data-lucide="image" class="w-4 h-4"></i>
+        <span>🖼️ ورقة مصورة</span>
+      </button>
+      <button onclick="switchTab('wordGames')" id="tabWordGames" class="py-2 px-4 font-bold rounded-lg text-slate-600 hover:text-indigo-600 flex items-center gap-2">
+        <i data-lucide="puzzle" class="w-4 h-4"></i>
+        <span>🧩 ألعاب الحروف</span>
+      </button>
+      <button onclick="switchTab('mathGames')" id="tabMathGames" class="py-2 px-4 font-bold rounded-lg text-slate-600 hover:text-indigo-600 flex items-center gap-2">
+        <i data-lucide="calculator" class="w-4 h-4"></i>
+        <span>🔢 ألعاب Math</span>
+      </button>
+      <button onclick="switchTab('games')" id="tabGames" class="py-2 px-4 font-bold rounded-lg text-slate-600 hover:text-indigo-600 flex items-center gap-2">
         <i data-lucide="gamepad-2" class="w-4 h-4"></i>
-        <span>الألعاب التفاعلية</span>
+        <span>🎮 بطاقات الأسئلة</span>
       </button>
-      <button onclick="switchTab('certificates')" id="tabCertificates" class="py-3 px-4 font-bold text-slate-600 border-b-2 border-transparent hover:text-indigo-600 flex items-center gap-2">
+      <button onclick="switchTab('certificates')" id="tabCertificates" class="py-2 px-4 font-bold rounded-lg text-slate-600 hover:text-indigo-600 flex items-center gap-2">
         <i data-lucide="award" class="w-4 h-4"></i>
-        <span>شهادات التقدير</span>
+        <span>🎓 شهادات التقدير</span>
       </button>
     </div>
   </div>
 
-  <main class="flex-grow max-w-7xl w-full mx-auto p-4 md:p-6">
+  <main class="flex-grow max-w-7xl w-full mx-auto p-4 md:p-6 space-y-6">
 
-    <!-- 1. قسم أوراق العمل والصور -->
+    <!-- 1. قسم أوراق العمل النصية -->
     <div id="sectionWorksheet" class="grid grid-cols-1 lg:grid-cols-12 gap-6">
-      <!-- تحكم ورقة العمل -->
       <section class="lg:col-span-4 bg-white p-5 rounded-2xl shadow-sm border border-slate-200 space-y-4 no-print">
         <h2 class="text-lg font-bold border-b pb-2 flex items-center gap-2 text-indigo-700">
           <i data-lucide="sliders" class="w-5 h-5"></i>
-          <span>إعداد ورقة العمل</span>
+          <span>📝 إنشاء ورقة عمل نصية / تمارين:</span>
         </h2>
 
         <div>
-          <label class="block text-xs font-bold text-slate-600 mb-1">عنوان ورقة العمل</label>
-          <input type="text" id="inputTitle" value="ورقة عمل: المادة والدروس" oninput="updatePreview()" class="w-full border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-indigo-500 outline-none">
+          <label class="block text-xs font-bold text-slate-600 mb-1">عنوان ورقة العمل / الترويسة:</label>
+          <input type="text" id="inputTitle" value="ورقة عمل: المادة والدروس" oninput="updatePreview()" class="w-full border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-indigo-500 outline-none" placeholder="مثال: ورقة عمل مادة العلوم - الصف الرابع">
         </div>
 
         <div class="grid grid-cols-2 gap-2">
@@ -119,7 +127,6 @@
           </div>
         </div>
 
-        <!-- إضافة صورة إلى ورقة العمل -->
         <div class="border-t pt-3">
           <label class="block text-xs font-bold text-slate-600 mb-1">إضافة صورة لورقة العمل</label>
           <input type="file" id="imageInput" accept="image/*" onchange="handleImageUpload(event)" class="w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 cursor-pointer">
@@ -127,42 +134,271 @@
         </div>
 
         <div>
-          <label class="block text-xs font-bold text-slate-600 mb-1">الأسئلة والتعليمات</label>
-          <textarea id="inputContent" rows="8" oninput="updatePreview()" class="w-full border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-indigo-500 outline-none" placeholder="اكتبي الأسئلة والتمارين هنا..."></textarea>
+          <label class="block text-xs font-bold text-slate-600 mb-1">نص ورقة العمل / الأسئلة والتمارين:</label>
+          <textarea id="inputContent" rows="8" oninput="updatePreview()" class="w-full border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-indigo-500 outline-none" placeholder="اكتبي الأسئلة أو التمرين هنا..."></textarea>
+        </div>
+
+        <div class="grid grid-cols-2 gap-2 border-t pt-3">
+          <div>
+            <label class="block text-xs font-bold text-slate-600 mb-1">حجم الخط:</label>
+            <select id="fontSizeSelect" onchange="updatePreview()" class="w-full border rounded-lg p-2 text-sm">
+              <option value="text-sm">صغير</option>
+              <option value="text-base" selected>متوسط</option>
+              <option value="text-lg">كبير</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-600 mb-1">عدد النسخ في الصفحة:</label>
+            <select id="copiesSelect" class="w-full border rounded-lg p-2 text-sm">
+              <option value="1">نسخة واحدة (صفحة كاملة)</option>
+              <option value="2">نسختان (نصف صفحة)</option>
+            </select>
+          </div>
         </div>
       </section>
 
       <!-- معاينة ورقة العمل -->
-      <section class="lg:col-span-8 bg-white p-8 rounded-2xl shadow-md border border-slate-200 print-area min-h-[600px] flex flex-col justify-between">
-        <div>
-          <div class="border-b-2 border-indigo-600 pb-4 mb-6 flex justify-between items-center">
-            <div>
-              <h1 id="previewTitle" class="text-2xl font-bold text-indigo-900">ورقة عمل: المادة والدروس</h1>
-              <p id="previewSubject" class="text-sm text-slate-600 mt-1">الصف الرابع - العلوم</p>
-            </div>
-            <div class="text-left text-sm text-slate-500 space-y-1">
-              <p>اسم الطالب/ـة: .......................................</p>
-              <p id="previewTeacher">المعلم/ـة: أ. أوليفيا</p>
-            </div>
-          </div>
-
-          <!-- معاينة الصورة المرفقة -->
-          <div id="imagePreviewContainer" class="hidden mb-6 text-center">
-            <img id="previewImage" src="" alt="صورة مرفقة" class="max-h-64 mx-auto rounded-lg shadow-sm border">
-          </div>
-
-          <div id="previewContent" class="text-slate-800 leading-relaxed whitespace-pre-wrap text-base">
-            <!-- الأسئلة -->
+      <section class="lg:col-span-8 space-y-3">
+        <div class="no-print flex justify-between items-center bg-white p-3 rounded-xl border">
+          <span class="font-bold text-sm text-slate-700 flex items-center gap-1">👁️ المعاينة والتحميل:</span>
+          <div class="flex gap-2">
+            <button onclick="downloadAsImage('worksheetPrintArea')" class="bg-purple-600 hover:bg-purple-700 text-white px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1">
+              🖼️ حفظ كصورة (حجم المحتوى فقط)
+            </button>
+            <button onclick="window.print()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1">
+              🖨️ طباعة / PDF
+            </button>
           </div>
         </div>
 
-        <div class="border-t pt-4 text-center text-xs text-slate-400 mt-8">
-          تمت الطباعة بواسطة منصة مُعِين التعليمية
+        <div id="worksheetPrintArea" class="bg-white p-8 rounded-2xl shadow-md border border-slate-200 print-area min-h-[600px] flex flex-col justify-between">
+          <div>
+            <div class="border-b-2 border-indigo-600 pb-4 mb-6 flex justify-between items-center">
+              <div>
+                <h1 id="previewTitle" class="text-2xl font-bold text-indigo-900">ورقة عمل: المادة والدروس</h1>
+                <p id="previewSubject" class="text-sm text-slate-600 mt-1">الصف الرابع - العلوم</p>
+              </div>
+              <div class="text-left text-sm text-slate-500 space-y-1">
+                <p>الاسم: ....................................... | التاريخ: / /</p>
+                <p id="previewTeacher">المعلم/ـة: أ. أوليفيا</p>
+              </div>
+            </div>
+
+            <div id="imagePreviewContainer" class="hidden mb-6 text-center">
+              <img id="previewImage" src="" alt="صورة مرفقة" class="max-h-64 mx-auto rounded-lg shadow-sm border">
+            </div>
+
+            <div id="previewContent" class="text-slate-800 leading-relaxed whitespace-pre-wrap text-base">
+              <!-- الأسئلة -->
+            </div>
+          </div>
+
+          <div class="border-t pt-4 text-center text-xs text-slate-400 mt-8">
+            تمت الطباعة بواسطة منصة مُعِين التعليمية
+          </div>
         </div>
       </section>
     </div>
 
-    <!-- 2. قسم الألعاب التفاعلية -->
+    <!-- 2. قسم ورقة مصورة مع أدوات القص والتعديل -->
+    <div id="sectionImageWorksheet" class="hidden grid grid-cols-1 lg:grid-cols-12 gap-6">
+      <section class="lg:col-span-4 bg-white p-5 rounded-2xl shadow-sm border border-slate-200 space-y-4 no-print">
+        <h2 class="text-lg font-bold border-b pb-2 flex items-center gap-2 text-indigo-700">
+          <i data-lucide="image" class="w-5 h-5"></i>
+          <span>🖼️ إدراج ورقة عمل كصورة وتعديلها:</span>
+        </h2>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-600 mb-1">اختر صورة ورقة العمل / التمرين:</label>
+          <input type="file" id="imgWorksheetInput" accept="image/*" onchange="loadImgWorksheet(event)" class="w-full text-xs text-slate-500 border p-2 rounded-lg">
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-600 mb-1">عنوان ورقة العمل / الترويسة:</label>
+          <input type="text" id="imgWorksheetTitle" value="ورقة عمل مصورة" oninput="updateImgWorksheet()" class="w-full border rounded-lg p-2 text-sm" placeholder="مثال: ورقة عمل العلوم - الصف الرابع">
+        </div>
+
+        <!-- أدوات قص وتعديل الصورة -->
+        <div class="bg-amber-50 p-4 rounded-xl border border-amber-200 space-y-3">
+          <h3 class="text-xs font-bold text-amber-800 flex items-center gap-1">
+            ✂️ أدوات قص وتعديل الصورة (إزالة الروابط والحقوق السفلية):
+          </h3>
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 mb-1">حجم تكبير/تصغير الصورة:</label>
+            <input type="range" id="imgScale" min="50" max="150" value="100" oninput="updateImgWorksheet()" class="w-full">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 mb-1">قص وإخفاء الجزء السفلي:</label>
+            <input type="range" id="imgCropBottom" min="0" max="100" value="0" oninput="updateImgWorksheet()" class="w-full">
+          </div>
+        </div>
+      </section>
+
+      <section class="lg:col-span-8 space-y-3">
+        <div class="no-print flex justify-between items-center bg-white p-3 rounded-xl border">
+          <span class="font-bold text-sm text-slate-700">👁️ المعاينة والتحميل:</span>
+          <div class="flex gap-2">
+            <button onclick="downloadAsImage('imgWorksheetPrintArea')" class="bg-purple-600 hover:bg-purple-700 text-white px-3 py-1.5 rounded-lg text-xs font-bold">
+              🖼️ حفظ كصورة (حجم المحتوى فقط)
+            </button>
+            <button onclick="window.print()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1.5 rounded-lg text-xs font-bold">
+              🖨️ طباعة / PDF
+            </button>
+          </div>
+        </div>
+
+        <div id="imgWorksheetPrintArea" class="bg-white p-8 rounded-2xl shadow-md border border-slate-200 print-area min-h-[600px]">
+          <div class="border-b-2 border-indigo-600 pb-3 mb-4 flex justify-between items-center">
+            <h1 id="prevImgTitle" class="text-xl font-bold text-indigo-900">ورقة عمل مصورة</h1>
+            <span class="text-sm text-slate-500">الاسم: ....................................... | التاريخ: / /</span>
+          </div>
+
+          <div id="imgCropWrapper" class="overflow-hidden border-2 border-dashed border-slate-200 rounded-xl p-2 text-center min-h-[400px] flex items-center justify-center">
+            <img id="prevImgWorksheet" src="" alt="الرجاء اختيار صورة ورقة العمل من الأعلى..." class="max-w-full hidden transition-all">
+            <p id="imgPlaceholder" class="text-slate-400 font-semibold text-sm">الرجاء اختيار صورة ورقة العمل من الأعلى...</p>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- 3. قسم ألعاب الحروف والكلمات (Word Search) -->
+    <div id="sectionWordGames" class="hidden grid grid-cols-1 lg:grid-cols-12 gap-6">
+      <section class="lg:col-span-4 bg-white p-5 rounded-2xl shadow-sm border border-slate-200 space-y-4 no-print">
+        <h2 class="text-lg font-bold border-b pb-2 flex items-center gap-2 text-indigo-700">
+          <i data-lucide="puzzle" class="w-5 h-5"></i>
+          <span>🧩 لعبة البحث عن الكلمات والحروف:</span>
+        </h2>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-600 mb-1">عنوان اللعبة / النشاط:</label>
+          <input type="text" id="wordGameTitle" value="لعبة البحث عن الكلمات المختبئة" oninput="generateWordSearch()" class="w-full border rounded-lg p-2 text-sm">
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-600 mb-1">الكلمات المطلوب البحث عنها (افصلي بينها بفاصلة):</label>
+          <input type="text" id="wordGameList" value="مدرسة, علم, قلم, كتاب, معلم" oninput="generateWordSearch()" class="w-full border rounded-lg p-2 text-sm" placeholder="مثال: مدرسة، علم، قلم">
+        </div>
+
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="block text-xs font-bold text-slate-600 mb-1">لغة اللعبة:</label>
+            <select id="wordGameLang" onchange="generateWordSearch()" class="w-full border rounded-lg p-2 text-sm">
+              <option value="ar">العربية</option>
+              <option value="en">English</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-600 mb-1">حجم الشبكة:</label>
+            <select id="wordGameGridSize" onchange="generateWordSearch()" class="w-full border rounded-lg p-2 text-sm">
+              <option value="8">8x8 (مبتدئ)</option>
+              <option value="10">10x10 (متوسط)</option>
+            </select>
+          </div>
+        </div>
+      </section>
+
+      <section class="lg:col-span-8 space-y-3">
+        <div class="no-print flex justify-between items-center bg-white p-3 rounded-xl border">
+          <span class="font-bold text-sm text-slate-700">👁️ المعاينة والتحميل:</span>
+          <div class="flex gap-2">
+            <button onclick="downloadAsImage('wordGamePrintArea')" class="bg-purple-600 hover:bg-purple-700 text-white px-3 py-1.5 rounded-lg text-xs font-bold">
+              🖼️ حفظ كصورة (حجم المحتوى فقط)
+            </button>
+            <button onclick="window.print()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1.5 rounded-lg text-xs font-bold">
+              🖨️ طباعة / PDF
+            </button>
+          </div>
+        </div>
+
+        <div id="wordGamePrintArea" class="bg-white p-8 rounded-2xl shadow-md border border-slate-200 print-area text-center space-y-6">
+          <div class="border-b pb-3 flex justify-between items-center">
+            <h1 id="prevWordGameTitle" class="text-xl font-bold text-indigo-900">🧩 لعبة البحث عن الكلمات المختبئة</h1>
+            <span class="text-sm text-slate-500">الاسم: ....................................... | التاريخ: / /</span>
+          </div>
+
+          <div>
+            <p class="text-sm font-bold text-slate-600 mb-3">ابحث عن الكلمات التالية:</p>
+            <div id="wordTags" class="flex flex-wrap justify-center gap-2 mb-6">
+              <!-- الكلمات المطلوب البحث عنها -->
+            </div>
+          </div>
+
+          <div id="wordGrid" class="inline-grid gap-1.5 justify-center bg-indigo-50/50 p-4 rounded-2xl border border-indigo-100">
+            <!-- شبكة الأحرف -->
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- 4. قسم ألعاب الرياضيات Math Worksheets -->
+    <div id="sectionMathGames" class="hidden grid grid-cols-1 lg:grid-cols-12 gap-6">
+      <section class="lg:col-span-4 bg-white p-5 rounded-2xl shadow-sm border border-slate-200 space-y-4 no-print">
+        <h2 class="text-lg font-bold border-b pb-2 flex items-center gap-2 text-indigo-700">
+          <i data-lucide="calculator" class="w-5 h-5"></i>
+          <span>🔢 تصميم أنشطة وألعاب الرياضيات (Math Worksheets):</span>
+        </h2>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-600 mb-1">عنوان النشاط:</label>
+          <input type="text" id="mathTitle" value="تحدي أبطال الرياضيات (Math Challenge)" oninput="generateMathSheet()" class="w-full border rounded-lg p-2 text-sm">
+        </div>
+
+        <div class="grid grid-cols-3 gap-2">
+          <div>
+            <label class="block text-xs font-bold text-slate-600 mb-1">نوع النشاط:</label>
+            <select id="mathOp" onchange="generateMathSheet()" class="w-full border rounded-lg p-2 text-sm">
+              <option value="+">جمع (+)</option>
+              <option value="-">طرح (-)</option>
+              <option value="*">ضرب (×)</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-600 mb-1">مستوى الصعوبة:</label>
+            <select id="mathLevel" onchange="generateMathSheet()" class="w-full border rounded-lg p-2 text-sm">
+              <option value="10">سهل (أرقام من 1 إلى 10)</option>
+              <option value="20">متوسط (أرقام من 1 إلى 20)</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-600 mb-1">عدد المسائل:</label>
+            <select id="mathCount" onchange="generateMathSheet()" class="w-full border rounded-lg p-2 text-sm">
+              <option value="6">6 مسائل</option>
+              <option value="9">9 مسائل</option>
+              <option value="12" selected>12 مسألة</option>
+            </select>
+          </div>
+        </div>
+      </section>
+
+      <section class="lg:col-span-8 space-y-3">
+        <div class="no-print flex justify-between items-center bg-white p-3 rounded-xl border">
+          <span class="font-bold text-sm text-slate-700">👁️ المعاينة والتحميل:</span>
+          <div class="flex gap-2">
+            <button onclick="downloadAsImage('mathPrintArea')" class="bg-purple-600 hover:bg-purple-700 text-white px-3 py-1.5 rounded-lg text-xs font-bold">
+              🖼️ حفظ كصورة (حجم المحتوى فقط)
+            </button>
+            <button onclick="window.print()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1.5 rounded-lg text-xs font-bold">
+              🖨️ طباعة / PDF
+            </button>
+          </div>
+        </div>
+
+        <div id="mathPrintArea" class="bg-white p-8 rounded-2xl shadow-md border border-slate-200 print-area space-y-6">
+          <div class="border-b pb-3 flex justify-between items-center">
+            <h1 id="prevMathTitle" class="text-xl font-bold text-indigo-900">🔢 تحدي أبطال الرياضيات (Math Challenge)</h1>
+            <span class="text-sm text-slate-500">الاسم: ....................................... | التاريخ: / /</span>
+          </div>
+
+          <p class="text-center text-sm font-bold text-slate-600">احسب النتيجة واكتب الإجابة في المربع:</p>
+
+          <div id="mathGrid" class="grid grid-cols-3 gap-4">
+            <!-- الكروت الرياضية التفاعلية -->
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- 5. قسم الألعاب التفاعلية وبطاقات الأسئلة -->
     <div id="sectionGames" class="hidden grid grid-cols-1 lg:grid-cols-12 gap-6">
       <section class="lg:col-span-4 bg-white p-5 rounded-2xl shadow-sm border border-slate-200 space-y-4 no-print">
         <h2 class="text-lg font-bold border-b pb-2 flex items-center gap-2 text-indigo-700">
@@ -204,38 +440,95 @@
       </section>
     </div>
 
-    <!-- 3. قسم شهادات التقدير -->
+    <!-- 6. قسم شهادات التقدير (شامل الخيارات باللغتين والثيمات وشعار المؤسسة) -->
     <div id="sectionCertificates" class="hidden grid grid-cols-1 lg:grid-cols-12 gap-6">
       <section class="lg:col-span-4 bg-white p-5 rounded-2xl shadow-sm border border-slate-200 space-y-4 no-print">
         <h2 class="text-lg font-bold border-b pb-2 flex items-center gap-2 text-indigo-700">
           <i data-lucide="award" class="w-5 h-5"></i>
-          <span>بيانات شهادة التقدير</span>
+          <span>🎓 إعداد وتخصيص شهادة التقدير:</span>
         </h2>
-        <div>
-          <label class="block text-xs font-bold text-slate-600 mb-1">اسم الطالب/ـة المتميز/ـة</label>
-          <input type="text" id="certStudent" value="سارة محمد" oninput="updateCert()" class="w-full border rounded-lg p-2 text-sm">
+
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="block text-xs font-bold text-slate-600 mb-1">ثيم ولون الشهادة:</label>
+            <select id="certTheme" onchange="updateCert()" class="w-full border rounded-lg p-2 text-sm">
+              <option value="royal">👑 ملكي (أزرق داكن وذهبي)</option>
+              <option value="amber">⭐ ذهبي دافئ</option>
+              <option value="emerald">🌿 إمرالد (أخضر زمردي)</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-600 mb-1">شعار المدرسة / المؤسسة:</label>
+            <input type="file" id="certLogoInput" accept="image/*" onchange="handleCertLogoUpload(event)" class="w-full text-xs border p-1 rounded-lg">
+          </div>
         </div>
+
         <div>
-          <label class="block text-xs font-bold text-slate-600 mb-1">سبب التقدير / الإنجاز</label>
-          <input type="text" id="certReason" value="لتفوقها المتميز في مادة العلوم وحصولها على الدرجة النهائية" oninput="updateCert()" class="w-full border rounded-lg p-2 text-sm">
+          <label class="block text-xs font-bold text-slate-600 mb-1">اسم الطالب / الطالبة:</label>
+          <input type="text" id="certStudent" value="سارة محمد" oninput="updateCert()" class="w-full border rounded-lg p-2 text-sm" placeholder="اسم الطالبة كاملاً">
         </div>
+
         <div>
-          <label class="block text-xs font-bold text-slate-600 mb-1">اسم المعلم/ـة أو المدير/ـة</label>
-          <input type="text" id="certSign" value="أ. أوليفيا" oninput="updateCert()" class="w-full border rounded-lg p-2 text-sm">
+          <label class="block text-xs font-bold text-slate-600 mb-1">سبب التقدير / نص الشهادة:</label>
+          <input type="text" id="certReason" value="لتفوقها المتميز في مادة العلوم وحصولها على الدرجة النهائية" oninput="updateCert()" class="w-full border rounded-lg p-2 text-sm" placeholder="مثال: للتفوق والتميز في مادة الرياضيات خلال الفصل الدراسي الأول">
+        </div>
+
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="block text-xs font-bold text-slate-600 mb-1">اسم المعلمة / المدير/ة:</label>
+            <input type="text" id="certSign" value="أ. أوليفيا" oninput="updateCert()" class="w-full border rounded-lg p-2 text-sm" placeholder="معلمة المادة">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-600 mb-1">التاريخ:</label>
+            <input type="text" id="certDate" value="2026/09/26" oninput="updateCert()" class="w-full border rounded-lg p-2 text-sm">
+          </div>
+        </div>
+
+        <!-- إضافة خيار اللغة الإنجليزية -->
+        <div class="border-t pt-3">
+          <label class="block text-xs font-bold text-slate-600 mb-1">لغة الشهادة (Language):</label>
+          <select id="certLang" onchange="updateCert()" class="w-full border rounded-lg p-2 text-sm font-semibold text-indigo-700 bg-indigo-50">
+            <option value="ar">العربية (Arabic)</option>
+            <option value="en">الإنجليزية (English Certificate)</option>
+          </select>
         </div>
       </section>
 
-      <section class="lg:col-span-8 bg-amber-50/40 p-10 rounded-2xl border-4 border-amber-300 text-center print-area space-y-6">
-        <div class="text-amber-600 flex justify-center">
-          <i data-lucide="award" class="w-16 h-16"></i>
+      <section class="lg:col-span-8 space-y-3">
+        <div class="no-print flex justify-between items-center bg-white p-3 rounded-xl border">
+          <span class="font-bold text-sm text-slate-700">👁️ المعاينة والتحميل:</span>
+          <div class="flex gap-2">
+            <button onclick="downloadAsImage('certPrintArea')" class="bg-purple-600 hover:bg-purple-700 text-white px-3 py-1.5 rounded-lg text-xs font-bold">
+              🖼️ حفظ كصورة (حجم المحتوى فقط)
+            </button>
+            <button onclick="window.print()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1.5 rounded-lg text-xs font-bold">
+              🖨️ طباعة / PDF
+            </button>
+          </div>
         </div>
-        <h1 class="text-3xl font-extrabold text-amber-900 tracking-wide">شهادة تقدير وتميز</h1>
-        <p class="text-slate-600">تتقدم إدارة المدرسة بخالص الشكر والتقدير للطالب/ـة:</p>
-        <h2 id="prevCertStudent" class="text-3xl font-bold text-indigo-800 underline decoration-amber-400">سارة محمد</h2>
-        <p id="prevCertReason" class="text-slate-700 max-w-lg mx-auto leading-relaxed">لتفوقها المتميز في مادة العلوم وحصولها على الدرجة النهائية</p>
-        <div class="pt-8 flex justify-between items-center px-12 border-t border-amber-200">
-          <p class="text-xs text-slate-400">التاريخ: 2026/09/26</p>
-          <p id="prevCertSign" class="font-bold text-slate-800">التوقيع: أ. أوليفيا</p>
+
+        <div id="certPrintArea" class="bg-amber-50/40 p-10 rounded-2xl border-8 border-indigo-900 text-center print-area space-y-6 relative overflow-hidden transition-all">
+          <div id="certLogoContainer" class="hidden justify-center mb-2">
+            <img id="certLogoImg" src="" alt="شعار المؤسسة" class="h-16 object-contain">
+          </div>
+
+          <div id="certHeaderIcon" class="text-amber-600 flex justify-center">
+            <i data-lucide="award" class="w-16 h-16"></i>
+          </div>
+
+          <p id="certSubHeader" class="text-xs uppercase tracking-widest text-slate-500 font-bold">شهادة تقدير رسمية</p>
+          <h1 id="certMainTitle" class="text-3xl font-extrabold text-indigo-950 tracking-wide">🎓 شهادة تقدير وتميز 🎓</h1>
+
+          <p id="certIntroText" class="text-slate-600">تتقدم إدارة المدرسة بخالص الشكر والتقدير للطالب/ـة:</p>
+          
+          <h2 id="prevCertStudent" class="text-3xl font-bold text-indigo-800 underline decoration-amber-400 py-2">سارة محمد</h2>
+
+          <p id="prevCertReason" class="text-slate-700 max-w-lg mx-auto leading-relaxed font-medium">لتفوقها المتميز في مادة العلوم وحصولها على الدرجة النهائية</p>
+
+          <div class="pt-8 flex justify-between items-center px-12 border-t border-indigo-200/60 mt-8">
+            <p id="prevCertDate" class="text-xs text-slate-500 font-semibold">التاريخ: 2026/09/26</p>
+            <p id="prevCertSign" class="font-bold text-indigo-950">التوقيع: أ. أوليفيا</p>
+          </div>
         </div>
       </section>
     </div>
@@ -310,47 +603,62 @@
 
   <!-- الأكواد والمنطق الشامل -->
   <script>
-    // 1. إعدادات الاتصال بـ Supabase
+    // 1. إعدادات Supabase
     const SUPABASE_URL = 'https://rfmcgonijlkjbvjjbrab.supabase.co';
-    // ⚠️ استبدلي الخانة التالية بـ anon key الخاص بكِ
-    const SUPABASE_ANON_KEY = 'ضعـي_مفتاح_anon_هنا';
-
+    // ⚠️ استبدلي الخانة التالية بـ anon key الخاص بكِ
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJmbWNnb25pamxramJ2ampicmFiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTA0MDc5NjAsImV4cCI6MjEwNTk4Mzk2MH0.ZmQlBXWwGIrxhBMl8W1HEXCYNLIJm-oxJp05t1ce-MM';
     const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
     let uploadedImageBase64 = '';
+    let certLogoBase64 = '';
 
     lucide.createIcons();
 
-    // التبديل بين التبويبات (أوراق العمل، الألعاب، الشهادات)
+    // التبديل بين التبويبات الشاملة
     function switchTab(tab) {
-      document.getElementById('sectionWorksheet').classList.add('hidden');
-      document.getElementById('sectionGames').classList.add('hidden');
-      document.getElementById('sectionCertificates').classList.add('hidden');
+      const sections = ['sectionWorksheet', 'sectionImageWorksheet', 'sectionWordGames', 'sectionMathGames', 'sectionGames', 'sectionCertificates'];
+      sections.forEach(s => document.getElementById(s).classList.add('hidden'));
 
-      document.getElementById('tabWorksheet').className = 'py-3 px-4 font-bold text-slate-600 border-b-2 border-transparent hover:text-indigo-600 flex items-center gap-2';
-      document.getElementById('tabGames').className = 'py-3 px-4 font-bold text-slate-600 border-b-2 border-transparent hover:text-indigo-600 flex items-center gap-2';
-      document.getElementById('tabCertificates').className = 'py-3 px-4 font-bold text-slate-600 border-b-2 border-transparent hover:text-indigo-600 flex items-center gap-2';
+      const tabs = ['tabWorksheet', 'tabImageWorksheet', 'tabWordGames', 'tabMathGames', 'tabGames', 'tabCertificates'];
+      tabs.forEach(t => {
+        const btn = document.getElementById(t);
+        if (btn) btn.className = 'py-2 px-4 font-bold rounded-lg text-slate-600 hover:text-indigo-600 flex items-center gap-2';
+      });
 
       if (tab === 'worksheet') {
         document.getElementById('sectionWorksheet').classList.remove('hidden');
-        document.getElementById('tabWorksheet').className = 'py-3 px-4 font-bold border-b-2 border-indigo-600 text-indigo-700 flex items-center gap-2';
+        document.getElementById('tabWorksheet').className = 'py-2 px-4 font-bold rounded-lg border-b-2 border-indigo-600 text-indigo-700 bg-white flex items-center gap-2';
+      } else if (tab === 'imageWorksheet') {
+        document.getElementById('sectionImageWorksheet').classList.remove('hidden');
+        document.getElementById('tabImageWorksheet').className = 'py-2 px-4 font-bold rounded-lg border-b-2 border-indigo-600 text-indigo-700 bg-white flex items-center gap-2';
+      } else if (tab === 'wordGames') {
+        document.getElementById('sectionWordGames').classList.remove('hidden');
+        document.getElementById('tabWordGames').className = 'py-2 px-4 font-bold rounded-lg border-b-2 border-indigo-600 text-indigo-700 bg-white flex items-center gap-2';
+        generateWordSearch();
+      } else if (tab === 'mathGames') {
+        document.getElementById('sectionMathGames').classList.remove('hidden');
+        document.getElementById('tabMathGames').className = 'py-2 px-4 font-bold rounded-lg border-b-2 border-indigo-600 text-indigo-700 bg-white flex items-center gap-2';
+        generateMathSheet();
       } else if (tab === 'games') {
         document.getElementById('sectionGames').classList.remove('hidden');
-        document.getElementById('tabGames').className = 'py-3 px-4 font-bold border-b-2 border-indigo-600 text-indigo-700 flex items-center gap-2';
+        document.getElementById('tabGames').className = 'py-2 px-4 font-bold rounded-lg border-b-2 border-indigo-600 text-indigo-700 bg-white flex items-center gap-2';
       } else if (tab === 'certificates') {
         document.getElementById('sectionCertificates').classList.remove('hidden');
-        document.getElementById('tabCertificates').className = 'py-3 px-4 font-bold border-b-2 border-indigo-600 text-indigo-700 flex items-center gap-2';
+        document.getElementById('tabCertificates').className = 'py-2 px-4 font-bold rounded-lg border-b-2 border-indigo-600 text-indigo-700 bg-white flex items-center gap-2';
       }
     }
 
-    // تحديث معاينة ورقة العمل
+    // ورقة العمل النصية
     function updatePreview() {
       document.getElementById('previewTitle').innerText = document.getElementById('inputTitle').value || 'عنوان ورقة العمل';
       document.getElementById('previewSubject').innerText = document.getElementById('inputSubject').value || 'الصف / المادة';
       document.getElementById('previewTeacher').innerText = 'المعلم/ـة: ' + (document.getElementById('inputTeacher').value || '');
-      document.getElementById('previewContent').innerText = document.getElementById('inputContent').value || 'اكتبي الأسئلة هنا...';
+      
+      const contentElem = document.getElementById('previewContent');
+      contentElem.innerText = document.getElementById('inputContent').value || 'اكتبي الأسئلة هنا...';
+      contentElem.className = `text-slate-800 leading-relaxed whitespace-pre-wrap ${document.getElementById('fontSizeSelect').value}`;
     }
 
-    // رفع ومعالجة الصور
     function handleImageUpload(e) {
       const file = e.target.files[0];
       if (!file) return;
@@ -371,7 +679,84 @@
       document.getElementById('btnRemoveImg').classList.add('hidden');
     }
 
-    // تحديث الألعاب والشهادات
+    // ورقة مصورة وتعديلها
+    function loadImgWorksheet(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(event) {
+        const img = document.getElementById('prevImgWorksheet');
+        img.src = event.target.result;
+        img.classList.remove('hidden');
+        document.getElementById('imgPlaceholder').classList.add('hidden');
+        updateImgWorksheet();
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function updateImgWorksheet() {
+      document.getElementById('prevImgTitle').innerText = document.getElementById('imgWorksheetTitle').value || 'ورقة عمل مصورة';
+      const img = document.getElementById('prevImgWorksheet');
+      const scale = document.getElementById('imgScale').value;
+      const crop = document.getElementById('imgCropBottom').value;
+
+      img.style.width = `${scale}%`;
+      img.style.clipPath = `inset(0 0 ${crop}% 0)`;
+    }
+
+    // توليد ألعاب الحروف (Word Search)
+    function generateWordSearch() {
+      const title = document.getElementById('wordGameTitle').value;
+      document.getElementById('prevWordGameTitle').innerText = `🧩 ${title}`;
+
+      const rawWords = document.getElementById('wordGameList').value.split(',').map(w => w.trim()).filter(w => w.length > 0);
+      const tagsContainer = document.getElementById('wordTags');
+      tagsContainer.innerHTML = '';
+      rawWords.forEach(w => {
+        tagsContainer.innerHTML += `<span class="bg-indigo-100 text-indigo-800 font-bold px-3 py-1 rounded-full text-xs">${w}</span>`;
+      });
+
+      const size = parseInt(document.getElementById('wordGameGridSize').value);
+      const grid = document.getElementById('wordGrid');
+      grid.style.gridTemplateColumns = `repeat(${size}, minmax(0, 1fr))`;
+      grid.innerHTML = '';
+
+      const lettersArr = document.getElementById('wordGameLang').value === 'ar' 
+        ? ['أ','ب','ت','ث','ج','ح','خ','د','ذ','ر','ز','س','ش','ص','ض','ط','ظ','ع','غ','ف','ق','ك','ل','م','ن','هـ','و','ي']
+        : ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'];
+
+      for (let i = 0; i < size * size; i++) {
+        const char = lettersArr[Math.floor(Math.random() * lettersArr.length)];
+        grid.innerHTML += `<div class="w-8 h-8 md:w-10 md:h-10 bg-white rounded-lg border border-slate-200 flex items-center justify-center font-bold text-slate-700 shadow-sm">${char}</div>`;
+      }
+    }
+
+    // توليد ألعاب الرياضيات (Math Worksheets)
+    function generateMathSheet() {
+      document.getElementById('prevMathTitle').innerText = `🔢 ${document.getElementById('mathTitle').value}`;
+      const op = document.getElementById('mathOp').value;
+      const level = parseInt(document.getElementById('mathLevel').value);
+      const count = parseInt(document.getElementById('mathCount').value);
+
+      const grid = document.getElementById('mathGrid');
+      grid.innerHTML = '';
+
+      for (let i = 1; i <= count; i++) {
+        let n1 = Math.floor(Math.random() * level) + 1;
+        let n2 = Math.floor(Math.random() * level) + 1;
+        if (op === '-' && n1 < n2) [n1, n2] = [n2, n1];
+
+        grid.innerHTML += `
+          <div class="border-2 border-indigo-200 rounded-2xl p-4 text-center bg-indigo-50/30 relative">
+            <span class="absolute top-2 right-2 text-[10px] font-bold text-indigo-400">#${i}</span>
+            <div class="text-xl font-extrabold text-slate-800 my-2">${n1} ${op} ${n2} = </div>
+            <div class="border-2 border-dashed border-indigo-300 rounded-lg h-8 w-20 mx-auto bg-white"></div>
+          </div>
+        `;
+      }
+    }
+
+    // بطاقات الأسئلة والألعاب
     function updateGames() {
       document.getElementById('prevQ1').innerText = document.getElementById('gameQ1').value;
       document.getElementById('prevA1').innerText = document.getElementById('gameA1').value;
@@ -379,17 +764,71 @@
       document.getElementById('prevA2').innerText = document.getElementById('gameA2').value;
     }
 
+    // شهادات التقدير باللغتين والثيمات
+    function handleCertLogoUpload(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(event) {
+        certLogoBase64 = event.target.result;
+        document.getElementById('certLogoImg').src = certLogoBase64;
+        document.getElementById('certLogoContainer').classList.remove('hidden');
+        document.getElementById('certLogoContainer').classList.add('flex');
+      };
+      reader.readAsDataURL(file);
+    }
+
     function updateCert() {
-      document.getElementById('prevCertStudent').innerText = document.getElementById('certStudent').value;
-      document.getElementById('prevCertReason').innerText = document.getElementById('certReason').value;
-      document.getElementById('prevCertSign').innerText = 'التوقيع: ' + document.getElementById('certSign').value;
+      const lang = document.getElementById('certLang').value;
+      const theme = document.getElementById('certTheme').value;
+      const certBox = document.getElementById('certPrintArea');
+
+      // تطبيق الثيم
+      if (theme === 'royal') {
+        certBox.className = "bg-slate-50 p-10 rounded-2xl border-8 border-indigo-900 text-center print-area space-y-6 relative overflow-hidden transition-all";
+      } else if (theme === 'amber') {
+        certBox.className = "bg-amber-50/40 p-10 rounded-2xl border-8 border-amber-400 text-center print-area space-y-6 relative overflow-hidden transition-all";
+      } else if (theme === 'emerald') {
+        certBox.className = "bg-emerald-50/40 p-10 rounded-2xl border-8 border-emerald-700 text-center print-area space-y-6 relative overflow-hidden transition-all";
+      }
+
+      if (lang === 'en') {
+        certBox.dir = 'ltr';
+        document.getElementById('certSubHeader').innerText = 'OFFICIAL CERTIFICATE OF APPRECIATION';
+        document.getElementById('certMainTitle').innerText = '🎓 CERTIFICATE OF EXCELLENCE 🎓';
+        document.getElementById('certIntroText').innerText = 'This certificate is proudly presented to student:';
+        document.getElementById('prevCertStudent').innerText = document.getElementById('certStudent').value || 'Sarah Mohamed';
+        document.getElementById('prevCertReason').innerText = document.getElementById('certReason').value || 'For outstanding achievement and excellence in Science';
+        document.getElementById('prevCertDate').innerText = 'Date: ' + (document.getElementById('certDate').value || '2026/09/26');
+        document.getElementById('prevCertSign').innerText = 'Signature: ' + (document.getElementById('certSign').value || 'Tr. Olivia');
+      } else {
+        certBox.dir = 'rtl';
+        document.getElementById('certSubHeader').innerText = 'شهادة تقدير رسمية';
+        document.getElementById('certMainTitle').innerText = '🎓 شهادة تقدير وتميز 🎓';
+        document.getElementById('certIntroText').innerText = 'تتقدم إدارة المدرسة بخالص الشكر والتقدير للطالب/ـة:';
+        document.getElementById('prevCertStudent').innerText = document.getElementById('certStudent').value || 'سارة محمد';
+        document.getElementById('prevCertReason').innerText = document.getElementById('certReason').value || 'لتفوقها المتميز في مادة العلوم وحصولها على الدرجة النهائية';
+        document.getElementById('prevCertDate').innerText = 'التاريخ: ' + (document.getElementById('certDate').value || '2026/09/26');
+        document.getElementById('prevCertSign').innerText = 'التوقيع: ' + (document.getElementById('certSign').value || 'أ. أوليفيا');
+      }
+    }
+
+    // حفظ المخرجات كصورة (حجم المحتوى فقط)
+    function downloadAsImage(elementId) {
+      const element = document.getElementById(elementId);
+      html2canvas(element, { scale: 2 }).then(canvas => {
+        const link = document.createElement('a');
+        link.download = 'مشروع_معين_تصميم.png';
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+      });
     }
 
     function toggleModal(id) {
       document.getElementById(id).classList.toggle('hidden');
     }
 
-    // تجميع حالة الصفحة بالكامل الحالية
+    // تجميع حالة الصفحة بالكامل
     function getFormState() {
       return {
         worksheet: {
@@ -398,6 +837,23 @@
           teacher: document.getElementById('inputTeacher').value,
           content: document.getElementById('inputContent').value,
           image: uploadedImageBase64
+        },
+        imgWorksheet: {
+          title: document.getElementById('imgWorksheetTitle').value,
+          scale: document.getElementById('imgScale').value,
+          crop: document.getElementById('imgCropBottom').value
+        },
+        wordGames: {
+          title: document.getElementById('wordGameTitle').value,
+          list: document.getElementById('wordGameList').value,
+          lang: document.getElementById('wordGameLang').value,
+          size: document.getElementById('wordGameGridSize').value
+        },
+        mathGames: {
+          title: document.getElementById('mathTitle').value,
+          op: document.getElementById('mathOp').value,
+          level: document.getElementById('mathLevel').value,
+          count: document.getElementById('mathCount').value
         },
         games: {
           q1: document.getElementById('gameQ1').value,
@@ -408,12 +864,15 @@
         certificates: {
           student: document.getElementById('certStudent').value,
           reason: document.getElementById('certReason').value,
-          sign: document.getElementById('certSign').value
+          sign: document.getElementById('certSign').value,
+          date: document.getElementById('certDate').value,
+          lang: document.getElementById('certLang').value,
+          theme: document.getElementById('certTheme').value,
+          logo: certLogoBase64
         }
       };
     }
 
-    // تطبيق كل البيانات المرجعة
     function setFormState(data) {
       if (!data) return;
       if (data.worksheet) {
@@ -431,6 +890,26 @@
         }
         updatePreview();
       }
+      if (data.imgWorksheet) {
+        document.getElementById('imgWorksheetTitle').value = data.imgWorksheet.title || '';
+        document.getElementById('imgScale').value = data.imgWorksheet.scale || 100;
+        document.getElementById('imgCropBottom').value = data.imgWorksheet.crop || 0;
+        updateImgWorksheet();
+      }
+      if (data.wordGames) {
+        document.getElementById('wordGameTitle').value = data.wordGames.title || '';
+        document.getElementById('wordGameList').value = data.wordGames.list || '';
+        document.getElementById('wordGameLang').value = data.wordGames.lang || 'ar';
+        document.getElementById('wordGameGridSize').value = data.wordGames.size || 8;
+        generateWordSearch();
+      }
+      if (data.mathGames) {
+        document.getElementById('mathTitle').value = data.mathGames.title || '';
+        document.getElementById('mathOp').value = data.mathGames.op || '+';
+        document.getElementById('mathLevel').value = data.mathGames.level || 10;
+        document.getElementById('mathCount').value = data.mathGames.count || 12;
+        generateMathSheet();
+      }
       if (data.games) {
         document.getElementById('gameQ1').value = data.games.q1 || '';
         document.getElementById('gameA1').value = data.games.a1 || '';
@@ -442,11 +921,20 @@
         document.getElementById('certStudent').value = data.certificates.student || '';
         document.getElementById('certReason').value = data.certificates.reason || '';
         document.getElementById('certSign').value = data.certificates.sign || '';
+        document.getElementById('certDate').value = data.certificates.date || '2026/09/26';
+        document.getElementById('certLang').value = data.certificates.lang || 'ar';
+        document.getElementById('certTheme').value = data.certificates.theme || 'royal';
+        if (data.certificates.logo) {
+          certLogoBase64 = data.certificates.logo;
+          document.getElementById('certLogoImg').src = certLogoBase64;
+          document.getElementById('certLogoContainer').classList.remove('hidden');
+          document.getElementById('certLogoContainer').classList.add('flex');
+        }
         updateCert();
       }
     }
 
-    // --- حفظ واسترجاع سحابي عبر Supabase ---
+    // حفظ واسترجاع عبر Supabase
     async function saveToCloudOnline() {
       const subject = document.getElementById('cloudSubject').value.trim();
       const pass = document.getElementById('cloudPass').value.trim();
@@ -515,7 +1003,7 @@
       }
     }
 
-    // تنزيل واستيراد ملف محلي (JSON)
+    // تنزيل واستيراد JSON
     function exportJSON() {
       const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(getFormState()));
       const downloadAnchor = document.createElement('a');
@@ -542,8 +1030,10 @@
       reader.readAsText(file);
     }
 
-    // تشغيل القيم الأولية
+    // القيم الأولية
     updatePreview();
+    generateWordSearch();
+    generateMathSheet();
     updateGames();
     updateCert();
   </script>
