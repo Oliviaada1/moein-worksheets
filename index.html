@@ -3,41 +3,23 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>منصة مُعِين التعليمية</title>
+  <title>منصة مُعِين - صانع أوراق العمل والأنشطة والشهادات</title>
   
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Supabase JS Client (تم تحديث الرابط لنسخة مستقرة) -->
-  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+  <!-- Supabase JS Client -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <!-- Lucide Icons -->
   <script src="https://unpkg.com/lucide@latest"></script>
-  <!-- html2canvas -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
   
   <style>
-    body { font-family: 'Tajawal', sans-serif; }
+    @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap');
+    body {
+      font-family: 'Tajawal', sans-serif;
+    }
     @media print {
-      body * { visibility: hidden; }
       .no-print { display: none !important; }
-      #printableArea, #printableArea * { visibility: visible; }
-      #printableArea {
-        position: absolute; left: 0; top: 0; width: 100%; margin: 0; padding: 10mm; box-shadow: none;
-      }
-    }
-    .a4-preview {
-      width: 100%; max-width: 210mm; min-height: 297mm; padding: 10mm; margin: auto;
-      background: white; box-shadow: 0 4px 15px rgba(0,0,0,0.1); box-sizing: border-box; position: relative;
-    }
-    .word-grid-cell {
-      width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;
-      border: 1px solid #cbd5e1; font-weight: bold; border-radius: 6px; background-color: #f8fafc; user-select: none;
-    }
-    .img-crop-container {
-      overflow: hidden; display: inline-block; position: relative; transition: all 0.2s ease;
+      .print-area { width: 100% !important; margin: 0 !important; padding: 0 !important; box-shadow: none !important; border: none !important; }
     }
   </style>
 </head>
@@ -49,38 +31,41 @@
       <div class="flex items-center space-x-3 space-x-reverse">
         <i data-lucide="sparkles" class="w-8 h-8 text-amber-300"></i>
         <div>
-          <h1 class="text-2xl sm:text-3xl font-extrabold flex items-center gap-2">
-            <span>✨</span> منصة مُعِين التعليمية
-          </h1>
-          <p class="text-indigo-100 text-xs sm:text-sm mt-1">أوراق عمل، شهادات، وألعاب تعليمية تفاعلية</p>
+          <h1 class="text-2xl font-bold">منصة مُعِين</h1>
+          <p class="text-xs text-indigo-200">أوراق عمل، ألعاب تفاعلية، وشهادات تقدير</p>
         </div>
       </div>
 
-      <!-- أزرار الإجراءات والحفظ السحابي والمحلي -->
+      <!-- أزرار الإجراءات والحفظ -->
       <div class="flex flex-wrap items-center gap-2">
-        <button id="btnSaveCloud" onclick="toggleModal('saveCloudModal')" class="bg-emerald-500 hover:bg-emerald-600 px-3 py-2 rounded-lg text-sm font-semibold flex items-center gap-1 shadow transition">
+        <!-- زر الحفظ السحابي -->
+        <button onclick="toggleModal('saveCloudModal')" class="bg-emerald-500 hover:bg-emerald-600 px-3 py-2 rounded-lg text-sm font-semibold flex items-center gap-1 shadow transition">
           <i data-lucide="cloud-upload" class="w-4 h-4"></i>
-          <span>حفظ أونلاين</span>
+          <span>حفظ أونلاين (الهاتف)</span>
         </button>
 
-        <button id="btnLoadCloud" onclick="toggleModal('loadCloudModal')" class="bg-indigo-800 hover:bg-indigo-900 px-3 py-2 rounded-lg text-sm font-semibold flex items-center gap-1 shadow transition">
+        <!-- زر الفتح السحابي -->
+        <button onclick="toggleModal('loadCloudModal')" class="bg-indigo-800 hover:bg-indigo-900 px-3 py-2 rounded-lg text-sm font-semibold flex items-center gap-1 shadow transition">
           <i data-lucide="cloud-download" class="w-4 h-4"></i>
-          <span>فتح أونلاين</span>
+          <span>فتح أونلاين (الكمبيوتر)</span>
         </button>
 
         <span class="text-indigo-400">|</span>
 
+        <!-- تنزيل ملف محلي -->
         <button onclick="exportJSON()" class="bg-indigo-500 hover:bg-indigo-400 px-3 py-2 rounded-lg text-sm font-medium flex items-center gap-1 transition">
           <i data-lucide="download" class="w-4 h-4"></i>
           <span>تنزيل ملف</span>
         </button>
 
+        <!-- رفع ملف محلي -->
         <label class="bg-indigo-500 hover:bg-indigo-400 px-3 py-2 rounded-lg text-sm font-medium flex items-center gap-1 cursor-pointer transition">
           <i data-lucide="upload" class="w-4 h-4"></i>
           <span>رفع ملف</span>
           <input type="file" id="jsonInput" accept=".json" class="hidden" onchange="importJSON(event)">
         </label>
 
+        <!-- طباعة / PDF -->
         <button onclick="window.print()" class="bg-amber-500 hover:bg-amber-600 px-4 py-2 rounded-lg text-sm font-bold flex items-center gap-1 shadow transition">
           <i data-lucide="printer" class="w-4 h-4"></i>
           <span>طباعة / PDF</span>
@@ -90,245 +75,202 @@
   </header>
 
   <!-- تبويبات التبديل بين الأقسام -->
-  <main class="max-w-5xl mx-auto px-3 mt-6 space-y-6 flex-grow w-full">
-
-    <nav class="bg-white p-2 rounded-2xl shadow-sm border border-slate-200 grid grid-cols-2 sm:grid-cols-5 gap-2 no-print">
-      <button onclick="switchTab('textWorksheet')" id="tab-textWorksheet" class="tab-btn bg-indigo-600 text-white py-2.5 rounded-xl text-xs sm:text-sm font-bold transition">
-        📝 أوراق العمل
+  <div class="bg-indigo-100 border-b border-indigo-200 no-print">
+    <div class="max-w-7xl mx-auto px-4 flex gap-4">
+      <button onclick="switchTab('worksheet')" id="tabWorksheet" class="py-3 px-4 font-bold border-b-2 border-indigo-600 text-indigo-700 flex items-center gap-2">
+        <i data-lucide="file-text" class="w-4 h-4"></i>
+        <span>أوراق العمل</span>
       </button>
-      <button onclick="switchTab('imageWorksheet')" id="tab-imageWorksheet" class="tab-btn bg-slate-100 text-slate-700 hover:bg-slate-200 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition">
-        🖼️ ورقة مصورة
+      <button onclick="switchTab('games')" id="tabGames" class="py-3 px-4 font-bold text-slate-600 border-b-2 border-transparent hover:text-indigo-600 flex items-center gap-2">
+        <i data-lucide="gamepad-2" class="w-4 h-4"></i>
+        <span>الألعاب التفاعلية</span>
       </button>
-      <button onclick="switchTab('wordGame')" id="tab-wordGame" class="tab-btn bg-slate-100 text-slate-700 hover:bg-slate-200 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition">
-        🧩 ألعاب الحروف
+      <button onclick="switchTab('certificates')" id="tabCertificates" class="py-3 px-4 font-bold text-slate-600 border-b-2 border-transparent hover:text-indigo-600 flex items-center gap-2">
+        <i data-lucide="award" class="w-4 h-4"></i>
+        <span>شهادات التقدير</span>
       </button>
-      <button onclick="switchTab('mathGame')" id="tab-mathGame" class="tab-btn bg-slate-100 text-slate-700 hover:bg-slate-200 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition">
-        🔢 ألعاب Math
-      </button>
-      <button onclick="switchTab('certificate')" id="tab-certificate" class="tab-btn bg-slate-100 text-slate-700 hover:bg-slate-200 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition">
-        🎓 شهادات التقدير
-      </button>
-    </nav>
+    </div>
+  </div>
 
-    <!-- 1️⃣ قسم أوراق العمل النصية -->
-    <section id="section-textWorksheet" class="tab-content bg-white p-4 sm:p-5 rounded-2xl shadow-sm border border-slate-200 space-y-4 no-print">
-      <h2 class="text-xs sm:text-sm font-bold text-indigo-900 border-b pb-2 flex items-center gap-1">
-        <span>📝</span> إنشاء ورقة عمل نصية / تمارين:
-      </h2>
-      
-      <div class="space-y-3">
-        <div>
-          <label class="block text-xs font-bold text-slate-600 mb-1">عنوان ورقة العمل / الترويسة:</label>
-          <input type="text" id="textSheetTitle" oninput="renderPreview()" class="w-full p-2.5 border border-slate-300 rounded-lg text-xs" placeholder="مثال: ورقة عمل مادة العلوم - الصف الرابع">
-        </div>
-        
-        <div>
-          <label class="block text-xs font-bold text-slate-600 mb-1">نص ورقة العمل / الأسئلة والتمارين:</label>
-          <textarea id="textSheetContent" rows="5" oninput="renderPreview()" class="w-full p-2.5 border border-slate-300 rounded-lg text-xs leading-relaxed" placeholder="اكتبي الأسئلة أو التمرين هنا..."></textarea>
-        </div>
+  <main class="flex-grow max-w-7xl w-full mx-auto p-4 md:p-6">
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          <div>
-            <label class="block text-xs font-bold text-slate-600 mb-1">حجم الخط:</label>
-            <select id="textSizeOpt" onchange="renderPreview()" class="w-full p-2 border border-slate-300 rounded-lg text-xs">
-              <option value="text-sm">صغير</option>
-              <option value="text-base" selected>متوسط</option>
-              <option value="text-lg">كبير</option>
-            </select>
-          </div>
-          <div>
-            <label class="block text-xs font-bold text-slate-600 mb-1">عدد النسخ في الصفحة:</label>
-            <select id="textCopiesOpt" onchange="renderPreview()" class="w-full p-2 border border-slate-300 rounded-lg text-xs">
-              <option value="1" selected>نسخة واحدة (صفحة كاملة)</option>
-              <option value="2">نسختان (قسمين)</option>
-            </select>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- 2️⃣ قسم ورقة العمل المصورة -->
-    <section id="section-imageWorksheet" class="tab-content hidden bg-white p-4 sm:p-5 rounded-2xl shadow-sm border border-slate-200 space-y-4 no-print">
-      <h2 class="text-xs sm:text-sm font-bold text-indigo-900 border-b pb-2 flex items-center gap-1">
-        <span>🖼️</span> إدراج ورقة عمل كصورة وتعديلها:
-      </h2>
-      
-      <div class="space-y-4">
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          <div>
-            <label class="block text-xs font-bold text-slate-600 mb-1">اختر صورة ورقة العمل:</label>
-            <input type="file" id="imgSheetFile" accept="image/*" onchange="handleImageUpload(event)" class="w-full p-2 border border-slate-300 rounded-lg text-xs bg-slate-50">
-          </div>
-          <div>
-            <label class="block text-xs font-bold text-slate-600 mb-1">عنوان ورقة العمل / الترويسة:</label>
-            <input type="text" id="imgSheetTitle" oninput="renderPreview()" class="w-full p-2.5 border border-slate-300 rounded-lg text-xs" placeholder="عنوان الورقة">
-          </div>
-        </div>
-
-        <div class="p-3 bg-amber-50 border border-amber-200 rounded-xl space-y-3">
-          <h3 class="text-xs font-bold text-amber-900 flex items-center gap-1">
-            <span>✂️</span> أدوات قص وتعديل الصورة:
-          </h3>
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <div>
-              <label class="block text-[11px] font-bold text-slate-600 mb-1">قص وإخفاء الجزء السفلي:</label>
-              <input type="range" id="imgCropBottom" min="0" max="40" value="0" oninput="renderPreview()" class="w-full">
-            </div>
-            <div>
-              <label class="block text-[11px] font-bold text-slate-600 mb-1">حجم تكبير/تصغير الصورة:</label>
-              <input type="range" id="imgScale" min="50" max="100" value="100" oninput="renderPreview()" class="w-full">
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- 3️⃣ قسم ألعاب الحروف -->
-    <section id="section-wordGame" class="tab-content hidden bg-white p-4 sm:p-5 rounded-2xl shadow-sm border border-slate-200 space-y-4 no-print">
-      <h2 class="text-xs sm:text-sm font-bold text-indigo-900 border-b pb-2 flex items-center gap-1">
-        <span>🧩</span> لعبة البحث عن الكلمات والحروف:
-      </h2>
-
-      <div class="space-y-3">
-        <div>
-          <label class="block text-xs font-bold text-slate-600 mb-1">عنوان اللعبة / النشاط:</label>
-          <input type="text" id="gameTitle" oninput="renderPreview()" class="w-full p-2.5 border border-slate-300 rounded-lg text-xs" value="لعبة البحث عن الكلمات المختبئة">
-        </div>
-
-        <div>
-          <label class="block text-xs font-bold text-slate-600 mb-1">الكلمات المطلوب البحث عنها (افصلي بينها بفاصلة):</label>
-          <input type="text" id="gameWords" oninput="renderPreview()" class="w-full p-2.5 border border-slate-300 rounded-lg text-xs" value="مدرسة, علم, قلم, كتاب, معلم">
-        </div>
-
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          <div>
-            <label class="block text-xs font-bold text-slate-600 mb-1">لغة اللعبة:</label>
-            <select id="gameLang" onchange="renderPreview()" class="w-full p-2 border border-slate-300 rounded-lg text-xs">
-              <option value="ar" selected>العربية</option>
-              <option value="en">English</option>
-            </select>
-          </div>
-          <div>
-            <label class="block text-xs font-bold text-slate-600 mb-1">حجم الشبكة:</label>
-            <select id="gameGridSize" onchange="renderPreview()" class="w-full p-2 border border-slate-300 rounded-lg text-xs">
-              <option value="8" selected>8x8 (مبتدئ)</option>
-              <option value="10">10x10 (متوسط)</option>
-            </select>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- 4️⃣ قسم ألعاب الرياضيات Math -->
-    <section id="section-mathGame" class="tab-content hidden bg-white p-4 sm:p-5 rounded-2xl shadow-sm border border-slate-200 space-y-4 no-print">
-      <h2 class="text-xs sm:text-sm font-bold text-indigo-900 border-b pb-2 flex items-center gap-1">
-        <span>🔢</span> تصميم أنشطة وألعاب الرياضيات:
-      </h2>
-
-      <div class="space-y-3">
-        <div>
-          <label class="block text-xs font-bold text-slate-600 mb-1">عنوان النشاط:</label>
-          <input type="text" id="mathTitle" oninput="renderPreview()" class="w-full p-2.5 border border-slate-300 rounded-lg text-xs" value="تحدي أبطال الرياضيات">
-        </div>
-
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-          <div>
-            <label class="block text-xs font-bold text-slate-600 mb-1">نوع النشاط:</label>
-            <select id="mathType" onchange="renderPreview()" class="w-full p-2 border border-slate-300 rounded-lg text-xs">
-              <option value="addition" selected>جمع (+)</option>
-              <option value="subtraction">طرح (-)</option>
-              <option value="multiplication">ضرب (×)</option>
-            </select>
-          </div>
-          <div>
-            <label class="block text-xs font-bold text-slate-600 mb-1">عدد المسائل:</label>
-            <select id="mathCount" onchange="renderPreview()" class="w-full p-2 border border-slate-300 rounded-lg text-xs">
-              <option value="8">8 مسائل</option>
-              <option value="12" selected>12 مسألة</option>
-              <option value="16">16 مسألة</option>
-            </select>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- 5️⃣ قسم شهادات التقدير -->
-    <section id="section-certificate" class="tab-content hidden bg-white p-4 sm:p-5 rounded-2xl shadow-sm border border-slate-200 space-y-4 no-print">
-      <h2 class="text-xs sm:text-sm font-bold text-indigo-900 border-b pb-2 flex items-center gap-1">
-        <span>🎓</span> إعداد وتخصيص شهادة التقدير:
-      </h2>
-
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-        <div>
-          <label class="block text-xs font-bold text-slate-600 mb-1">ثيم ولون الشهادة:</label>
-          <select id="certTheme" onchange="renderPreview()" class="w-full p-2 border border-slate-300 rounded-lg text-xs font-bold">
-            <option value="royal" selected>👑 ملكي (أزرق داكن وذهبي)</option>
-            <option value="pink">🌸 وردي لطيف (زهري)</option>
-            <option value="emerald">🌿 زمردي (أخضر)</option>
-          </select>
-        </div>
-
-        <div>
-          <label class="block text-xs font-bold text-slate-600 mb-1">شعار المدرسة / المؤسسة:</label>
-          <input type="file" id="certLogoFile" accept="image/*" onchange="handleLogoUpload(event)" class="w-full p-1.5 border border-slate-300 rounded-lg text-xs bg-slate-50">
-        </div>
-
-        <div class="sm:col-span-2">
-          <label class="block text-xs font-bold text-slate-600 mb-1">اسم الطالب / الطالبة:</label>
-          <input type="text" id="certStudentName" oninput="renderPreview()" class="w-full p-2.5 border border-slate-300 rounded-lg text-xs font-bold" placeholder="اسم الطالبة كاملاً">
-        </div>
-
-        <div class="sm:col-span-2">
-          <label class="block text-xs font-bold text-slate-600 mb-1">سبب التقدير / نص الشهادة:</label>
-          <input type="text" id="certReason" oninput="renderPreview()" class="w-full p-2.5 border border-slate-300 rounded-lg text-xs" placeholder="مثال: للتفوق والتميز في مادة الرياضيات">
-        </div>
-
-        <div>
-          <label class="block text-xs font-bold text-slate-600 mb-1">اسم المعلمة / المديرة:</label>
-          <input type="text" id="certTeacher" oninput="renderPreview()" class="w-full p-2.5 border border-slate-300 rounded-lg text-xs" placeholder="معلمة المادة">
-        </div>
-
-        <div>
-          <label class="block text-xs font-bold text-slate-600 mb-1">التاريخ:</label>
-          <input type="text" id="certDate" oninput="renderPreview()" class="w-full p-2.5 border border-slate-300 rounded-lg text-xs" placeholder="2026/09/26">
-        </div>
-      </div>
-    </section>
-
-    <!-- 👁️ قسم المعاينة والتحميل -->
-    <section class="bg-white p-4 sm:p-5 rounded-2xl shadow-sm border border-slate-200 space-y-4">
-      <div class="flex flex-wrap items-center justify-between gap-2 no-print">
-        <h2 class="text-xs sm:text-sm font-bold text-slate-700 flex items-center gap-1">
-          👁️ المعاينة والتحميل:
+    <!-- 1. قسم أوراق العمل والصور -->
+    <div id="sectionWorksheet" class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+      <!-- تحكم ورقة العمل -->
+      <section class="lg:col-span-4 bg-white p-5 rounded-2xl shadow-sm border border-slate-200 space-y-4 no-print">
+        <h2 class="text-lg font-bold border-b pb-2 flex items-center gap-2 text-indigo-700">
+          <i data-lucide="sliders" class="w-5 h-5"></i>
+          <span>إعداد ورقة العمل</span>
         </h2>
-        <div class="flex items-center gap-2">
-          <button onclick="downloadTrimmedImage()" class="bg-purple-600 hover:bg-purple-700 text-white px-3.5 py-2 rounded-lg font-bold text-xs transition shadow flex items-center gap-1">
-            🖼️ حفظ كصورة
-          </button>
-          <button onclick="window.print()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg font-bold text-xs transition shadow">
-            🛈 طباعة / PDF
-          </button>
-        </div>
-      </div>
 
-      <div class="overflow-x-auto bg-slate-200 p-2 sm:p-4 rounded-xl flex justify-center">
-        <div id="printableArea" class="a4-preview flex flex-col justify-between">
-          <!-- يتم إدراج المعاينة هنا -->
+        <div>
+          <label class="block text-xs font-bold text-slate-600 mb-1">عنوان ورقة العمل</label>
+          <input type="text" id="inputTitle" value="ورقة عمل: المادة والدروس" oninput="updatePreview()" class="w-full border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-indigo-500 outline-none">
         </div>
-      </div>
-    </section>
+
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="block text-xs font-bold text-slate-600 mb-1">الصف / المادة</label>
+            <input type="text" id="inputSubject" value="الصف الرابع - العلوم" oninput="updatePreview()" class="w-full border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-indigo-500 outline-none">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-600 mb-1">اسم المعلم/ـة</label>
+            <input type="text" id="inputTeacher" value="أ. أوليفيا" oninput="updatePreview()" class="w-full border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-indigo-500 outline-none">
+          </div>
+        </div>
+
+        <!-- إضافة صورة إلى ورقة العمل -->
+        <div class="border-t pt-3">
+          <label class="block text-xs font-bold text-slate-600 mb-1">إضافة صورة لورقة العمل</label>
+          <input type="file" id="imageInput" accept="image/*" onchange="handleImageUpload(event)" class="w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 cursor-pointer">
+          <button onclick="removeImage()" id="btnRemoveImg" class="hidden mt-2 text-xs text-red-500 font-bold hover:underline">حذف الصورة المرفقة</button>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-600 mb-1">الأسئلة والتعليمات</label>
+          <textarea id="inputContent" rows="8" oninput="updatePreview()" class="w-full border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-indigo-500 outline-none" placeholder="اكتبي الأسئلة والتمارين هنا..."></textarea>
+        </div>
+      </section>
+
+      <!-- معاينة ورقة العمل -->
+      <section class="lg:col-span-8 bg-white p-8 rounded-2xl shadow-md border border-slate-200 print-area min-h-[600px] flex flex-col justify-between">
+        <div>
+          <div class="border-b-2 border-indigo-600 pb-4 mb-6 flex justify-between items-center">
+            <div>
+              <h1 id="previewTitle" class="text-2xl font-bold text-indigo-900">ورقة عمل: المادة والدروس</h1>
+              <p id="previewSubject" class="text-sm text-slate-600 mt-1">الصف الرابع - العلوم</p>
+            </div>
+            <div class="text-left text-sm text-slate-500 space-y-1">
+              <p>اسم الطالب/ـة: .......................................</p>
+              <p id="previewTeacher">المعلم/ـة: أ. أوليفيا</p>
+            </div>
+          </div>
+
+          <!-- معاينة الصورة المرفقة -->
+          <div id="imagePreviewContainer" class="hidden mb-6 text-center">
+            <img id="previewImage" src="" alt="صورة مرفقة" class="max-h-64 mx-auto rounded-lg shadow-sm border">
+          </div>
+
+          <div id="previewContent" class="text-slate-800 leading-relaxed whitespace-pre-wrap text-base">
+            <!-- الأسئلة -->
+          </div>
+        </div>
+
+        <div class="border-t pt-4 text-center text-xs text-slate-400 mt-8">
+          تمت الطباعة بواسطة منصة مُعِين التعليمية
+        </div>
+      </section>
+    </div>
+
+    <!-- 2. قسم الألعاب التفاعلية -->
+    <div id="sectionGames" class="hidden grid grid-cols-1 lg:grid-cols-12 gap-6">
+      <section class="lg:col-span-4 bg-white p-5 rounded-2xl shadow-sm border border-slate-200 space-y-4 no-print">
+        <h2 class="text-lg font-bold border-b pb-2 flex items-center gap-2 text-indigo-700">
+          <i data-lucide="gamepad-2" class="w-5 h-5"></i>
+          <span>إعداد لعبة بطاقات الأسئلة</span>
+        </h2>
+        <div>
+          <label class="block text-xs font-bold text-slate-600 mb-1">السؤال الأول</label>
+          <input type="text" id="gameQ1" value="ما عاصمة ليبيا؟" oninput="updateGames()" class="w-full border rounded-lg p-2 text-sm mb-2">
+          <input type="text" id="gameA1" value="طرابلس" oninput="updateGames()" class="w-full border rounded-lg p-2 text-sm bg-indigo-50" placeholder="الإجابة الصحيحة">
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-600 mb-1">السؤال الثاني</label>
+          <input type="text" id="gameQ2" value="كم عدد أضلاع المربع؟" oninput="updateGames()" class="w-full border rounded-lg p-2 text-sm mb-2">
+          <input type="text" id="gameA2" value="4 أضلاع" oninput="updateGames()" class="w-full border rounded-lg p-2 text-sm bg-indigo-50" placeholder="الإجابة الصحيحة">
+        </div>
+      </section>
+
+      <section class="lg:col-span-8 bg-white p-8 rounded-2xl shadow-md border border-slate-200 print-area">
+        <h2 class="text-xl font-bold text-indigo-900 mb-6 border-b pb-2">🎮 نشاط البطاقات المتقاطعة (قص وتطابق)</h2>
+        <div class="grid grid-cols-2 gap-4">
+          <div class="border-2 border-dashed border-indigo-300 p-4 rounded-xl bg-indigo-50/50">
+            <span class="text-xs font-bold text-indigo-500 block mb-2">بطاقة سؤال 1</span>
+            <p id="prevQ1" class="font-bold text-slate-800">ما عاصمة ليبيا؟</p>
+          </div>
+          <div class="border-2 border-dashed border-emerald-300 p-4 rounded-xl bg-emerald-50/50">
+            <span class="text-xs font-bold text-emerald-500 block mb-2">بطاقة إجابة 1</span>
+            <p id="prevA1" class="font-bold text-slate-800">طرابلس</p>
+          </div>
+          <div class="border-2 border-dashed border-indigo-300 p-4 rounded-xl bg-indigo-50/50">
+            <span class="text-xs font-bold text-indigo-500 block mb-2">بطاقة سؤال 2</span>
+            <p id="prevQ2" class="font-bold text-slate-800">كم عدد أضلاع المربع؟</p>
+          </div>
+          <div class="border-2 border-dashed border-emerald-300 p-4 rounded-xl bg-emerald-50/50">
+            <span class="text-xs font-bold text-emerald-500 block mb-2">بطاقة إجابة 2</span>
+            <p id="prevA2" class="font-bold text-slate-800">4 أضلاع</p>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- 3. قسم شهادات التقدير -->
+    <div id="sectionCertificates" class="hidden grid grid-cols-1 lg:grid-cols-12 gap-6">
+      <section class="lg:col-span-4 bg-white p-5 rounded-2xl shadow-sm border border-slate-200 space-y-4 no-print">
+        <h2 class="text-lg font-bold border-b pb-2 flex items-center gap-2 text-indigo-700">
+          <i data-lucide="award" class="w-5 h-5"></i>
+          <span>بيانات شهادة التقدير</span>
+        </h2>
+        <div>
+          <label class="block text-xs font-bold text-slate-600 mb-1">اسم الطالب/ـة المتميز/ـة</label>
+          <input type="text" id="certStudent" value="سارة محمد" oninput="updateCert()" class="w-full border rounded-lg p-2 text-sm">
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-600 mb-1">سبب التقدير / الإنجاز</label>
+          <input type="text" id="certReason" value="لتفوقها المتميز في مادة العلوم وحصولها على الدرجة النهائية" oninput="updateCert()" class="w-full border rounded-lg p-2 text-sm">
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-600 mb-1">اسم المعلم/ـة أو المدير/ـة</label>
+          <input type="text" id="certSign" value="أ. أوليفيا" oninput="updateCert()" class="w-full border rounded-lg p-2 text-sm">
+        </div>
+      </section>
+
+      <section class="lg:col-span-8 bg-amber-50/40 p-10 rounded-2xl border-4 border-amber-300 text-center print-area space-y-6">
+        <div class="text-amber-600 flex justify-center">
+          <i data-lucide="award" class="w-16 h-16"></i>
+        </div>
+        <h1 class="text-3xl font-extrabold text-amber-900 tracking-wide">شهادة تقدير وتميز</h1>
+        <p class="text-slate-600">تتقدم إدارة المدرسة بخالص الشكر والتقدير للطالب/ـة:</p>
+        <h2 id="prevCertStudent" class="text-3xl font-bold text-indigo-800 underline decoration-amber-400">سارة محمد</h2>
+        <p id="prevCertReason" class="text-slate-700 max-w-lg mx-auto leading-relaxed">لتفوقها المتميز في مادة العلوم وحصولها على الدرجة النهائية</p>
+        <div class="pt-8 flex justify-between items-center px-12 border-t border-amber-200">
+          <p class="text-xs text-slate-400">التاريخ: 2026/09/26</p>
+          <p id="prevCertSign" class="font-bold text-slate-800">التوقيع: أ. أوليفيا</p>
+        </div>
+      </section>
+    </div>
 
   </main>
 
   <!-- Modal 1: نافذة الحفظ أونلاين -->
   <div id="saveCloudModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm hidden flex items-center justify-center p-4 z-50 no-print">
     <div class="bg-white rounded-2xl p-6 max-w-md w-full shadow-2xl space-y-4">
-      <h3 class="font-bold text-lg text-slate-800">حفظ أونلاين (Supabase)</h3>
-      <input type="text" id="cloudSubject" placeholder="اسم المادة / العنوان" class="w-full border border-slate-300 rounded-lg p-2.5 text-xs">
-      <input type="password" id="cloudPass" placeholder="كلمة السر الخاصة بك" class="w-full border border-slate-300 rounded-lg p-2.5 text-xs">
+      <div class="flex justify-between items-center border-b pb-2">
+        <h3 class="font-bold text-lg text-slate-800 flex items-center gap-2">
+          <i data-lucide="cloud-upload" class="w-5 h-5 text-emerald-600"></i>
+          <span>حفظ أونلاين عبر Supabase</span>
+        </h3>
+        <button onclick="toggleModal('saveCloudModal')" class="text-slate-400 hover:text-slate-600">&times;</button>
+      </div>
+
+      <p class="text-xs text-slate-500">أدخلي اسم المادة وكلمة سر لتستطيعي استرجاع عملك من الكمبيوتر بسهولة.</p>
+
+      <div class="space-y-3">
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">اسم المادة / المعرف</label>
+          <input type="text" id="cloudSubject" placeholder="مثال: math4" class="w-full border rounded-lg p-2 text-sm">
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">كلمة السر</label>
+          <input type="password" id="cloudPass" placeholder="مثال: 1234" class="w-full border rounded-lg p-2 text-sm">
+        </div>
+      </div>
+
+      <div id="saveStatus" class="text-xs text-center font-bold hidden py-1"></div>
+
       <div class="flex justify-end gap-2 pt-2">
-        <button onclick="toggleModal('saveCloudModal')" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-bold transition">إلغاء</button>
-        <button onclick="saveToSupabase()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-bold transition">تأكيد الحفظ</button>
+        <button onclick="toggleModal('saveCloudModal')" class="px-4 py-2 bg-slate-100 rounded-lg text-xs font-bold text-slate-600">إلغاء</button>
+        <button onclick="saveToCloudOnline()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-bold">حفظ الآن</button>
       </div>
     </div>
   </div>
@@ -336,305 +278,274 @@
   <!-- Modal 2: نافذة الفتح أونلاين -->
   <div id="loadCloudModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm hidden flex items-center justify-center p-4 z-50 no-print">
     <div class="bg-white rounded-2xl p-6 max-w-md w-full shadow-2xl space-y-4">
-      <h3 class="font-bold text-lg text-slate-800">فتح أونلاين (Supabase)</h3>
-      <input type="text" id="searchSubject" placeholder="اسم المادة / العنوان" class="w-full border border-slate-300 rounded-lg p-2.5 text-xs">
-      <input type="password" id="searchPass" placeholder="كلمة السر" class="w-full border border-slate-300 rounded-lg p-2.5 text-xs">
+      <div class="flex justify-between items-center border-b pb-2">
+        <h3 class="font-bold text-lg text-slate-800 flex items-center gap-2">
+          <i data-lucide="cloud-download" class="w-5 h-5 text-indigo-600"></i>
+          <span>فتح أونلاين من الكمبيوتر</span>
+        </h3>
+        <button onclick="toggleModal('loadCloudModal')" class="text-slate-400 hover:text-slate-600">&times;</button>
+      </div>
+
+      <p class="text-xs text-slate-500">أدخلي اسم المادة وكلمة السر المحددة من الهاتف.</p>
+
+      <div class="space-y-3">
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">اسم المادة / المعرف</label>
+          <input type="text" id="searchSubject" placeholder="مثال: math4" class="w-full border rounded-lg p-2 text-sm">
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">كلمة السر</label>
+          <input type="password" id="searchPass" placeholder="مثال: 1234" class="w-full border rounded-lg p-2 text-sm">
+        </div>
+      </div>
+
+      <div id="loadStatus" class="text-xs text-center font-bold hidden py-1"></div>
+
       <div class="flex justify-end gap-2 pt-2">
-        <button onclick="toggleModal('loadCloudModal')" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-bold transition">إلغاء</button>
-        <button onclick="loadFromSupabase()" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-xs font-bold transition">جلب البيانات</button>
+        <button onclick="toggleModal('loadCloudModal')" class="px-4 py-2 bg-slate-100 rounded-lg text-xs font-bold text-slate-600">إلغاء</button>
+        <button onclick="loadFromCloudOnline()" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-xs font-bold">جلب وفتح</button>
       </div>
     </div>
   </div>
 
-  <!-- JavaScript الأصلي مصحح ومُفعَّل بالكامل -->
+  <!-- الأكواد والمنطق الشامل -->
   <script>
-    // تهيئة Supabase Client (تستبدل القيم بالخاصة بقاعدتك إن وُجدت)
-  const SUPABASE_URL = 'https://rfmcgonijlkjbvjjbrab.supabase.co';
-    // ⚠️ استبدلي الخانة التالية بـ anon key الخاص بكِ
-    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJmbWNnb25pamxramJ2ampicmFiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTA0MDc5NjAsImV4cCI6MjEwNTk4Mzk2MH0.ZmQlBXWwGIrxhBMl8W1HEXCYNLIJm-oxJp05t1ce-MM';
-    let supabaseClient = null;
+    // 1. إعدادات الاتصال بـ Supabase
+    const SUPABASE_URL = 'https://rfmcgonijlkjbvjjbrab.supabase.co';
+    // ⚠️ استبدلي الخانة التالية بـ anon key الخاص بكِ
+    const SUPABASE_ANON_KEY = 'ضعـي_مفتاح_anon_هنا';
 
-    if (window.supabase) {
-      supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    let uploadedImageBase64 = '';
+
+    lucide.createIcons();
+
+    // التبديل بين التبويبات (أوراق العمل، الألعاب، الشهادات)
+    function switchTab(tab) {
+      document.getElementById('sectionWorksheet').classList.add('hidden');
+      document.getElementById('sectionGames').classList.add('hidden');
+      document.getElementById('sectionCertificates').classList.add('hidden');
+
+      document.getElementById('tabWorksheet').className = 'py-3 px-4 font-bold text-slate-600 border-b-2 border-transparent hover:text-indigo-600 flex items-center gap-2';
+      document.getElementById('tabGames').className = 'py-3 px-4 font-bold text-slate-600 border-b-2 border-transparent hover:text-indigo-600 flex items-center gap-2';
+      document.getElementById('tabCertificates').className = 'py-3 px-4 font-bold text-slate-600 border-b-2 border-transparent hover:text-indigo-600 flex items-center gap-2';
+
+      if (tab === 'worksheet') {
+        document.getElementById('sectionWorksheet').classList.remove('hidden');
+        document.getElementById('tabWorksheet').className = 'py-3 px-4 font-bold border-b-2 border-indigo-600 text-indigo-700 flex items-center gap-2';
+      } else if (tab === 'games') {
+        document.getElementById('sectionGames').classList.remove('hidden');
+        document.getElementById('tabGames').className = 'py-3 px-4 font-bold border-b-2 border-indigo-600 text-indigo-700 flex items-center gap-2';
+      } else if (tab === 'certificates') {
+        document.getElementById('sectionCertificates').classList.remove('hidden');
+        document.getElementById('tabCertificates').className = 'py-3 px-4 font-bold border-b-2 border-indigo-600 text-indigo-700 flex items-center gap-2';
+      }
     }
 
-    let currentTab = 'textWorksheet';
-    let uploadedImageBase64 = '';
-    let uploadedLogoBase64 = '';
+    // تحديث معاينة ورقة العمل
+    function updatePreview() {
+      document.getElementById('previewTitle').innerText = document.getElementById('inputTitle').value || 'عنوان ورقة العمل';
+      document.getElementById('previewSubject').innerText = document.getElementById('inputSubject').value || 'الصف / المادة';
+      document.getElementById('previewTeacher').innerText = 'المعلم/ـة: ' + (document.getElementById('inputTeacher').value || '');
+      document.getElementById('previewContent').innerText = document.getElementById('inputContent').value || 'اكتبي الأسئلة هنا...';
+    }
 
-    window.addEventListener('DOMContentLoaded', () => {
-      if (window.lucide) {
-        lucide.createIcons();
-      }
-      renderPreview();
-    });
+    // رفع ومعالجة الصور
+    function handleImageUpload(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(event) {
+        uploadedImageBase64 = event.target.result;
+        document.getElementById('previewImage').src = uploadedImageBase64;
+        document.getElementById('imagePreviewContainer').classList.remove('hidden');
+        document.getElementById('btnRemoveImg').classList.remove('hidden');
+      };
+      reader.readAsDataURL(file);
+    }
 
-    function switchTab(tabId) {
-      currentTab = tabId;
-      document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
-      document.querySelectorAll('.tab-btn').forEach(btn => {
-        btn.classList.remove('bg-indigo-600', 'text-white');
-        btn.classList.add('bg-slate-100', 'text-slate-700');
-      });
+    function removeImage() {
+      uploadedImageBase64 = '';
+      document.getElementById('imageInput').value = '';
+      document.getElementById('imagePreviewContainer').classList.add('hidden');
+      document.getElementById('btnRemoveImg').classList.add('hidden');
+    }
 
-      const targetSection = document.getElementById(`section-${tabId}`);
-      if (targetSection) targetSection.classList.remove('hidden');
+    // تحديث الألعاب والشهادات
+    function updateGames() {
+      document.getElementById('prevQ1').innerText = document.getElementById('gameQ1').value;
+      document.getElementById('prevA1').innerText = document.getElementById('gameA1').value;
+      document.getElementById('prevQ2').innerText = document.getElementById('gameQ2').value;
+      document.getElementById('prevA2').innerText = document.getElementById('gameA2').value;
+    }
 
-      const activeBtn = document.getElementById(`tab-${tabId}`);
-      if (activeBtn) {
-        activeBtn.classList.remove('bg-slate-100', 'text-slate-700');
-        activeBtn.classList.add('bg-indigo-600', 'text-white');
-      }
-
-      renderPreview();
+    function updateCert() {
+      document.getElementById('prevCertStudent').innerText = document.getElementById('certStudent').value;
+      document.getElementById('prevCertReason').innerText = document.getElementById('certReason').value;
+      document.getElementById('prevCertSign').innerText = 'التوقيع: ' + document.getElementById('certSign').value;
     }
 
     function toggleModal(id) {
-      const modal = document.getElementById(id);
-      if (modal) modal.classList.toggle('hidden');
+      document.getElementById(id).classList.toggle('hidden');
     }
 
-    function handleImageUpload(e) {
-      const file = e.target.files[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = function(evt) {
-          uploadedImageBase64 = evt.target.result;
-          renderPreview();
-        };
-        reader.readAsDataURL(file);
-      }
-    }
-
-    function handleLogoUpload(e) {
-      const file = e.target.files[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = function(evt) {
-          uploadedLogoBase64 = evt.target.result;
-          renderPreview();
-        };
-        reader.readAsDataURL(file);
-      }
-    }
-
-    function renderPreview() {
-      const printable = document.getElementById('printableArea');
-      if (!printable) return;
-
-      printable.innerHTML = '';
-
-      if (currentTab === 'textWorksheet') {
-        const title = document.getElementById('textSheetTitle').value || 'ورقة عمل تعليمية';
-        const content = document.getElementById('textSheetContent').value || 'اكتبي نص ورقة العمل أو الأسئلة هنا...';
-        const fontSize = document.getElementById('textSizeOpt').value;
-        const copies = parseInt(document.getElementById('textCopiesOpt').value);
-
-        for (let i = 0; i < copies; i++) {
-          printable.innerHTML += `
-            <div class="border-2 border-slate-300 rounded-xl p-4 mb-4 flex-1 flex flex-col">
-              <div class="border-b-2 border-indigo-600 pb-2 mb-4 text-center">
-                <h2 class="text-xl font-bold text-indigo-900">${title}</h2>
-                <div class="flex justify-between text-xs text-slate-500 mt-2">
-                  <span>الاسم: ....................................</span>
-                  <span>الصف: ...............</span>
-                  <span>التاريخ: ..../..../2026م</span>
-                </div>
-              </div>
-              <div class="whitespace-pre-wrap ${fontSize} text-slate-800 leading-relaxed flex-1">${content}</div>
-            </div>
-          `;
+    // تجميع حالة الصفحة بالكامل الحالية
+    function getFormState() {
+      return {
+        worksheet: {
+          title: document.getElementById('inputTitle').value,
+          subject: document.getElementById('inputSubject').value,
+          teacher: document.getElementById('inputTeacher').value,
+          content: document.getElementById('inputContent').value,
+          image: uploadedImageBase64
+        },
+        games: {
+          q1: document.getElementById('gameQ1').value,
+          a1: document.getElementById('gameA1').value,
+          q2: document.getElementById('gameQ2').value,
+          a2: document.getElementById('gameA2').value
+        },
+        certificates: {
+          student: document.getElementById('certStudent').value,
+          reason: document.getElementById('certReason').value,
+          sign: document.getElementById('certSign').value
         }
-      } 
-      else if (currentTab === 'imageWorksheet') {
-        const title = document.getElementById('imgSheetTitle').value || 'ورقة عمل مصورة';
-        const cropBottom = document.getElementById('imgCropBottom').value;
-        const scale = document.getElementById('imgScale').value;
-
-        printable.innerHTML = `
-          <div class="text-center border-b pb-2 mb-4">
-            <h2 class="text-xl font-bold text-indigo-900">${title}</h2>
-          </div>
-          <div class="flex-1 flex justify-center items-center overflow-hidden">
-            ${uploadedImageBase64 ? `
-              <div class="img-crop-container" style="max-height: ${100 - cropBottom}\%; transform: scale(${scale / 100}); transform-origin: top center;">
-                <img src="${uploadedImageBase64}" class="max-w-full h-auto object-contain">
-              </div>
-            ` : '<p class="text-slate-400 text-sm">قم باختيار صورة لورقة العمل من الخيارات</p>'}
-          </div>
-        `;
-      }
-      else if (currentTab === 'wordGame') {
-        const title = document.getElementById('gameTitle').value || 'لعبة الكلمات';
-        const wordsStr = document.getElementById('gameWords').value;
-        const words = wordsStr.split(',').map(w => w.trim()).filter(w => w);
-        const gridSize = parseInt(document.getElementById('gameGridSize').value);
-
-        let gridHTML = '<div class="grid gap-1 justify-center my-4" style="grid-template-columns: repeat(' + gridSize + ', minmax(0, 1fr));">';
-        const totalCells = gridSize * gridSize;
-        const sampleChars = 'أبتثجحخدذرزسشصضطظعغفقكلمنهوي';
-
-        for (let i = 0; i < totalCells; i++) {
-          const randomChar = sampleChars.charAt(Math.floor(Math.random() * sampleChars.length));
-          gridHTML += `<div class="word-grid-cell">${randomChar}</div>`;
-        }
-        gridHTML += '</div>';
-
-        printable.innerHTML = `
-          <div class="text-center border-b pb-2 mb-2">
-            <h2 class="text-xl font-bold text-indigo-900">${title}</h2>
-            <p class="text-xs text-slate-500 mt-1">ابحثي عن الكلمات التالية داخل الشبكة:</p>
-          </div>
-          ${gridHTML}
-          <div class="mt-4 p-3 bg-slate-50 rounded-lg border">
-            <h4 class="text-xs font-bold text-slate-700 mb-2">الكلمات المطلوبة:</h4>
-            <div class="flex flex-wrap gap-2">
-              ${words.map(w => `<span class="bg-indigo-100 text-indigo-800 text-xs px-2.5 py-1 rounded-full font-bold">${w}</span>`).join('')}
-            </div>
-          </div>
-        `;
-      }
-      else if (currentTab === 'mathGame') {
-        const title = document.getElementById('mathTitle').value || 'تحدي الرياضيات';
-        const count = parseInt(document.getElementById('mathCount').value);
-        const type = document.getElementById('mathType').value;
-
-        let problemsHTML = '<div class="grid grid-cols-2 gap-4 my-4">';
-        for (let i = 1; i <= count; i++) {
-          let num1 = Math.floor(Math.random() * 20) + 1;
-          let num2 = Math.floor(Math.random() * 10) + 1;
-          let op = type === 'addition' ? '+' : type === 'subtraction' ? '-' : '×';
-          
-          problemsHTML += `
-            <div class="p-3 border rounded-xl bg-slate-50 text-center font-bold text-lg text-slate-700">
-              <span>${i})</span> &nbsp; ${num1} ${op} ${num2} = ......
-            </div>
-          `;
-        }
-        problemsHTML += '</div>';
-
-        printable.innerHTML = `
-          <div class="text-center border-b pb-2 mb-2">
-            <h2 class="text-xl font-bold text-indigo-900">${title}</h2>
-          </div>
-          ${problemsHTML}
-        `;
-      }
-      else if (currentTab === 'certificate') {
-        const name = document.getElementById('certStudentName').value || 'اسم الطالب/ـة';
-        const reason = document.getElementById('certReason').value || 'للتميز والتفوق الدراسي';
-        const teacher = document.getElementById('certTeacher').value || 'معلمة المادة';
-        const date = document.getElementById('certDate').value || '2026/09/26';
-        const theme = document.getElementById('certTheme').value;
-
-        let themeClasses = 'border-indigo-900 bg-indigo-50/30';
-        if (theme === 'pink') themeClasses = 'border-pink-400 bg-pink-50/30';
-        if (theme === 'emerald') themeClasses = 'border-emerald-600 bg-emerald-50/30';
-
-        printable.innerHTML = `
-          <div class="border-8 ${themeClasses} p-6 rounded-2xl text-center h-full flex flex-col justify-between">
-            <div class="flex justify-between items-center">
-              ${uploadedLogoBase64 ? `<img src="${uploadedLogoBase64}" class="w-16 h-16 object-contain">` : '<div></div>'}
-              <h1 class="text-2xl font-black text-amber-600">🎓 شهادة تقدير 🎓</h1>
-              <div></div>
-            </div>
-            
-            <div class="my-6 space-y-3">
-              <p class="text-sm text-slate-600">تتقدم إدارة المدرسة بفيض من الشكر والتقدير للطالبـ/ـة:</p>
-              <h2 class="text-2xl font-extrabold text-indigo-900 border-b-2 border-amber-400 inline-block px-6 py-1">${name}</h2>
-              <p class="text-sm text-slate-700 max-w-lg mx-auto leading-relaxed mt-2">${reason}</p>
-            </div>
-
-            <div class="flex justify-between items-end text-xs font-bold text-slate-600 pt-6 border-t">
-              <div>التاريخ: ${date}</div>
-              <div>توقيع المعلمة: ${teacher}</div>
-            </div>
-          </div>
-        `;
-      }
-
-      if (window.lucide) {
-        lucide.createIcons();
-      }
-    }
-
-    function downloadTrimmedImage() {
-      const printable = document.getElementById('printableArea');
-      if (window.html2canvas) {
-        html2canvas(printable).then(canvas => {
-          const link = document.createElement('a');
-          link.download = 'ورقة-عمل-معين.png';
-          link.href = canvas.toDataURL('image/png');
-          link.click();
-        });
-      }
-    }
-
-    function exportJSON() {
-      const data = {
-        title: document.getElementById('textSheetTitle').value,
-        content: document.getElementById('textSheetContent').value,
-        certName: document.getElementById('certStudentName').value,
-        certReason: document.getElementById('certReason').value,
-        mathTitle: document.getElementById('mathTitle').value,
-        gameWords: document.getElementById('gameWords').value
       };
-      const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-      const a = document.createElement('a');
-      a.href = URL.createObjectURL(blob);
-      a.download = 'moeen_data.json';
-      a.click();
+    }
+
+    // تطبيق كل البيانات المرجعة
+    function setFormState(data) {
+      if (!data) return;
+      if (data.worksheet) {
+        document.getElementById('inputTitle').value = data.worksheet.title || '';
+        document.getElementById('inputSubject').value = data.worksheet.subject || '';
+        document.getElementById('inputTeacher').value = data.worksheet.teacher || '';
+        document.getElementById('inputContent').value = data.worksheet.content || '';
+        if (data.worksheet.image) {
+          uploadedImageBase64 = data.worksheet.image;
+          document.getElementById('previewImage').src = uploadedImageBase64;
+          document.getElementById('imagePreviewContainer').classList.remove('hidden');
+          document.getElementById('btnRemoveImg').classList.remove('hidden');
+        } else {
+          removeImage();
+        }
+        updatePreview();
+      }
+      if (data.games) {
+        document.getElementById('gameQ1').value = data.games.q1 || '';
+        document.getElementById('gameA1').value = data.games.a1 || '';
+        document.getElementById('gameQ2').value = data.games.q2 || '';
+        document.getElementById('gameA2').value = data.games.a2 || '';
+        updateGames();
+      }
+      if (data.certificates) {
+        document.getElementById('certStudent').value = data.certificates.student || '';
+        document.getElementById('certReason').value = data.certificates.reason || '';
+        document.getElementById('certSign').value = data.certificates.sign || '';
+        updateCert();
+      }
+    }
+
+    // --- حفظ واسترجاع سحابي عبر Supabase ---
+    async function saveToCloudOnline() {
+      const subject = document.getElementById('cloudSubject').value.trim();
+      const pass = document.getElementById('cloudPass').value.trim();
+      const status = document.getElementById('saveStatus');
+
+      if (!subject || !pass) {
+        alert('الرجاء كتابة اسم المادة وكلمة السر.');
+        return;
+      }
+
+      status.classList.remove('hidden', 'text-red-500', 'text-emerald-600');
+      status.classList.add('text-indigo-600');
+      status.innerText = '⏳ جاري الحفظ...';
+
+      const uniqueKey = `${subject.toLowerCase()}_${pass}`;
+      const fullData = getFormState();
+
+      const { data, error } = await supabaseClient
+        .from('worksheets')
+        .upsert({ key: uniqueKey, data: fullData }, { onConflict: 'key' });
+
+      if (error) {
+        status.classList.remove('text-indigo-600');
+        status.classList.add('text-red-500');
+        status.innerText = '❌ تعذر الحفظ: ' + error.message;
+      } else {
+        status.classList.remove('text-indigo-600');
+        status.classList.add('text-emerald-600');
+        status.innerText = '✨ تم حفظ جميع البيانات أونلاين!';
+        setTimeout(() => toggleModal('saveCloudModal'), 2000);
+      }
+    }
+
+    async function loadFromCloudOnline() {
+      const subject = document.getElementById('searchSubject').value.trim();
+      const pass = document.getElementById('searchPass').value.trim();
+      const status = document.getElementById('loadStatus');
+
+      if (!subject || !pass) {
+        alert('الرجاء إدخال اسم المادة وكلمة السر.');
+        return;
+      }
+
+      status.classList.remove('hidden', 'text-red-500', 'text-emerald-600');
+      status.classList.add('text-indigo-600');
+      status.innerText = '⏳ جاري الجلب...';
+
+      const uniqueKey = `${subject.toLowerCase()}_${pass}`;
+
+      const { data, error } = await supabaseClient
+        .from('worksheets')
+        .select('data')
+        .eq('key', uniqueKey)
+        .maybeSingle();
+
+      if (error || !data) {
+        status.classList.remove('text-indigo-600');
+        status.classList.add('text-red-500');
+        status.innerText = '🔒 لم يتم العثور على البيانات.';
+      } else {
+        setFormState(data.data);
+        status.classList.remove('text-indigo-600');
+        status.classList.add('text-emerald-600');
+        status.innerText = '🎉 تم فتح ورقة العمل والأنشطة بنجاح!';
+        setTimeout(() => toggleModal('loadCloudModal'), 1500);
+      }
+    }
+
+    // تنزيل واستيراد ملف محلي (JSON)
+    function exportJSON() {
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(getFormState()));
+      const downloadAnchor = document.createElement('a');
+      downloadAnchor.setAttribute("href", dataStr);
+      downloadAnchor.setAttribute("download", "مشروع_معين.json");
+      document.body.appendChild(downloadAnchor);
+      downloadAnchor.click();
+      downloadAnchor.remove();
     }
 
     function importJSON(event) {
       const file = event.target.files[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-          try {
-            const data = JSON.parse(e.target.result);
-            if (data.title) document.getElementById('textSheetTitle').value = data.title;
-            if (data.content) document.getElementById('textSheetContent').value = data.content;
-            if (data.certName) document.getElementById('certStudentName').value = data.certName;
-            if (data.certReason) document.getElementById('certReason').value = data.certReason;
-            if (data.mathTitle) document.getElementById('mathTitle').value = data.mathTitle;
-            if (data.gameWords) document.getElementById('gameWords').value = data.gameWords;
-            renderPreview();
-            alert('تم تحميل البيانات بنجاح!');
-          } catch (err) {
-            alert('ملف غير صالـح!');
-          }
-        };
-        reader.readAsText(file);
-      }
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        try {
+          const importedData = JSON.parse(e.target.result);
+          setFormState(importedData);
+          alert('تم رفع ملف المشروع واسترجاع البيانات بنجاح!');
+        } catch (err) {
+          alert('حدث خطأ أثناء قراءة الملف.');
+        }
+      };
+      reader.readAsText(file);
     }
 
-    // دوال الربط بالحفظ والفتح السحابي Supabase
-    async function saveToSupabase() {
-      const subject = document.getElementById('cloudSubject').value;
-      const pass = document.getElementById('cloudPass').value;
-
-      if (!subject || !pass) {
-        alert('الرجاء إدخال اسم المادة وكلمة السر');
-        return;
-      }
-
-      alert('تم استلام الطلب! جاهز للتوصيل بجداول Supabase.');
-      toggleModal('saveCloudModal');
-    }
-
-    async function loadFromSupabase() {
-      const subject = document.getElementById('searchSubject').value;
-      const pass = document.getElementById('searchPass').value;
-
-      if (!subject || !pass) {
-        alert('الرجاء إدخال اسم المادة وكلمة السر البحثية');
-        return;
-      }
-
-      alert('جاري البحث وجلب البيانات من Supabase...');
-      toggleModal('loadCloudModal');
-    }
+    // تشغيل القيم الأولية
+    updatePreview();
+    updateGames();
+    updateCert();
   </script>
 </body>
 </html>
