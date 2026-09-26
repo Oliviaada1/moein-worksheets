@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>منصة مُعِين - صانع أوراق العمل والأنشطة والشهادات</title>
+  <title>منصة مُعِين التعليمية</title>
   
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -11,6 +11,10 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <!-- Lucide Icons -->
   <script src="https://unpkg.com/lucide@latest"></script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
   
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap');
@@ -18,8 +22,47 @@
       font-family: 'Tajawal', sans-serif;
     }
     @media print {
+     body * { visibility: hidden; }
       .no-print { display: none !important; }
-      .print-area { width: 100% !important; margin: 0 !important; padding: 0 !important; box-shadow: none !important; border: none !important; }
+      #printableArea, #printableArea * { visibility: visible; }
+      #printableArea {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        margin: 0;
+        padding: 10mm;
+        box-shadow: none;
+    }
+    .a4-preview {
+      width: 100%;
+      max-width: 210mm;
+      min-height: 297mm;
+      padding: 10mm;
+      margin: auto;
+      background: white;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      box-sizing: border-box;
+      position: relative;
+    }
+    .word-grid-cell {
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid #cbd5e1;
+      font-weight: bold;
+      border-radius: 6px;
+      background-color: #f8fafc;
+      user-select: none;
+    }
+
+    .img-crop-container {
+      overflow: hidden;
+      display: inline-block;
+      position: relative;
+      transition: all 0.2s ease;
     }
   </style>
 </head>
@@ -31,8 +74,10 @@
       <div class="flex items-center space-x-3 space-x-reverse">
         <i data-lucide="sparkles" class="w-8 h-8 text-amber-300"></i>
         <div>
-          <h1 class="text-2xl font-bold">منصة مُعِين</h1>
-          <p class="text-xs text-indigo-200">أوراق عمل، ألعاب تفاعلية، وشهادات تقدير</p>
+         <h1 class="text-2xl sm:text-3xl font-extrabold flex items-center gap-2">
+          <span>✨</span> منصة مُعِين التعليمية
+        </h1>
+       <p class="text-indigo-100 text-xs sm:text-sm mt-1">مزامنة سحابية حقيقية بين الأجهزة، أوراق عمل، شهادات وألعاب تعليمية</p>
         </div>
       </div>
 
@@ -75,173 +120,248 @@
   </header>
 
   <!-- تبويبات التبديل بين الأقسام -->
-  <div class="bg-indigo-100 border-b border-indigo-200 no-print">
-    <div class="max-w-7xl mx-auto px-4 flex gap-4">
-      <button onclick="switchTab('worksheet')" id="tabWorksheet" class="py-3 px-4 font-bold border-b-2 border-indigo-600 text-indigo-700 flex items-center gap-2">
-        <i data-lucide="file-text" class="w-4 h-4"></i>
-        <span>أوراق العمل</span>
-      </button>
-      <button onclick="switchTab('games')" id="tabGames" class="py-3 px-4 font-bold text-slate-600 border-b-2 border-transparent hover:text-indigo-600 flex items-center gap-2">
-        <i data-lucide="gamepad-2" class="w-4 h-4"></i>
-        <span>الألعاب التفاعلية</span>
-      </button>
-      <button onclick="switchTab('certificates')" id="tabCertificates" class="py-3 px-4 font-bold text-slate-600 border-b-2 border-transparent hover:text-indigo-600 flex items-center gap-2">
-        <i data-lucide="award" class="w-4 h-4"></i>
-        <span>شهادات التقدير</span>
-      </button>
-    </div>
-  </div>
+ <main class="max-w-5xl mx-auto px-3 mt-6 space-y-6">
 
-  <main class="flex-grow max-w-7xl w-full mx-auto p-4 md:p-6">
+    <!-- تبويبات التصفح الرئيسية -->
+    <nav class="bg-white p-2 rounded-2xl shadow-sm border border-slate-200 grid grid-cols-2 sm:grid-cols-5 gap-2 no-print">
+      <button onclick="switchTab('textWorksheet')" id="tab-textWorksheet" class="tab-btn bg-indigo-600 text-white py-2.5 rounded-xl text-xs sm:text-sm font-bold transition">
+        📝 أوراق العمل
+      </button>
+      <button onclick="switchTab('imageWorksheet')" id="tab-imageWorksheet" class="tab-btn bg-slate-100 text-slate-700 hover:bg-slate-200 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition">
+        🖼️ ورقة مصورة
+      </button>
+      <button onclick="switchTab('wordGame')" id="tab-wordGame" class="tab-btn bg-slate-100 text-slate-700 hover:bg-slate-200 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition">
+        🧩 ألعاب الحروف
+      </button>
+      <button onclick="switchTab('mathGame')" id="tab-mathGame" class="tab-btn bg-slate-100 text-slate-700 hover:bg-slate-200 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition">
+        🔢 ألعاب Math
+      </button>
+      <button onclick="switchTab('certificate')" id="tab-certificate" class="tab-btn bg-slate-100 text-slate-700 hover:bg-slate-200 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition">
+        🎓 شهادات التقدير
+      </button>
+    </nav>
 
-    <!-- 1. قسم أوراق العمل والصور -->
-    <div id="sectionWorksheet" class="grid grid-cols-1 lg:grid-cols-12 gap-6">
-      <!-- تحكم ورقة العمل -->
-      <section class="lg:col-span-4 bg-white p-5 rounded-2xl shadow-sm border border-slate-200 space-y-4 no-print">
-        <h2 class="text-lg font-bold border-b pb-2 flex items-center gap-2 text-indigo-700">
-          <i data-lucide="sliders" class="w-5 h-5"></i>
-          <span>إعداد ورقة العمل</span>
-        </h2>
-
+    <!-- 1️⃣ قسم أوراق العمل النصية -->
+    <section id="section-textWorksheet" class="tab-content bg-white p-4 sm:p-5 rounded-2xl shadow-sm border border-slate-200 space-y-4 no-print">
+      <h2 class="text-xs sm:text-sm font-bold text-indigo-900 border-b pb-2 flex items-center gap-1">
+        <span>📝</span> إنشاء ورقة عمل نصية / تمارين:
+      </h2>
+      
+      <div class="space-y-3">
         <div>
-          <label class="block text-xs font-bold text-slate-600 mb-1">عنوان ورقة العمل</label>
-          <input type="text" id="inputTitle" value="ورقة عمل: المادة والدروس" oninput="updatePreview()" class="w-full border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-indigo-500 outline-none">
+          <label class="block text-xs font-bold text-slate-600 mb-1">عنوان ورقة العمل / الترويسة:</label>
+          <input type="text" id="textSheetTitle" oninput="renderPreview()" class="w-full p-2.5 border border-slate-300 rounded-lg text-xs" placeholder="مثال: ورقة عمل مادة العلوم - الصف الرابع">
+        </div>
+        
+        <div>
+          <label class="block text-xs font-bold text-slate-600 mb-1">نص ورقة العمل / الأسئلة والتمارين:</label>
+          <textarea id="textSheetContent" rows="5" oninput="renderPreview()" class="w-full p-2.5 border border-slate-300 rounded-lg text-xs leading-relaxed" placeholder="اكتبي الأسئلة أو التمرين هنا..."></textarea>
         </div>
 
-        <div class="grid grid-cols-2 gap-2">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div>
-            <label class="block text-xs font-bold text-slate-600 mb-1">الصف / المادة</label>
-            <input type="text" id="inputSubject" value="الصف الرابع - العلوم" oninput="updatePreview()" class="w-full border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-indigo-500 outline-none">
+            <label class="block text-xs font-bold text-slate-600 mb-1">حجم الخط:</label>
+            <select id="textSizeOpt" onchange="renderPreview()" class="w-full p-2 border border-slate-300 rounded-lg text-xs">
+              <option value="text-sm">صغير</option>
+              <option value="text-base" selected>متوسط</option>
+              <option value="text-lg">كبير</option>
+            </select>
           </div>
           <div>
-            <label class="block text-xs font-bold text-slate-600 mb-1">اسم المعلم/ـة</label>
-            <input type="text" id="inputTeacher" value="أ. أوليفيا" oninput="updatePreview()" class="w-full border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-indigo-500 outline-none">
+            <label class="block text-xs font-bold text-slate-600 mb-1">عدد النسخ في الصفحة:</label>
+            <select id="textCopiesOpt" onchange="renderPreview()" class="w-full p-2 border border-slate-300 rounded-lg text-xs">
+              <option value="1" selected>نسخة واحدة (صفحة كاملة)</option>
+              <option value="2">نسختان (قسمين)</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2️⃣ قسم ورقة العمل المصورة -->
+    <section id="section-imageWorksheet" class="tab-content hidden bg-white p-4 sm:p-5 rounded-2xl shadow-sm border border-slate-200 space-y-4 no-print">
+      <h2 class="text-xs sm:text-sm font-bold text-indigo-900 border-b pb-2 flex items-center gap-1">
+        <span>🖼️</span> إدراج ورقة عمل كصورة وتعديلها:
+      </h2>
+      
+      <div class="space-y-4">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-bold text-slate-600 mb-1">اختر صورة ورقة العمل:</label>
+            <input type="file" id="imgSheetFile" accept="image/*" onchange="handleImageUpload(event)" class="w-full p-2 border border-slate-300 rounded-lg text-xs bg-slate-50">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-600 mb-1">عنوان ورقة العمل / الترويسة:</label>
+            <input type="text" id="imgSheetTitle" oninput="renderPreview()" class="w-full p-2.5 border border-slate-300 rounded-lg text-xs" placeholder="عنوان الورقة">
           </div>
         </div>
 
-        <!-- إضافة صورة إلى ورقة العمل -->
-        <div class="border-t pt-3">
-          <label class="block text-xs font-bold text-slate-600 mb-1">إضافة صورة لورقة العمل</label>
-          <input type="file" id="imageInput" accept="image/*" onchange="handleImageUpload(event)" class="w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 cursor-pointer">
-          <button onclick="removeImage()" id="btnRemoveImg" class="hidden mt-2 text-xs text-red-500 font-bold hover:underline">حذف الصورة المرفقة</button>
-        </div>
-
-        <div>
-          <label class="block text-xs font-bold text-slate-600 mb-1">الأسئلة والتعليمات</label>
-          <textarea id="inputContent" rows="8" oninput="updatePreview()" class="w-full border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-indigo-500 outline-none" placeholder="اكتبي الأسئلة والتمارين هنا..."></textarea>
-        </div>
-      </section>
-
-      <!-- معاينة ورقة العمل -->
-      <section class="lg:col-span-8 bg-white p-8 rounded-2xl shadow-md border border-slate-200 print-area min-h-[600px] flex flex-col justify-between">
-        <div>
-          <div class="border-b-2 border-indigo-600 pb-4 mb-6 flex justify-between items-center">
+        <div class="p-3 bg-amber-50 border border-amber-200 rounded-xl space-y-3">
+          <h3 class="text-xs font-bold text-amber-900 flex items-center gap-1">
+            <span>✂️</span> أدوات قص وتعديل الصورة (إزالة الروابط والحقوق السفلية):
+          </h3>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
-              <h1 id="previewTitle" class="text-2xl font-bold text-indigo-900">ورقة عمل: المادة والدروس</h1>
-              <p id="previewSubject" class="text-sm text-slate-600 mt-1">الصف الرابع - العلوم</p>
+              <label class="block text-[11px] font-bold text-slate-600 mb-1">قص وإخفاء الجزء السفلي:</label>
+              <input type="range" id="imgCropBottom" min="0" max="40" value="0" oninput="updateImageAdjustments()" class="w-full">
             </div>
-            <div class="text-left text-sm text-slate-500 space-y-1">
-              <p>اسم الطالب/ـة: .......................................</p>
-              <p id="previewTeacher">المعلم/ـة: أ. أوليفيا</p>
+            <div>
+              <label class="block text-[11px] font-bold text-slate-600 mb-1">حجم تكبير/تصغير الصورة:</label>
+              <input type="range" id="imgScale" min="50" max="100" value="100" oninput="updateImageAdjustments()" class="w-full">
             </div>
           </div>
+        </div>
+      </div>
+    </section>
 
-          <!-- معاينة الصورة المرفقة -->
-          <div id="imagePreviewContainer" class="hidden mb-6 text-center">
-            <img id="previewImage" src="" alt="صورة مرفقة" class="max-h-64 mx-auto rounded-lg shadow-sm border">
-          </div>
+    <!-- 3️⃣ قسم ألعاب الحروف -->
+    <section id="section-wordGame" class="tab-content hidden bg-white p-4 sm:p-5 rounded-2xl shadow-sm border border-slate-200 space-y-4 no-print">
+      <h2 class="text-xs sm:text-sm font-bold text-indigo-900 border-b pb-2 flex items-center gap-1">
+        <span>🧩</span> لعبة البحث عن الكلمات والحروف:
+      </h2>
 
-          <div id="previewContent" class="text-slate-800 leading-relaxed whitespace-pre-wrap text-base">
-            <!-- الأسئلة -->
-          </div>
+      <div class="space-y-3">
+        <div>
+          <label class="block text-xs font-bold text-slate-600 mb-1">عنوان اللعبة / النشاط:</label>
+          <input type="text" id="gameTitle" oninput="renderPreview()" class="w-full p-2.5 border border-slate-300 rounded-lg text-xs" value="لعبة البحث عن الكلمات المختبئة">
         </div>
 
-        <div class="border-t pt-4 text-center text-xs text-slate-400 mt-8">
-          تمت الطباعة بواسطة منصة مُعِين التعليمية
+        <div>
+          <label class="block text-xs font-bold text-slate-600 mb-1">الكلمات المطلوب البحث عنها:</label>
+          <input type="text" id="gameWords" oninput="renderPreview()" class="w-full p-2.5 border border-slate-300 rounded-lg text-xs" value="مدرسة, علم, قلم, كتاب, معلم">
         </div>
-      </section>
-    </div>
 
-    <!-- 2. قسم الألعاب التفاعلية -->
-    <div id="sectionGames" class="hidden grid grid-cols-1 lg:grid-cols-12 gap-6">
-      <section class="lg:col-span-4 bg-white p-5 rounded-2xl shadow-sm border border-slate-200 space-y-4 no-print">
-        <h2 class="text-lg font-bold border-b pb-2 flex items-center gap-2 text-indigo-700">
-          <i data-lucide="gamepad-2" class="w-5 h-5"></i>
-          <span>إعداد لعبة بطاقات الأسئلة</span>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-bold text-slate-600 mb-1">لغة اللعبة:</label>
+            <select id="gameLang" onchange="renderPreview()" class="w-full p-2 border border-slate-300 rounded-lg text-xs">
+              <option value="ar" selected>العربية</option>
+              <option value="en">English</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-600 mb-1">حجم الشبكة:</label>
+            <select id="gameGridSize" onchange="renderPreview()" class="w-full p-2 border border-slate-300 rounded-lg text-xs">
+              <option value="8" selected>8x8 (مبتدئ)</option>
+              <option value="10">10x10 (متوسط)</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4️⃣ قسم ألعاب الرياضيات Math -->
+    <section id="section-mathGame" class="tab-content hidden bg-white p-4 sm:p-5 rounded-2xl shadow-sm border border-slate-200 space-y-4 no-print">
+      <h2 class="text-xs sm:text-sm font-bold text-indigo-900 border-b pb-2 flex items-center gap-1">
+        <span>🔢</span> تصميم أنشطة وألعاب الرياضيات (Math Worksheets):
+      </h2>
+
+      <div class="space-y-3">
+        <div>
+          <label class="block text-xs font-bold text-slate-600 mb-1">عنوان النشاط:</label>
+          <input type="text" id="mathTitle" oninput="renderPreview()" class="w-full p-2.5 border border-slate-300 rounded-lg text-xs" value="تحدي أبطال الرياضيات (Math Challenge)">
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <div>
+            <label class="block text-xs font-bold text-slate-600 mb-1">نوع النشاط:</label>
+            <select id="mathType" onchange="renderPreview()" class="w-full p-2 border border-slate-300 rounded-lg text-xs">
+              <option value="addition" selected>جمع (+)</option>
+              <option value="subtraction">طرح (-)</option>
+              <option value="multiplication">ضرب (×)</option>
+              <option value="mixed">عمود مكس / مشكل</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-600 mb-1">مستوى الصعوبة:</label>
+            <select id="mathLevel" onchange="renderPreview()" class="w-full p-2 border border-slate-300 rounded-lg text-xs">
+              <option value="easy" selected>سهل (أرقام من 1 إلى 10)</option>
+              <option value="medium">متوسط (أرقام من 10 إلى 50)</option>
+              <option value="hard">متقدم (أرقام من 10 إلى 100)</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-600 mb-1">عدد المسائل:</label>
+            <select id="mathCount" onchange="renderPreview()" class="w-full p-2 border border-slate-300 rounded-lg text-xs">
+              <option value="8">8 مسائل</option>
+              <option value="12" selected>12 مسألة</option>
+              <option value="16">16 مسألة</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5️⃣ قسم شهادات التقدير -->
+    <section id="section-certificate" class="tab-content hidden bg-white p-4 sm:p-5 rounded-2xl shadow-sm border border-slate-200 space-y-4 no-print">
+      <h2 class="text-xs sm:text-sm font-bold text-indigo-900 border-b pb-2 flex items-center gap-1">
+        <span>🎓</span> إعداد وتخصيص شهادة التقدير:
+      </h2>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <div>
+          <label class="block text-xs font-bold text-slate-600 mb-1">ثيم ولون الشهادة:</label>
+          <select id="certTheme" onchange="renderPreview()" class="w-full p-2 border border-slate-300 rounded-lg text-xs font-bold">
+            <option value="royal" selected>👑 ملكي (أزرق داكن وذهبي)</option>
+            <option value="gold">✨ كلاسيكي (ذهبي وأسود)</option>
+            <option value="pink">🌸 وردي لطيف (زهري وبنفسجي)</option>
+            <option value="emerald">🌿 زمردي (أخضر وذهبي)</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-600 mb-1">شعار المدرسة / المؤسسة:</label>
+          <input type="file" id="certLogoFile" accept="image/*" onchange="handleLogoUpload(event)" class="w-full p-1.5 border border-slate-300 rounded-lg text-xs bg-slate-50">
+        </div>
+
+        <div class="sm:col-span-2">
+          <label class="block text-xs font-bold text-slate-600 mb-1">اسم الطالب / الطالبة:</label>
+          <input type="text" id="certStudentName" oninput="renderPreview()" class="w-full p-2.5 border border-slate-300 rounded-lg text-xs font-bold" placeholder="اسم الطالبة كاملاً">
+        </div>
+
+        <div class="sm:col-span-2">
+          <label class="block text-xs font-bold text-slate-600 mb-1">سبب التقدير / نص الشهادة:</label>
+          <input type="text" id="certReason" oninput="renderPreview()" class="w-full p-2.5 border border-slate-300 rounded-lg text-xs" placeholder="مثال: للتفوق والتميز في مادة الرياضيات خلال الفصل الدراسي الأول">
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-600 mb-1">اسم المعلمة / المديرة:</label>
+          <input type="text" id="certTeacher" oninput="renderPreview()" class="w-full p-2.5 border border-slate-300 rounded-lg text-xs" placeholder="معلمة المادة">
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-600 mb-1">التاريخ:</label>
+          <input type="text" id="certDate" oninput="renderPreview()" class="w-full p-2.5 border border-slate-300 rounded-lg text-xs" placeholder="2026/09/26">
+        </div>
+      </div>
+    </section>
+
+    <!-- 👁️ قسم المعاينة والتحميل -->
+    <section class="bg-white p-4 sm:p-5 rounded-2xl shadow-sm border border-slate-200 space-y-4">
+      <div class="flex flex-wrap items-center justify-between gap-2 no-print">
+        <h2 class="text-xs sm:text-sm font-bold text-slate-700 flex items-center gap-1">
+          👁️ المعاينة والتحميل:
         </h2>
-        <div>
-          <label class="block text-xs font-bold text-slate-600 mb-1">السؤال الأول</label>
-          <input type="text" id="gameQ1" value="ما عاصمة ليبيا؟" oninput="updateGames()" class="w-full border rounded-lg p-2 text-sm mb-2">
-          <input type="text" id="gameA1" value="طرابلس" oninput="updateGames()" class="w-full border rounded-lg p-2 text-sm bg-indigo-50" placeholder="الإجابة الصحيحة">
+        <div class="flex items-center gap-2">
+          <button onclick="downloadTrimmedImage()" class="bg-purple-600 hover:bg-purple-700 text-white px-3.5 py-2 rounded-lg font-bold text-xs transition shadow flex items-center gap-1">
+            🖼️ حفظ كصورة (حجم المحتوى فقط)
+          </button>
+          <button onclick="window.print()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg font-bold text-xs transition shadow">
+            🛈 طباعة / PDF
+          </button>
         </div>
-        <div>
-          <label class="block text-xs font-bold text-slate-600 mb-1">السؤال الثاني</label>
-          <input type="text" id="gameQ2" value="كم عدد أضلاع المربع؟" oninput="updateGames()" class="w-full border rounded-lg p-2 text-sm mb-2">
-          <input type="text" id="gameA2" value="4 أضلاع" oninput="updateGames()" class="w-full border rounded-lg p-2 text-sm bg-indigo-50" placeholder="الإجابة الصحيحة">
-        </div>
-      </section>
+      </div>
 
-      <section class="lg:col-span-8 bg-white p-8 rounded-2xl shadow-md border border-slate-200 print-area">
-        <h2 class="text-xl font-bold text-indigo-900 mb-6 border-b pb-2">🎮 نشاط البطاقات المتقاطعة (قص وتطابق)</h2>
-        <div class="grid grid-cols-2 gap-4">
-          <div class="border-2 border-dashed border-indigo-300 p-4 rounded-xl bg-indigo-50/50">
-            <span class="text-xs font-bold text-indigo-500 block mb-2">بطاقة سؤال 1</span>
-            <p id="prevQ1" class="font-bold text-slate-800">ما عاصمة ليبيا؟</p>
-          </div>
-          <div class="border-2 border-dashed border-emerald-300 p-4 rounded-xl bg-emerald-50/50">
-            <span class="text-xs font-bold text-emerald-500 block mb-2">بطاقة إجابة 1</span>
-            <p id="prevA1" class="font-bold text-slate-800">طرابلس</p>
-          </div>
-          <div class="border-2 border-dashed border-indigo-300 p-4 rounded-xl bg-indigo-50/50">
-            <span class="text-xs font-bold text-indigo-500 block mb-2">بطاقة سؤال 2</span>
-            <p id="prevQ2" class="font-bold text-slate-800">كم عدد أضلاع المربع؟</p>
-          </div>
-          <div class="border-2 border-dashed border-emerald-300 p-4 rounded-xl bg-emerald-50/50">
-            <span class="text-xs font-bold text-emerald-500 block mb-2">بطاقة إجابة 2</span>
-            <p id="prevA2" class="font-bold text-slate-800">4 أضلاع</p>
-          </div>
+      <div class="overflow-x-auto bg-slate-200 p-2 sm:p-4 rounded-xl flex justify-center">
+        <div id="printableArea" class="a4-preview flex flex-col justify-between">
+          <!-- محتوى الصفحة -->
         </div>
-      </section>
-    </div>
-
-    <!-- 3. قسم شهادات التقدير -->
-    <div id="sectionCertificates" class="hidden grid grid-cols-1 lg:grid-cols-12 gap-6">
-      <section class="lg:col-span-4 bg-white p-5 rounded-2xl shadow-sm border border-slate-200 space-y-4 no-print">
-        <h2 class="text-lg font-bold border-b pb-2 flex items-center gap-2 text-indigo-700">
-          <i data-lucide="award" class="w-5 h-5"></i>
-          <span>بيانات شهادة التقدير</span>
-        </h2>
-        <div>
-          <label class="block text-xs font-bold text-slate-600 mb-1">اسم الطالب/ـة المتميز/ـة</label>
-          <input type="text" id="certStudent" value="سارة محمد" oninput="updateCert()" class="w-full border rounded-lg p-2 text-sm">
-        </div>
-        <div>
-          <label class="block text-xs font-bold text-slate-600 mb-1">سبب التقدير / الإنجاز</label>
-          <input type="text" id="certReason" value="لتفوقها المتميز في مادة العلوم وحصولها على الدرجة النهائية" oninput="updateCert()" class="w-full border rounded-lg p-2 text-sm">
-        </div>
-        <div>
-          <label class="block text-xs font-bold text-slate-600 mb-1">اسم المعلم/ـة أو المدير/ـة</label>
-          <input type="text" id="certSign" value="أ. أوليفيا" oninput="updateCert()" class="w-full border rounded-lg p-2 text-sm">
-        </div>
-      </section>
-
-      <section class="lg:col-span-8 bg-amber-50/40 p-10 rounded-2xl border-4 border-amber-300 text-center print-area space-y-6">
-        <div class="text-amber-600 flex justify-center">
-          <i data-lucide="award" class="w-16 h-16"></i>
-        </div>
-        <h1 class="text-3xl font-extrabold text-amber-900 tracking-wide">شهادة تقدير وتميز</h1>
-        <p class="text-slate-600">تتقدم إدارة المدرسة بخالص الشكر والتقدير للطالب/ـة:</p>
-        <h2 id="prevCertStudent" class="text-3xl font-bold text-indigo-800 underline decoration-amber-400">سارة محمد</h2>
-        <p id="prevCertReason" class="text-slate-700 max-w-lg mx-auto leading-relaxed">لتفوقها المتميز في مادة العلوم وحصولها على الدرجة النهائية</p>
-        <div class="pt-8 flex justify-between items-center px-12 border-t border-amber-200">
-          <p class="text-xs text-slate-400">التاريخ: 2026/09/26</p>
-          <p id="prevCertSign" class="font-bold text-slate-800">التوقيع: أ. أوليفيا</p>
-        </div>
-      </section>
-    </div>
+      </div>
+    </section>
 
   </main>
 
+  
   <!-- Modal 1: نافذة الحفظ أونلاين -->
   <div id="saveCloudModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm hidden flex items-center justify-center p-4 z-50 no-print">
     <div class="bg-white rounded-2xl p-6 max-w-md w-full shadow-2xl space-y-4">
@@ -310,6 +430,7 @@
 
   <!-- الأكواد والمنطق الشامل -->
   <script>
+    let activeTab = 'textWorksheet';
     // 1. إعدادات الاتصال بـ Supabase
     const SUPABASE_URL = 'https://rfmcgonijlkjbvjjbrab.supabase.co';
     // ⚠️ استبدلي الخانة التالية بـ anon key الخاص بكِ
@@ -321,25 +442,20 @@
     lucide.createIcons();
 
     // التبديل بين التبويبات (أوراق العمل، الألعاب، الشهادات)
-    function switchTab(tab) {
-      document.getElementById('sectionWorksheet').classList.add('hidden');
-      document.getElementById('sectionGames').classList.add('hidden');
-      document.getElementById('sectionCertificates').classList.add('hidden');
+   function switchTab(tabId) {
+      activeTab = tabId;
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.remove('bg-indigo-600', 'text-white');
+        btn.classList.add('bg-slate-100', 'text-slate-700');
+      });
 
-      document.getElementById('tabWorksheet').className = 'py-3 px-4 font-bold text-slate-600 border-b-2 border-transparent hover:text-indigo-600 flex items-center gap-2';
-      document.getElementById('tabGames').className = 'py-3 px-4 font-bold text-slate-600 border-b-2 border-transparent hover:text-indigo-600 flex items-center gap-2';
-      document.getElementById('tabCertificates').className = 'py-3 px-4 font-bold text-slate-600 border-b-2 border-transparent hover:text-indigo-600 flex items-center gap-2';
+      document.getElementById(`section-${tabId}`).classList.remove('hidden');
+      const activeBtn = document.getElementById(`tab-${tabId}`);
+      activeBtn.classList.remove('bg-slate-100', 'text-slate-700');
+      activeBtn.classList.add('bg-indigo-600', 'text-white');
 
-      if (tab === 'worksheet') {
-        document.getElementById('sectionWorksheet').classList.remove('hidden');
-        document.getElementById('tabWorksheet').className = 'py-3 px-4 font-bold border-b-2 border-indigo-600 text-indigo-700 flex items-center gap-2';
-      } else if (tab === 'games') {
-        document.getElementById('sectionGames').classList.remove('hidden');
-        document.getElementById('tabGames').className = 'py-3 px-4 font-bold border-b-2 border-indigo-600 text-indigo-700 flex items-center gap-2';
-      } else if (tab === 'certificates') {
-        document.getElementById('sectionCertificates').classList.remove('hidden');
-        document.getElementById('tabCertificates').className = 'py-3 px-4 font-bold border-b-2 border-indigo-600 text-indigo-700 flex items-center gap-2';
-      }
+      renderPreview();
     }
 
     // تحديث معاينة ورقة العمل
@@ -351,38 +467,321 @@
     }
 
     // رفع ومعالجة الصور
-    function handleImageUpload(e) {
+  function handleImageUpload(e) {
       const file = e.target.files[0];
-      if (!file) return;
-      const reader = new FileReader();
-      reader.onload = function(event) {
-        uploadedImageBase64 = event.target.result;
-        document.getElementById('previewImage').src = uploadedImageBase64;
-        document.getElementById('imagePreviewContainer').classList.remove('hidden');
-        document.getElementById('btnRemoveImg').classList.remove('hidden');
-      };
-      reader.readAsDataURL(file);
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(event) {
+          uploadedImageData = event.target.result;
+          renderPreview();
+        };
+        reader.readAsDataURL(file);
+      }
     }
-
     function removeImage() {
       uploadedImageBase64 = '';
       document.getElementById('imageInput').value = '';
       document.getElementById('imagePreviewContainer').classList.add('hidden');
       document.getElementById('btnRemoveImg').classList.add('hidden');
     }
-
+    function handleLogoUpload(e) {
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(event) {
+          certLogoData = event.target.result;
+          renderPreview();
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+function updateImageAdjustments() {
+      if (activeTab === 'imageWorksheet') {
+        renderPreview();
+      }
+    }
     // تحديث الألعاب والشهادات
-    function updateGames() {
-      document.getElementById('prevQ1').innerText = document.getElementById('gameQ1').value;
-      document.getElementById('prevA1').innerText = document.getElementById('gameA1').value;
-      document.getElementById('prevQ2').innerText = document.getElementById('gameQ2').value;
-      document.getElementById('prevA2').innerText = document.getElementById('gameA2').value;
+   function generateMathProblems(type, level, count) {
+      const problems = [];
+      let maxNum = level === 'easy' ? 10 : level === 'medium' ? 50 : 100;
+
+      for (let i = 0; i < count; i++) {
+        let op = type;
+        if (type === 'mixed') {
+          const ops = ['addition', 'subtraction', 'multiplication'];
+          op = ops[Math.floor(Math.random() * ops.length)];
+        }
+
+        let n1 = Math.floor(Math.random() * maxNum) + 1;
+        let n2 = Math.floor(Math.random() * (level === 'easy' ? 10 : 20)) + 1;
+        let symbol = '+';
+
+        if (op === 'subtraction') {
+          if (n1 < n2) [n1, n2] = [n2, n1];
+          symbol = '-';
+        } else if (op === 'multiplication') {
+          n1 = Math.floor(Math.random() * 10) + 1;
+          n2 = Math.floor(Math.random() * 10) + 1;
+          symbol = '×';
+        }
+
+        problems.push({ n1, n2, symbol });
+      }
+      return problems;
     }
 
-    function updateCert() {
-      document.getElementById('prevCertStudent').innerText = document.getElementById('certStudent').value;
-      document.getElementById('prevCertReason').innerText = document.getElementById('certReason').value;
-      document.getElementById('prevCertSign').innerText = 'التوقيع: ' + document.getElementById('certSign').value;
+    function generateWordSearchGrid(words, size, lang) {
+      const grid = Array(size).fill(null).map(() => Array(size).fill(''));
+      const chars = lang === 'ar' ? 'أبتثجحخدذرزسشصضطظعغفقكلمنهوي' : 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+      const directions = [[0, 1], [1, 0], [1, 1], [-1, 1]];
+
+      words.forEach(rawWord => {
+        const word = rawWord.trim().replace(/\s+/g, '').toUpperCase();
+        if (!word) return;
+
+        let placed = false;
+        let attempts = 0;
+
+        while (!placed && attempts < 50) {
+          attempts++;
+          const dir = directions[Math.floor(Math.random() * directions.length)];
+          const row = Math.floor(Math.random() * size);
+          const col = Math.floor(Math.random() * size);
+
+          let canPlace = true;
+          for (let i = 0; i < word.length; i++) {
+            const newRow = row + i * dir[0];
+            const newCol = col + i * dir[1];
+            if (newRow < 0 || newRow >= size || newCol < 0 || newCol >= size || (grid[newRow][newCol] !== '' && grid[newRow][newCol] !== word[i])) {
+              canPlace = false;
+              break;
+            }
+          }
+
+          if (canPlace) {
+            for (let i = 0; i < word.length; i++) {
+              grid[row + i * dir[0]][col + i * dir[1]] = word[i];
+            }
+            placed = true;
+          }
+        }
+      });
+
+      for (let r = 0; r < size; r++) {
+        for (let c = 0; c < size; c++) {
+          if (grid[r][c] === '') {
+            grid[r][c] = chars.charAt(Math.floor(Math.random() * chars.length));
+          }
+        }
+      }
+      return grid;
+    }
+
+   function renderPreview() {
+      const area = document.getElementById('printableArea');
+      area.innerHTML = '';
+
+      if (activeTab === 'textWorksheet') {
+        const title = document.getElementById('textSheetTitle').value || 'ورقة عمل';
+        const content = document.getElementById('textSheetContent').value || 'الرجاء كتابة المحتوى...';
+        const fontSize = document.getElementById('textSizeOpt').value;
+        const copies = parseInt(document.getElementById('textCopiesOpt').value);
+        const formattedText = content.replace(/\n/g, '<br/>');
+
+        for (let i = 0; i < copies; i++) {
+          const block = document.createElement('div');
+          block.className = `flex-1 ${fontSize} p-2 flex flex-col justify-between ${i < copies - 1 ? 'border-b-2 border-dashed border-slate-300 pb-4 mb-4' : ''}`;
+          block.innerHTML = `
+            <div>
+              <div class="flex justify-between items-center mb-4 pb-2 border-b-2 border-indigo-900">
+                <h3 class="font-bold text-indigo-900">${title}</h3>
+                <div class="text-[10px] text-slate-500">الاسم: .......................... | التاريخ:  /  / </div>
+              </div>
+              <div class="leading-relaxed whitespace-pre-wrap">${formattedText}</div>
+            </div>
+          `;
+          area.appendChild(block);
+        }
+      } else if (activeTab === 'imageWorksheet') {
+        const title = document.getElementById('imgSheetTitle').value || 'ورقة عمل مصورة';
+        const cropBottom = document.getElementById('imgCropBottom') ? document.getElementById('imgCropBottom').value : 0;
+        const scale = document.getElementById('imgScale') ? document.getElementById('imgScale').value : 100;
+
+        area.innerHTML = `
+          <div class="flex flex-col h-full">
+            <div class="flex justify-between items-center mb-3 pb-2 border-b-2 border-indigo-900">
+              <h3 class="font-bold text-indigo-900 text-sm">${title}</h3>
+              <div class="text-[10px] text-slate-500">الاسم: .......................... | التاريخ:  /  / </div>
+            </div>
+            <div class="flex-1 flex items-center justify-center border-2 border-dashed border-slate-200 rounded-xl p-2 min-h-[200mm] overflow-hidden">
+              ${uploadedImageData ? `
+                <div class="img-crop-container" style="margin-bottom: -${cropBottom}\%; transform: scale(${scale / 100}); transform-origin: top center;">
+                  <img src="${uploadedImageData}" class="max-h-[220mm] object-contain rounded-lg" />
+                </div>
+              ` : '<p class="text-slate-400 text-xs">الرجاء اختيار صورة ورقة العمل...</p>'}
+            </div>
+          </div>
+        `;
+      } else if (activeTab === 'wordGame') {
+        const title = document.getElementById('gameTitle').value || 'لعبة البحث';
+        const wordsStr = document.getElementById('gameWords').value || '';
+        const lang = document.getElementById('gameLang').value;
+        const gridSize = parseInt(document.getElementById('gameGridSize').value);
+        const words = wordsStr.split(/[,،\s]+/).filter(w => w.trim().length > 0);
+        const gridData = generateWordSearchGrid(words, gridSize, lang);
+
+        let gridHtml = `<div class="grid gap-1 justify-center my-4" style="grid-template-columns: repeat(${gridSize}, minmax(0, 1fr)); width: fit-content; margin: auto;">`;
+        for (let r = 0; r < gridSize; r++) {
+          for (let c = 0; c < gridSize; c++) {
+            gridHtml += `<div class="word-grid-cell text-sm">${gridData[r][c]}</div>`;
+          }
+        }
+        gridHtml += `</div>`;
+
+        let wordsListHtml = `<div class="flex flex-wrap gap-2 justify-center mt-4">`;
+        words.forEach(w => {
+          wordsListHtml += `<span class="bg-indigo-50 border border-indigo-200 px-3 py-1 rounded-full text-xs font-bold text-indigo-900">${w}</span>`;
+        });
+        wordsListHtml += `</div>`;
+
+        area.innerHTML = `
+          <div class="flex flex-col h-full justify-between">
+            <div>
+              <div class="flex justify-between items-center mb-4 pb-2 border-b-2 border-indigo-900">
+                <h3 class="font-bold text-indigo-900 text-sm">🧩 ${title}</h3>
+                <div class="text-[10px] text-slate-500">الاسم: .......................... | التاريخ:  /  / </div>
+              </div>
+              <p class="text-xs text-center font-bold text-slate-600 mb-2">ابحث عن الكلمات التالية:</p>
+              ${wordsListHtml}
+              <div class="mt-4">${gridHtml}</div>
+            </div>
+          </div>
+        `;
+      } else if (activeTab === 'mathGame') {
+        const title = document.getElementById('mathTitle').value || 'ألعاب الرياضيات';
+        const type = document.getElementById('mathType').value;
+        const level = document.getElementById('mathLevel').value;
+        const count = parseInt(document.getElementById('mathCount').value);
+        const problems = generateMathProblems(type, level, count);
+
+        let mathCardsHtml = `<div class="grid grid-cols-2 sm:grid-cols-3 gap-4 mt-6">`;
+        problems.forEach((p, idx) => {
+          mathCardsHtml += `
+            <div class="border-2 border-indigo-200 rounded-2xl p-4 bg-indigo-50/50 flex flex-col items-center justify-center space-y-2 shadow-sm">
+              <span class="text-[10px] font-bold text-indigo-400 self-start">#${idx + 1}</span>
+              <div class="text-xl font-extrabold text-slate-800 tracking-wider flex items-center gap-2">
+                <span>${p.n1}</span>
+                <span class="text-indigo-600 font-bold">${p.symbol}</span>
+                <span>${p.n2}</span>
+                <span>=</span>
+              </div>
+              <div class="w-16 h-8 border-b-2 border-dashed border-indigo-400 bg-white rounded-lg"></div>
+            </div>
+          `;
+        });
+        mathCardsHtml += `</div>`;
+
+        area.innerHTML = `
+          <div class="flex flex-col h-full justify-between">
+            <div>
+              <div class="flex justify-between items-center mb-4 pb-2 border-b-2 border-indigo-900">
+                <h3 class="font-bold text-indigo-900 text-sm">🔢 ${title}</h3>
+                <div class="text-[10px] text-slate-500">الاسم: .......................... | التاريخ:  /  / </div>
+              </div>
+              <p class="text-xs text-center font-bold text-slate-600 mb-2">احسب النتيجة واكتب الإجابة في المربع:</p>
+              ${mathCardsHtml}
+            </div>
+          </div>
+        `;
+      } else if (activeTab === 'certificate') {
+        const theme = document.getElementById('certTheme').value;
+        const student = document.getElementById('certStudentName').value || 'اسم الطالب/الطالبة';
+        const reason = document.getElementById('certReason').value || 'للتفوق والتميز الدراسي';
+        const teacher = document.getElementById('certTeacher').value || 'معلمة المادة';
+        const date = document.getElementById('certDate').value || '2026/09/26';
+
+        let themeClasses = {
+          royal: { border: 'border-indigo-900', text: 'text-indigo-950', accent: 'text-purple-900', borderAcc: 'border-purple-300', bg: 'from-indigo-50/40 to-purple-50/40' },
+          gold: { border: 'border-amber-700', text: 'text-amber-950', accent: 'text-amber-800', borderAcc: 'border-amber-400', bg: 'from-amber-50/50 to-yellow-50/40' },
+          pink: { border: 'border-pink-600', text: 'text-pink-950', accent: 'text-pink-700', borderAcc: 'border-pink-300', bg: 'from-pink-50/50 to-rose-50/40' },
+          emerald: { border: 'border-emerald-800', text: 'text-emerald-950', accent: 'text-emerald-800', borderAcc: 'border-emerald-300', bg: 'from-emerald-50/50 to-teal-50/40' }
+        }[theme];
+
+        area.innerHTML = `
+          <div class="h-full border-8 double ${themeClasses.border} p-6 flex flex-col justify-between text-center relative bg-gradient-to-b ${themeClasses.bg}">
+            
+            <div class="flex justify-between items-center mb-2">
+              <div class="w-16 h-16 flex items-center justify-center">
+                ${certLogoData ? `<img src="${certLogoData}" class="max-h-16 max-w-16 object-contain" />` : ''}
+              </div>
+              <div class="text-xs font-bold text-slate-400">شهادة تقدير رسمية</div>
+              <div class="w-16"></div>
+            </div>
+
+            <div class="space-y-4 my-auto">
+              <div class="text-3xl font-extrabold ${themeClasses.text}">🎓 شهادة تقدير وتميز 🎓</div>
+              <p class="text-xs text-slate-500">تتشرف إدارة المدرسة والمعلمة بتقديم هذه الشهادة للطالب/ـة:</p>
+              <div class="text-2xl font-extrabold ${themeClasses.accent} border-b-2 ${themeClasses.borderAcc} inline-block px-10 py-2 my-2">${student}</div>
+              <p class="text-xs text-slate-600 max-w-md mx-auto leading-relaxed">${reason}</p>
+            </div>
+
+            <div class="flex justify-between items-end border-t border-slate-200 pt-4 text-xs font-bold ${themeClasses.text}">
+              <div>التاريخ: ${date}</div>
+              <div>التوقيع: ${teacher}</div>
+            </div>
+          </div>
+        `;
+      }
+    }
+    function downloadTrimmedImage() {
+      const element = document.getElementById('printableArea');
+      
+      html2canvas(element, { scale: 2 }).then(canvas => {
+        const ctx = canvas.getContext('2d');
+        const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        let top = canvas.height, bottom = 0, left = canvas.width, right = 0;
+
+        for (let y = 0; y < canvas.height; y++) {
+          for (let x = 0; x < canvas.width; x++) {
+            const alpha = imgData.data[(y * canvas.width + x) * 4 + 3];
+            const r = imgData.data[(y * canvas.width + x) * 4];
+            const g = imgData.data[(y * canvas.width + x) * 4 + 1];
+            const b = imgData.data[(y * canvas.width + x) * 4 + 2];
+
+            if (alpha > 0 && !(r > 248 && g > 248 && b > 248)) {
+              if (x < left) left = x;
+              if (x > right) right = x;
+              if (y < top) top = y;
+              if (y > bottom) bottom = y;
+            }
+          }
+        }
+
+        const padding = 20;
+        left = Math.max(0, left - padding);
+        top = Math.max(0, top - padding);
+        right = Math.min(canvas.width, right + padding);
+        bottom = Math.min(canvas.height, bottom + padding);
+
+        const trimmedWidth = right - left;
+        const trimmedHeight = bottom - top;
+
+        const trimmedCanvas = document.createElement('canvas');
+        trimmedCanvas.width = trimmedWidth;
+        trimmedCanvas.height = trimmedHeight;
+        const trimmedCtx = trimmedCanvas.getContext('2d');
+
+        trimmedCtx.drawImage(
+          canvas,
+          left, top, trimmedWidth, trimmedHeight,
+          0, 0, trimmedWidth, trimmedHeight
+        );
+
+        const link = document.createElement('a');
+        link.download = 'moeen_trimmed_sheet.png';
+        link.href = trimmedCanvas.toDataURL('image/png');
+        link.click();
+      });
     }
 
     function toggleModal(id) {
@@ -390,62 +789,52 @@
     }
 
     // تجميع حالة الصفحة بالكامل الحالية
-    function getFormState() {
+   function getFormState() {
       return {
-        worksheet: {
-          title: document.getElementById('inputTitle').value,
-          subject: document.getElementById('inputSubject').value,
-          teacher: document.getElementById('inputTeacher').value,
-          content: document.getElementById('inputContent').value,
-          image: uploadedImageBase64
-        },
-        games: {
-          q1: document.getElementById('gameQ1').value,
-          a1: document.getElementById('gameA1').value,
-          q2: document.getElementById('gameQ2').value,
-          a2: document.getElementById('gameA2').value
-        },
-        certificates: {
-          student: document.getElementById('certStudent').value,
-          reason: document.getElementById('certReason').value,
-          sign: document.getElementById('certSign').value
-        }
+        t: activeTab,
+        tt: document.getElementById('textSheetTitle').value,
+        tc: document.getElementById('textSheetContent').value,
+        it: document.getElementById('imgSheetTitle').value,
+        img: uploadedImageData,
+        gt: document.getElementById('gameTitle').value,
+        gw: document.getElementById('gameWords').value,
+        gl: document.getElementById('gameLang').value,
+        gs: document.getElementById('gameGridSize').value,
+        mt: document.getElementById('mathTitle').value,
+        mType: document.getElementById('mathType').value,
+        mLevel: document.getElementById('mathLevel').value,
+        mCount: document.getElementById('mathCount').value,
+        cTheme: document.getElementById('certTheme').value,
+        cLogo: certLogoData,
+        cs: document.getElementById('certStudentName').value,
+        cr: document.getElementById('certReason').value,
+        ct: document.getElementById('certTeacher').value,
+        cd: document.getElementById('certDate').value
       };
     }
-
     // تطبيق كل البيانات المرجعة
-    function setFormState(data) {
+   function setFormState(data) {
       if (!data) return;
-      if (data.worksheet) {
-        document.getElementById('inputTitle').value = data.worksheet.title || '';
-        document.getElementById('inputSubject').value = data.worksheet.subject || '';
-        document.getElementById('inputTeacher').value = data.worksheet.teacher || '';
-        document.getElementById('inputContent').value = data.worksheet.content || '';
-        if (data.worksheet.image) {
-          uploadedImageBase64 = data.worksheet.image;
-          document.getElementById('previewImage').src = uploadedImageBase64;
-          document.getElementById('imagePreviewContainer').classList.remove('hidden');
-          document.getElementById('btnRemoveImg').classList.remove('hidden');
-        } else {
-          removeImage();
-        }
-        updatePreview();
-      }
-      if (data.games) {
-        document.getElementById('gameQ1').value = data.games.q1 || '';
-        document.getElementById('gameA1').value = data.games.a1 || '';
-        document.getElementById('gameQ2').value = data.games.q2 || '';
-        document.getElementById('gameA2').value = data.games.a2 || '';
-        updateGames();
-      }
-      if (data.certificates) {
-        document.getElementById('certStudent').value = data.certificates.student || '';
-        document.getElementById('certReason').value = data.certificates.reason || '';
-        document.getElementById('certSign').value = data.certificates.sign || '';
-        updateCert();
-      }
+      document.getElementById('textSheetTitle').value = data.tt || '';
+      document.getElementById('textSheetContent').value = data.tc || '';
+      document.getElementById('imgSheetTitle').value = data.it || '';
+      uploadedImageData = data.img || '';
+      document.getElementById('gameTitle').value = data.gt || '';
+      document.getElementById('gameWords').value = data.gw || '';
+      if(data.gl) document.getElementById('gameLang').value = data.gl;
+      if(data.gs) document.getElementById('gameGridSize').value = data.gs;
+      if(data.mt) document.getElementById('mathTitle').value = data.mt;
+      if(data.mType) document.getElementById('mathType').value = data.mType;
+      if(data.mLevel) document.getElementById('mathLevel').value = data.mLevel;
+      if(data.mCount) document.getElementById('mathCount').value = data.mCount;
+      if(data.cTheme) document.getElementById('certTheme').value = data.cTheme;
+      certLogoData = data.cLogo || '';
+      document.getElementById('certStudentName').value = data.cs || '';
+      document.getElementById('certReason').value = data.cr || '';
+      document.getElementById('certTeacher').value = data.ct || '';
+      document.getElementById('certDate').value = data.cd || '';
+      switchTab(data.t || 'textWorksheet');
     }
-
     // --- حفظ واسترجاع سحابي عبر Supabase ---
     async function saveToCloudOnline() {
       const subject = document.getElementById('cloudSubject').value.trim();
