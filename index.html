@@ -778,7 +778,7 @@
     }
 
     // ⭐ خوارزمية الربط السحابي الحقيقي المباشر (تنجح بين أي هاتف وكمبيوتر)
-   sync function saveToCloudOnline() {
+  async function saveToCloudOnline() {
   const subject = document.getElementById('cloudSubject').value.trim();
   const pass = document.getElementById('cloudPass').value.trim();
   const status = document.getElementById('saveStatus');
@@ -826,7 +826,7 @@
     status.innerText = '❌ تعذر الاتصال بالشبكة السحابية. تأكد من الاتصال بالإنترنت.';
   }
 }
-    async function loadFromCloudOnline() {
+  async function loadFromCloudOnline() {
   const subject = document.getElementById('searchSubject').value.trim();
   const pass = document.getElementById('searchPass').value.trim();
   const status = document.getElementById('loadStatus');
