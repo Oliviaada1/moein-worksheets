@@ -778,104 +778,94 @@
     }
 
     // ⭐ خوارزمية الربط السحابي الحقيقي المباشر (تنجح بين أي هاتف وكمبيوتر)
-    async function saveToCloudOnline() {
-      const subject = document.getElementById('cloudSubject').value.trim();
-      const pass = document.getElementById('cloudPass').value.trim();
-      const status = document.getElementById('saveStatus');
+   sync function saveToCloudOnline() {
+  const subject = document.getElementById('cloudSubject').value.trim();
+  const pass = document.getElementById('cloudPass').value.trim();
+  const status = document.getElementById('saveStatus');
 
-      if (!subject || !pass) {
-        alert('الرجاء كتابة اسم المادة وكلمة السر لحفظ الورقة.');
-        return;
-      }
+  if (!subject || !pass) {
+    alert('الرجاء كتابة اسم المادة وكلمة السر لحفظ الورقة.');
+    return;
+  }
 
-      status.classList.remove('hidden', 'text-red-500', 'text-emerald-600');
-      status.classList.add('text-indigo-600');
-      status.innerText = '⏳ جاري رفع ورقة العمل إلى السحاب...';
+  status.classList.remove('hidden', 'text-red-500', 'text-emerald-600');
+  status.classList.add('text-indigo-600');
+  status.innerText = '⏳ جاري رفع ورقة العمل إلى السحاب...';
 
-      const payload = {
-        key: `${subject.toLowerCase()}_${pass}`,
-        data: getFormState()
-      };
+  // إنشاء مفتاح فريد يجمع اسم المادة بكلمة السر
+  const uniqueKey = `moeen_${encodeURIComponent(subject.toLowerCase())}_${encodeURIComponent(pass)}`;
+  const formData = getFormState();
 
-      try {
-        const response = await fetch('https://api.jsonbin.io/v3/b', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'X-Master-Key': '$2a$10$wT8mIEx80dM73YhL18lTdeE/0Kz9wI94E0Kz9wI94E0Kz9wI94E' // حساب مجاني عام للربط المباشر
-          },
-          body: JSON.stringify(payload)
-        });
+  try {
+    // رفع البيانات مباشرة لقاعدة بيانات سحابية مجانية
+    const response = await fetch(`https://api.restful-api.dev/objects`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        name: uniqueKey,
+        data: formData
+      })
+    });
 
-        if (response.ok) {
-          const resData = await response.json();
-          const binId = resData.metadata.id;
-          
-          // حفظ الخريطة في التخزين المؤقت المحلي للحسابات
-          localStorage.setItem(`MOEEN_MAP_${subject.toLowerCase()}_${pass}`, binId);
+    if (response.ok) {
+      const result = await response.json();
+      
+      // حفظ المعرّف الخاص بالورقة للوصول السريع
+      localStorage.setItem(uniqueKey, result.id);
 
-          status.classList.add('text-emerald-600');
-          status.innerText = '✨ تم رفع ورقة العمل بنجاح للسحاب! يمكنك فتحها الآن من أي كمبيوتر.';
-          setTimeout(() => toggleModal('saveCloudModal'), 2000);
-        } else {
-          throw new Error();
-        }
-      } catch (err) {
-        status.classList.add('text-red-500');
-        status.innerText = '❌ تعذر الاتصال بالشبكة السحابية. يرجى التأكد من توفر الإنترنت.';
-      }
+      status.classList.add('text-emerald-600');
+      status.innerText = '✨ تم رفع ورقة العمل بنجاح! يمكنك فتحها الآن من الكمبيوتر.';
+      setTimeout(() => toggleModal('saveCloudModal'), 2000);
+    } else {
+      throw new Error();
     }
-
+  } catch (err) {
+    status.classList.add('text-red-500');
+    status.innerText = '❌ تعذر الاتصال بالشبكة السحابية. تأكد من الاتصال بالإنترنت.';
+  }
+}
     async function loadFromCloudOnline() {
-      const subject = document.getElementById('searchSubject').value.trim();
-      const pass = document.getElementById('searchPass').value.trim();
-      const status = document.getElementById('loadStatus');
+  const subject = document.getElementById('searchSubject').value.trim();
+  const pass = document.getElementById('searchPass').value.trim();
+  const status = document.getElementById('loadStatus');
 
-      if (!subject || !pass) {
-        alert('الرجاء إدخال اسم المادة وكلمة السر البحثية.');
+  if (!subject || !pass) {
+    alert('الرجاء إدخال اسم المادة وكلمة السر البحثية.');
+    return;
+  }
+
+  status.classList.remove('hidden', 'text-red-500', 'text-emerald-600');
+  status.classList.add('text-indigo-600');
+  status.innerText = '⏳ جاري البحث وجلب ورقة العمل من السحاب...';
+
+  const uniqueKey = `moeen_${encodeURIComponent(subject.toLowerCase())}_${encodeURIComponent(pass)}`;
+
+  try {
+    // جلب كل العناصر المرفوعة والبحث عن الاسم وكلمة السر
+    const response = await fetch(`https://api.restful-api.dev/objects`);
+    
+    if (response.ok) {
+      const items = await response.json();
+      // البحث عن ورقة العمل الخاصة بالمعلمة
+      const foundItem = items.find(item => item.name === uniqueKey);
+
+      if (foundItem && foundItem.data) {
+        setFormState(foundItem.data);
+        status.classList.add('text-emerald-600');
+        status.innerText = '🎉 تم استرجاع وفتح ورقة العمل بنجاح!';
+        setTimeout(() => toggleModal('loadCloudModal'), 1500);
         return;
       }
-
-      status.classList.remove('hidden', 'text-red-500', 'text-emerald-600');
-      status.classList.add('text-indigo-600');
-      status.innerText = '⏳ جاري البحث وجلب ورقة العمل من السحاب...';
-
-      const targetKey = `${subject.toLowerCase()}_${pass}`;
-
-      try {
-        // البحث عن المعرف الخاص بالحفظ
-        let binId = localStorage.getItem(`MOEEN_MAP_${targetKey}`);
-
-        if (!binId) {
-          // استرجاع تجريبي عام
-          const response = await fetch(`https://api.jsonbin.io/v3/b`, {
-            headers: { 'X-Master-Key': '$2a$10$wT8mIEx80dM73YhL18lTdeE/0Kz9wI94E0Kz9wI94E0Kz9wI94E' }
-          });
-          const list = await response.json();
-        }
-
-        if (binId) {
-          const fetchRes = await fetch(`https://api.jsonbin.io/v3/b/${binId}/latest`, {
-            headers: { 'X-Master-Key': '$2a$10$wT8mIEx80dM73YhL18lTdeE/0Kz9wI94E0Kz9wI94E0Kz9wI94E' }
-          });
-
-          if (fetchRes.ok) {
-            const dataObj = await fetchRes.json();
-            setFormState(dataObj.record.data);
-            status.classList.add('text-emerald-600');
-            status.innerText = '🎉 تم استرجاع وفتح ورقة العمل بنجاح!';
-            setTimeout(() => toggleModal('loadCloudModal'), 1500);
-            return;
-          }
-        }
-        
-        throw new Error();
-      } catch (err) {
-        status.classList.add('text-red-500');
-        status.innerText = '🔒 لم يتم العثور على ورقة عمل بهذا الاسم وبكلمة السر هذه.';
-      }
     }
-
+    
+    throw new Error('NOT_FOUND');
+  } catch (err) {
+    status.classList.add('text-red-500');
+    status.innerText = '🔒 لم يتم العثور على ورقة عمل بهذا الاسم وكلمة السر.';
+  }
+}
     function exportDraft() {
       const blob = new Blob([JSON.stringify(getFormState(), null, 2)], { type: 'application/json' });
       const a = document.createElement('a');
