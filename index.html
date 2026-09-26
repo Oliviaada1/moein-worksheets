@@ -436,13 +436,23 @@
     // ⚠️ استبدلي الخانة التالية بـ anon key الخاص بكِ
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJmbWNnb25pamxramJ2ampicmFiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTA0MDc5NjAsImV4cCI6MjEwNTk4Mzk2MH0.ZmQlBXWwGIrxhBMl8W1HEXCYNLIJm-oxJp05t1ce-MM';
 
-    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-    let uploadedImageBase64 = '';
+    const supabaseClient = (typeof supabase !== 'undefined' && SUPABASE_URL) 
+      ? supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) 
+      : null;
 
-    lucide.createIcons();
+    // متغيرات الصور
+    let uploadedImageData = '';
+    let certLogoData = '';
 
+    // تهيئة أيقونات Lucide إذا كانت المكتبة محملة
+    if (typeof lucide !== 'undefined') {
+      lucide.createIcons();
+    }
     // التبديل بين التبويبات (أوراق العمل، الألعاب، الشهادات)
-   function switchTab(tabId) {
+
+
+    // التبديل بين التبويبات
+    function switchTab(tabId) {
       activeTab = tabId;
       document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
       document.querySelectorAll('.tab-btn').forEach(btn => {
@@ -450,24 +460,20 @@
         btn.classList.add('bg-slate-100', 'text-slate-700');
       });
 
-      document.getElementById(`section-${tabId}`).classList.remove('hidden');
+      const targetSection = document.getElementById(`section-${tabId}`);
+      if (targetSection) targetSection.classList.remove('hidden');
+
       const activeBtn = document.getElementById(`tab-${tabId}`);
-      activeBtn.classList.remove('bg-slate-100', 'text-slate-700');
-      activeBtn.classList.add('bg-indigo-600', 'text-white');
+      if (activeBtn) {
+        activeBtn.classList.remove('bg-slate-100', 'text-slate-700');
+        activeBtn.classList.add('bg-indigo-600', 'text-white');
+      }
 
       renderPreview();
     }
 
-    // تحديث معاينة ورقة العمل
-    function updatePreview() {
-      document.getElementById('previewTitle').innerText = document.getElementById('inputTitle').value || 'عنوان ورقة العمل';
-      document.getElementById('previewSubject').innerText = document.getElementById('inputSubject').value || 'الصف / المادة';
-      document.getElementById('previewTeacher').innerText = 'المعلم/ـة: ' + (document.getElementById('inputTeacher').value || '');
-      document.getElementById('previewContent').innerText = document.getElementById('inputContent').value || 'اكتبي الأسئلة هنا...';
-    }
-
     // رفع ومعالجة الصور
-  function handleImageUpload(e) {
+    function handleImageUpload(e) {
       const file = e.target.files[0];
       if (file) {
         const reader = new FileReader();
@@ -478,12 +484,14 @@
         reader.readAsDataURL(file);
       }
     }
+
     function removeImage() {
-      uploadedImageBase64 = '';
-      document.getElementById('imageInput').value = '';
-      document.getElementById('imagePreviewContainer').classList.add('hidden');
-      document.getElementById('btnRemoveImg').classList.add('hidden');
+      uploadedImageData = '';
+      const imgInput = document.getElementById('imageInput');
+      if (imgInput) imgInput.value = '';
+      renderPreview();
     }
+
     function handleLogoUpload(e) {
       const file = e.target.files[0];
       if (file) {
@@ -495,13 +503,15 @@
         reader.readAsDataURL(file);
       }
     }
-function updateImageAdjustments() {
+
+    function updateImageAdjustments() {
       if (activeTab === 'imageWorksheet') {
         renderPreview();
       }
     }
-    // تحديث الألعاب والشهادات
-   function generateMathProblems(type, level, count) {
+
+    // مولّد مسائل الرياضيات
+    function generateMathProblems(type, level, count) {
       const problems = [];
       let maxNum = level === 'easy' ? 10 : level === 'medium' ? 50 : 100;
 
@@ -530,6 +540,7 @@ function updateImageAdjustments() {
       return problems;
     }
 
+    // مولّد شبكة البحث عن الكلمات
     function generateWordSearchGrid(words, size, lang) {
       const grid = Array(size).fill(null).map(() => Array(size).fill(''));
       const chars = lang === 'ar' ? 'أبتثجحخدذرزسشصضطظعغفقكلمنهوي' : 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
@@ -577,25 +588,27 @@ function updateImageAdjustments() {
       return grid;
     }
 
-   function renderPreview() {
+    // دالة عرض المعاينة الشاملة والمحسّنة
+    function renderPreview() {
       const area = document.getElementById('printableArea');
+      if (!area) return;
       area.innerHTML = '';
 
       if (activeTab === 'textWorksheet') {
-        const title = document.getElementById('textSheetTitle').value || 'ورقة عمل';
-        const content = document.getElementById('textSheetContent').value || 'الرجاء كتابة المحتوى...';
-        const fontSize = document.getElementById('textSizeOpt').value;
-        const copies = parseInt(document.getElementById('textCopiesOpt').value);
+        const title = document.getElementById('textSheetTitle')?.value || 'ورقة عمل';
+        const content = document.getElementById('textSheetContent')?.value || 'الرجاء كتابة المحتوى...';
+        const fontSize = document.getElementById('textSizeOpt')?.value || 'text-base';
+        const copies = parseInt(document.getElementById('textCopiesOpt')?.value || '1');
         const formattedText = content.replace(/\n/g, '<br/>');
 
         for (let i = 0; i < copies; i++) {
           const block = document.createElement('div');
-          block.className = `flex-1 ${fontSize} p-2 flex flex-col justify-between ${i < copies - 1 ? 'border-b-2 border-dashed border-slate-300 pb-4 mb-4' : ''}`;
+          block.className = `flex-1 ${fontSize} p-4 flex flex-col justify-between ${i < copies - 1 ? 'border-b-2 border-dashed border-slate-300 pb-6 mb-6' : ''}`;
           block.innerHTML = `
             <div>
               <div class="flex justify-between items-center mb-4 pb-2 border-b-2 border-indigo-900">
-                <h3 class="font-bold text-indigo-900">${title}</h3>
-                <div class="text-[10px] text-slate-500">الاسم: .......................... | التاريخ:  /  / </div>
+                <h3 class="font-bold text-indigo-900 text-lg">${title}</h3>
+                <div class="text-xs text-slate-500">الاسم: .......................... | التاريخ:   /   / </div>
               </div>
               <div class="leading-relaxed whitespace-pre-wrap">${formattedText}</div>
             </div>
@@ -603,37 +616,37 @@ function updateImageAdjustments() {
           area.appendChild(block);
         }
       } else if (activeTab === 'imageWorksheet') {
-        const title = document.getElementById('imgSheetTitle').value || 'ورقة عمل مصورة';
-        const cropBottom = document.getElementById('imgCropBottom') ? document.getElementById('imgCropBottom').value : 0;
-        const scale = document.getElementById('imgScale') ? document.getElementById('imgScale').value : 100;
+        const title = document.getElementById('imgSheetTitle')?.value || 'ورقة عمل مصورة';
+        const cropBottom = document.getElementById('imgCropBottom')?.value || 0;
+        const scale = document.getElementById('imgScale')?.value || 100;
 
         area.innerHTML = `
-          <div class="flex flex-col h-full">
+          <div class="flex flex-col h-full p-2">
             <div class="flex justify-between items-center mb-3 pb-2 border-b-2 border-indigo-900">
               <h3 class="font-bold text-indigo-900 text-sm">${title}</h3>
-              <div class="text-[10px] text-slate-500">الاسم: .......................... | التاريخ:  /  / </div>
+              <div class="text-[10px] text-slate-500">الاسم: .......................... | التاريخ:   /   / </div>
             </div>
             <div class="flex-1 flex items-center justify-center border-2 border-dashed border-slate-200 rounded-xl p-2 min-h-[200mm] overflow-hidden">
               ${uploadedImageData ? `
-                <div class="img-crop-container" style="margin-bottom: -${cropBottom}\%; transform: scale(${scale / 100}); transform-origin: top center;">
-                  <img src="${uploadedImageData}" class="max-h-[220mm] object-contain rounded-lg" />
+                <div style="margin-bottom: -${cropBottom}\%; transform: scale(${scale / 100}); transform-origin: top center;" class="w-full flex justify-center">
+                  <img src="${uploadedImageData}" class="max-h-[210mm] object-contain rounded-lg shadow-sm" />
                 </div>
               ` : '<p class="text-slate-400 text-xs">الرجاء اختيار صورة ورقة العمل...</p>'}
             </div>
           </div>
         `;
       } else if (activeTab === 'wordGame') {
-        const title = document.getElementById('gameTitle').value || 'لعبة البحث';
-        const wordsStr = document.getElementById('gameWords').value || '';
-        const lang = document.getElementById('gameLang').value;
-        const gridSize = parseInt(document.getElementById('gameGridSize').value);
+        const title = document.getElementById('gameTitle')?.value || 'لعبة البحث عن الكلمات';
+        const wordsStr = document.getElementById('gameWords')?.value || '';
+        const lang = document.getElementById('gameLang')?.value || 'ar';
+        const gridSize = parseInt(document.getElementById('gameGridSize')?.value || '10');
         const words = wordsStr.split(/[,،\s]+/).filter(w => w.trim().length > 0);
         const gridData = generateWordSearchGrid(words, gridSize, lang);
 
-        let gridHtml = `<div class="grid gap-1 justify-center my-4" style="grid-template-columns: repeat(${gridSize}, minmax(0, 1fr)); width: fit-content; margin: auto;">`;
+        let gridHtml = `<div class="grid gap-1 justify-center my-6" style="grid-template-columns: repeat(${gridSize}, minmax(0, 1fr)); width: fit-content; margin: auto;">`;
         for (let r = 0; r < gridSize; r++) {
           for (let c = 0; c < gridSize; c++) {
-            gridHtml += `<div class="word-grid-cell text-sm">${gridData[r][c]}</div>`;
+            gridHtml += `<div class="w-8 h-8 flex items-center justify-center border border-indigo-200 rounded font-bold bg-white text-indigo-900 shadow-sm text-sm">${gridData[r][c]}</div>`;
           }
         }
         gridHtml += `</div>`;
@@ -645,29 +658,29 @@ function updateImageAdjustments() {
         wordsListHtml += `</div>`;
 
         area.innerHTML = `
-          <div class="flex flex-col h-full justify-between">
+          <div class="flex flex-col h-full justify-between p-4">
             <div>
               <div class="flex justify-between items-center mb-4 pb-2 border-b-2 border-indigo-900">
-                <h3 class="font-bold text-indigo-900 text-sm">🧩 ${title}</h3>
-                <div class="text-[10px] text-slate-500">الاسم: .......................... | التاريخ:  /  / </div>
+                <h3 class="font-bold text-indigo-900 text-base">🧩 ${title}</h3>
+                <div class="text-xs text-slate-500">الاسم: .......................... | التاريخ:   /   / </div>
               </div>
-              <p class="text-xs text-center font-bold text-slate-600 mb-2">ابحث عن الكلمات التالية:</p>
+              <p class="text-xs text-center font-bold text-slate-600 mb-2">ابحث عن الكلمات التالية في الشبكة:</p>
               ${wordsListHtml}
               <div class="mt-4">${gridHtml}</div>
             </div>
           </div>
         `;
       } else if (activeTab === 'mathGame') {
-        const title = document.getElementById('mathTitle').value || 'ألعاب الرياضيات';
-        const type = document.getElementById('mathType').value;
-        const level = document.getElementById('mathLevel').value;
-        const count = parseInt(document.getElementById('mathCount').value);
+        const title = document.getElementById('mathTitle')?.value || 'تمارين الرياضيات';
+        const type = document.getElementById('mathType')?.value || 'addition';
+        const level = document.getElementById('mathLevel')?.value || 'easy';
+        const count = parseInt(document.getElementById('mathCount')?.value || '12');
         const problems = generateMathProblems(type, level, count);
 
         let mathCardsHtml = `<div class="grid grid-cols-2 sm:grid-cols-3 gap-4 mt-6">`;
         problems.forEach((p, idx) => {
           mathCardsHtml += `
-            <div class="border-2 border-indigo-200 rounded-2xl p-4 bg-indigo-50/50 flex flex-col items-center justify-center space-y-2 shadow-sm">
+            <div class="border-2 border-indigo-200 rounded-2xl p-4 bg-indigo-50/30 flex flex-col items-center justify-center space-y-2 shadow-sm">
               <span class="text-[10px] font-bold text-indigo-400 self-start">#${idx + 1}</span>
               <div class="text-xl font-extrabold text-slate-800 tracking-wider flex items-center gap-2">
                 <span>${p.n1}</span>
@@ -682,39 +695,39 @@ function updateImageAdjustments() {
         mathCardsHtml += `</div>`;
 
         area.innerHTML = `
-          <div class="flex flex-col h-full justify-between">
+          <div class="flex flex-col h-full justify-between p-4">
             <div>
               <div class="flex justify-between items-center mb-4 pb-2 border-b-2 border-indigo-900">
-                <h3 class="font-bold text-indigo-900 text-sm">🔢 ${title}</h3>
-                <div class="text-[10px] text-slate-500">الاسم: .......................... | التاريخ:  /  / </div>
+                <h3 class="font-bold text-indigo-900 text-base">🔢 ${title}</h3>
+                <div class="text-xs text-slate-500">الاسم: .......................... | التاريخ:   /   / </div>
               </div>
-              <p class="text-xs text-center font-bold text-slate-600 mb-2">احسب النتيجة واكتب الإجابة في المربع:</p>
+              <p class="text-xs text-center font-bold text-slate-600 mb-2">احسب النتيجة واكتب الإجابة داخل المربع:</p>
               ${mathCardsHtml}
             </div>
           </div>
         `;
       } else if (activeTab === 'certificate') {
-        const theme = document.getElementById('certTheme').value;
-        const student = document.getElementById('certStudentName').value || 'اسم الطالب/الطالبة';
-        const reason = document.getElementById('certReason').value || 'للتفوق والتميز الدراسي';
-        const teacher = document.getElementById('certTeacher').value || 'معلمة المادة';
-        const date = document.getElementById('certDate').value || '2026/09/26';
+        const theme = document.getElementById('certTheme')?.value || 'royal';
+        const student = document.getElementById('certStudentName')?.value || 'اسم الطالب/الطالبة';
+        const reason = document.getElementById('certReason')?.value || 'للتفوق والتميز الدراسي';
+        const teacher = document.getElementById('certTeacher')?.value || 'معلمة المادة';
+        const date = document.getElementById('certDate')?.value || '2026/09/26';
 
-        let themeClasses = {
+        const themes = {
           royal: { border: 'border-indigo-900', text: 'text-indigo-950', accent: 'text-purple-900', borderAcc: 'border-purple-300', bg: 'from-indigo-50/40 to-purple-50/40' },
           gold: { border: 'border-amber-700', text: 'text-amber-950', accent: 'text-amber-800', borderAcc: 'border-amber-400', bg: 'from-amber-50/50 to-yellow-50/40' },
           pink: { border: 'border-pink-600', text: 'text-pink-950', accent: 'text-pink-700', borderAcc: 'border-pink-300', bg: 'from-pink-50/50 to-rose-50/40' },
           emerald: { border: 'border-emerald-800', text: 'text-emerald-950', accent: 'text-emerald-800', borderAcc: 'border-emerald-300', bg: 'from-emerald-50/50 to-teal-50/40' }
-        }[theme];
+        };
+        const themeClasses = themes[theme] || themes.royal;
 
         area.innerHTML = `
-          <div class="h-full border-8 double ${themeClasses.border} p-6 flex flex-col justify-between text-center relative bg-gradient-to-b ${themeClasses.bg}">
-            
+          <div class="h-full border-8 border-double ${themeClasses.border} p-8 flex flex-col justify-between text-center relative bg-gradient-to-b ${themeClasses.bg} rounded-lg">
             <div class="flex justify-between items-center mb-2">
               <div class="w-16 h-16 flex items-center justify-center">
                 ${certLogoData ? `<img src="${certLogoData}" class="max-h-16 max-w-16 object-contain" />` : ''}
               </div>
-              <div class="text-xs font-bold text-slate-400">شهادة تقدير رسمية</div>
+              <div class="text-xs font-bold text-slate-400 uppercase tracking-widest">شهادة تقدير رسمية</div>
               <div class="w-16"></div>
             </div>
 
@@ -733,112 +746,85 @@ function updateImageAdjustments() {
         `;
       }
     }
+
+    // تنزيل المعاينة بصورة عالية الجودة وبأبعاد ثابتة
     function downloadTrimmedImage() {
       const element = document.getElementById('printableArea');
-      
-      html2canvas(element, { scale: 2 }).then(canvas => {
-        const ctx = canvas.getContext('2d');
-        const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-        let top = canvas.height, bottom = 0, left = canvas.width, right = 0;
+      if (!element || typeof html2canvas === 'undefined') {
+        alert('مكتبة التنزيل كصورة غير ممتدة أو العنصر غير موجود.');
+        return;
+      }
 
-        for (let y = 0; y < canvas.height; y++) {
-          for (let x = 0; x < canvas.width; x++) {
-            const alpha = imgData.data[(y * canvas.width + x) * 4 + 3];
-            const r = imgData.data[(y * canvas.width + x) * 4];
-            const g = imgData.data[(y * canvas.width + x) * 4 + 1];
-            const b = imgData.data[(y * canvas.width + x) * 4 + 2];
-
-            if (alpha > 0 && !(r > 248 && g > 248 && b > 248)) {
-              if (x < left) left = x;
-              if (x > right) right = x;
-              if (y < top) top = y;
-              if (y > bottom) bottom = y;
-            }
-          }
-        }
-
-        const padding = 20;
-        left = Math.max(0, left - padding);
-        top = Math.max(0, top - padding);
-        right = Math.min(canvas.width, right + padding);
-        bottom = Math.min(canvas.height, bottom + padding);
-
-        const trimmedWidth = right - left;
-        const trimmedHeight = bottom - top;
-
-        const trimmedCanvas = document.createElement('canvas');
-        trimmedCanvas.width = trimmedWidth;
-        trimmedCanvas.height = trimmedHeight;
-        const trimmedCtx = trimmedCanvas.getContext('2d');
-
-        trimmedCtx.drawImage(
-          canvas,
-          left, top, trimmedWidth, trimmedHeight,
-          0, 0, trimmedWidth, trimmedHeight
-        );
-
+      html2canvas(element, { scale: 3, useCORS: true, backgroundColor: '#ffffff' }).then(canvas => {
         const link = document.createElement('a');
-        link.download = 'moeen_trimmed_sheet.png';
-        link.href = trimmedCanvas.toDataURL('image/png');
+        link.download = 'moeen_worksheet.png';
+        link.href = canvas.toDataURL('image/png', 1.0);
         link.click();
       });
     }
 
     function toggleModal(id) {
-      document.getElementById(id).classList.toggle('hidden');
+      const modal = document.getElementById(id);
+      if (modal) modal.classList.toggle('hidden');
     }
 
-    // تجميع حالة الصفحة بالكامل الحالية
-   function getFormState() {
+    // تجميع حالة النموذج
+    function getFormState() {
       return {
         t: activeTab,
-        tt: document.getElementById('textSheetTitle').value,
-        tc: document.getElementById('textSheetContent').value,
-        it: document.getElementById('imgSheetTitle').value,
+        tt: document.getElementById('textSheetTitle')?.value || '',
+        tc: document.getElementById('textSheetContent')?.value || '',
+        it: document.getElementById('imgSheetTitle')?.value || '',
         img: uploadedImageData,
-        gt: document.getElementById('gameTitle').value,
-        gw: document.getElementById('gameWords').value,
-        gl: document.getElementById('gameLang').value,
-        gs: document.getElementById('gameGridSize').value,
-        mt: document.getElementById('mathTitle').value,
-        mType: document.getElementById('mathType').value,
-        mLevel: document.getElementById('mathLevel').value,
-        mCount: document.getElementById('mathCount').value,
-        cTheme: document.getElementById('certTheme').value,
+        gt: document.getElementById('gameTitle')?.value || '',
+        gw: document.getElementById('gameWords')?.value || '',
+        gl: document.getElementById('gameLang')?.value || 'ar',
+        gs: document.getElementById('gameGridSize')?.value || '10',
+        mt: document.getElementById('mathTitle')?.value || '',
+        mType: document.getElementById('mathType')?.value || 'addition',
+        mLevel: document.getElementById('mathLevel')?.value || 'easy',
+        mCount: document.getElementById('mathCount')?.value || '12',
+        cTheme: document.getElementById('certTheme')?.value || 'royal',
         cLogo: certLogoData,
-        cs: document.getElementById('certStudentName').value,
-        cr: document.getElementById('certReason').value,
-        ct: document.getElementById('certTeacher').value,
-        cd: document.getElementById('certDate').value
+        cs: document.getElementById('certStudentName')?.value || '',
+        cr: document.getElementById('certReason')?.value || '',
+        ct: document.getElementById('certTeacher')?.value || '',
+        cd: document.getElementById('certDate')?.value || ''
       };
     }
-    // تطبيق كل البيانات المرجعة
-   function setFormState(data) {
+
+    // استرجاع حالة النموذج
+    function setFormState(data) {
       if (!data) return;
-      document.getElementById('textSheetTitle').value = data.tt || '';
-      document.getElementById('textSheetContent').value = data.tc || '';
-      document.getElementById('imgSheetTitle').value = data.it || '';
+      if (document.getElementById('textSheetTitle')) document.getElementById('textSheetTitle').value = data.tt || '';
+      if (document.getElementById('textSheetContent')) document.getElementById('textSheetContent').value = data.tc || '';
+      if (document.getElementById('imgSheetTitle')) document.getElementById('imgSheetTitle').value = data.it || '';
       uploadedImageData = data.img || '';
-      document.getElementById('gameTitle').value = data.gt || '';
-      document.getElementById('gameWords').value = data.gw || '';
-      if(data.gl) document.getElementById('gameLang').value = data.gl;
-      if(data.gs) document.getElementById('gameGridSize').value = data.gs;
-      if(data.mt) document.getElementById('mathTitle').value = data.mt;
-      if(data.mType) document.getElementById('mathType').value = data.mType;
-      if(data.mLevel) document.getElementById('mathLevel').value = data.mLevel;
-      if(data.mCount) document.getElementById('mathCount').value = data.mCount;
-      if(data.cTheme) document.getElementById('certTheme').value = data.cTheme;
+      if (document.getElementById('gameTitle')) document.getElementById('gameTitle').value = data.gt || '';
+      if (document.getElementById('gameWords')) document.getElementById('gameWords').value = data.gw || '';
+      if (data.gl && document.getElementById('gameLang')) document.getElementById('gameLang').value = data.gl;
+      if (data.gs && document.getElementById('gameGridSize')) document.getElementById('gameGridSize').value = data.gs;
+      if (data.mt && document.getElementById('mathTitle')) document.getElementById('mathTitle').value = data.mt;
+      if (data.mType && document.getElementById('mathType')) document.getElementById('mathType').value = data.mType;
+      if (data.mLevel && document.getElementById('mathLevel')) document.getElementById('mathLevel').value = data.mLevel;
+      if (data.mCount && document.getElementById('mathCount')) document.getElementById('mathCount').value = data.mCount;
+      if (data.cTheme && document.getElementById('certTheme')) document.getElementById('certTheme').value = data.cTheme;
       certLogoData = data.cLogo || '';
-      document.getElementById('certStudentName').value = data.cs || '';
-      document.getElementById('certReason').value = data.cr || '';
-      document.getElementById('certTeacher').value = data.ct || '';
-      document.getElementById('certDate').value = data.cd || '';
+      if (document.getElementById('certStudentName')) document.getElementById('certStudentName').value = data.cs || '';
+      if (document.getElementById('certReason')) document.getElementById('certReason').value = data.cr || '';
+      if (document.getElementById('certTeacher')) document.getElementById('certTeacher').value = data.ct || '';
+      if (document.getElementById('certDate')) document.getElementById('certDate').value = data.cd || '';
       switchTab(data.t || 'textWorksheet');
     }
-    // --- حفظ واسترجاع سحابي عبر Supabase ---
+
+    // الحفظ والاسترجاع عبر Supabase
     async function saveToCloudOnline() {
-      const subject = document.getElementById('cloudSubject').value.trim();
-      const pass = document.getElementById('cloudPass').value.trim();
+      if (!supabaseClient) {
+        alert('يرجى ضبط إعدادات Supabase أولاً.');
+        return;
+      }
+      const subject = document.getElementById('cloudSubject')?.value.trim();
+      const pass = document.getElementById('cloudPass')?.value.trim();
       const status = document.getElementById('saveStatus');
 
       if (!subject || !pass) {
@@ -846,9 +832,11 @@ function updateImageAdjustments() {
         return;
       }
 
-      status.classList.remove('hidden', 'text-red-500', 'text-emerald-600');
-      status.classList.add('text-indigo-600');
-      status.innerText = '⏳ جاري الحفظ...';
+      if (status) {
+        status.classList.remove('hidden', 'text-red-500', 'text-emerald-600');
+        status.classList.add('text-indigo-600');
+        status.innerText = '⏳ جاري الحفظ...';
+      }
 
       const uniqueKey = `${subject.toLowerCase()}_${pass}`;
       const fullData = getFormState();
@@ -857,11 +845,11 @@ function updateImageAdjustments() {
         .from('worksheets')
         .upsert({ key: uniqueKey, data: fullData }, { onConflict: 'key' });
 
-      if (error) {
+      if (error && status) {
         status.classList.remove('text-indigo-600');
         status.classList.add('text-red-500');
         status.innerText = '❌ تعذر الحفظ: ' + error.message;
-      } else {
+      } else if (status) {
         status.classList.remove('text-indigo-600');
         status.classList.add('text-emerald-600');
         status.innerText = '✨ تم حفظ جميع البيانات أونلاين!';
@@ -870,8 +858,12 @@ function updateImageAdjustments() {
     }
 
     async function loadFromCloudOnline() {
-      const subject = document.getElementById('searchSubject').value.trim();
-      const pass = document.getElementById('searchPass').value.trim();
+      if (!supabaseClient) {
+        alert('يرجى ضبط إعدادات Supabase أولاً.');
+        return;
+      }
+      const subject = document.getElementById('searchSubject')?.value.trim();
+      const pass = document.getElementById('searchPass')?.value.trim();
       const status = document.getElementById('loadStatus');
 
       if (!subject || !pass) {
@@ -879,9 +871,11 @@ function updateImageAdjustments() {
         return;
       }
 
-      status.classList.remove('hidden', 'text-red-500', 'text-emerald-600');
-      status.classList.add('text-indigo-600');
-      status.innerText = '⏳ جاري الجلب...';
+      if (status) {
+        status.classList.remove('hidden', 'text-red-500', 'text-emerald-600');
+        status.classList.add('text-indigo-600');
+        status.innerText = '⏳ جاري الجلب...';
+      }
 
       const uniqueKey = `${subject.toLowerCase()}_${pass}`;
 
@@ -891,11 +885,11 @@ function updateImageAdjustments() {
         .eq('key', uniqueKey)
         .maybeSingle();
 
-      if (error || !data) {
+      if ((error || !data) && status) {
         status.classList.remove('text-indigo-600');
         status.classList.add('text-red-500');
         status.innerText = '🔒 لم يتم العثور على البيانات.';
-      } else {
+      } else if (status) {
         setFormState(data.data);
         status.classList.remove('text-indigo-600');
         status.classList.add('text-emerald-600');
@@ -904,7 +898,7 @@ function updateImageAdjustments() {
       }
     }
 
-    // تنزيل واستيراد ملف محلي (JSON)
+    // تصدير واستيراد JSON
     function exportJSON() {
       const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(getFormState()));
       const downloadAnchor = document.createElement('a');
@@ -931,10 +925,10 @@ function updateImageAdjustments() {
       reader.readAsText(file);
     }
 
-    // تشغيل القيم الأولية
-    updatePreview();
-    updateGames();
-    updateCert();
-  </script>
+    // التشغيل المبدئي للسينايرو
+    document.addEventListener('DOMContentLoaded', () => {
+      renderPreview();
+    });
+</script>
 </body>
 </html>
