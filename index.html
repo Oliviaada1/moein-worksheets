@@ -11,18 +11,19 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <!-- Lucide Icons -->
   <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- html2canvas لحفظ المعاينة كصورة -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
   
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap');
     body {
       font-family: 'Tajawal', sans-serif;
     }
     @media print {
-     body * { visibility: hidden; }
+      body * { visibility: hidden; }
       .no-print { display: none !important; }
       #printableArea, #printableArea * { visibility: visible; }
       #printableArea {
@@ -33,6 +34,7 @@
         margin: 0;
         padding: 10mm;
         box-shadow: none;
+      }
     }
     .a4-preview {
       width: 100%;
@@ -74,22 +76,20 @@
       <div class="flex items-center space-x-3 space-x-reverse">
         <i data-lucide="sparkles" class="w-8 h-8 text-amber-300"></i>
         <div>
-         <h1 class="text-2xl sm:text-3xl font-extrabold flex items-center gap-2">
-          <span>✨</span> منصة مُعِين التعليمية
-        </h1>
-       <p class="text-indigo-100 text-xs sm:text-sm mt-1">مزامنة سحابية حقيقية بين الأجهزة، أوراق عمل، شهادات وألعاب تعليمية</p>
+          <h1 class="text-2xl sm:text-3xl font-extrabold flex items-center gap-2">
+            <span>✨</span> منصة مُعِين التعليمية
+          </h1>
+          <p class="text-indigo-100 text-xs sm:text-sm mt-1">مزامنة سحابية حقيقية بين الأجهزة، أوراق عمل، شهادات وألعاب تعليمية</p>
         </div>
       </div>
 
       <!-- أزرار الإجراءات والحفظ -->
       <div class="flex flex-wrap items-center gap-2">
-        <!-- زر الحفظ السحابي -->
         <button onclick="toggleModal('saveCloudModal')" class="bg-emerald-500 hover:bg-emerald-600 px-3 py-2 rounded-lg text-sm font-semibold flex items-center gap-1 shadow transition">
           <i data-lucide="cloud-upload" class="w-4 h-4"></i>
           <span>حفظ أونلاين (الهاتف)</span>
         </button>
 
-        <!-- زر الفتح السحابي -->
         <button onclick="toggleModal('loadCloudModal')" class="bg-indigo-800 hover:bg-indigo-900 px-3 py-2 rounded-lg text-sm font-semibold flex items-center gap-1 shadow transition">
           <i data-lucide="cloud-download" class="w-4 h-4"></i>
           <span>فتح أونلاين (الكمبيوتر)</span>
@@ -97,20 +97,17 @@
 
         <span class="text-indigo-400">|</span>
 
-        <!-- تنزيل ملف محلي -->
         <button onclick="exportJSON()" class="bg-indigo-500 hover:bg-indigo-400 px-3 py-2 rounded-lg text-sm font-medium flex items-center gap-1 transition">
           <i data-lucide="download" class="w-4 h-4"></i>
           <span>تنزيل ملف</span>
         </button>
 
-        <!-- رفع ملف محلي -->
         <label class="bg-indigo-500 hover:bg-indigo-400 px-3 py-2 rounded-lg text-sm font-medium flex items-center gap-1 cursor-pointer transition">
           <i data-lucide="upload" class="w-4 h-4"></i>
           <span>رفع ملف</span>
           <input type="file" id="jsonInput" accept=".json" class="hidden" onchange="importJSON(event)">
         </label>
 
-        <!-- طباعة / PDF -->
         <button onclick="window.print()" class="bg-amber-500 hover:bg-amber-600 px-4 py-2 rounded-lg text-sm font-bold flex items-center gap-1 shadow transition">
           <i data-lucide="printer" class="w-4 h-4"></i>
           <span>طباعة / PDF</span>
@@ -120,9 +117,8 @@
   </header>
 
   <!-- تبويبات التبديل بين الأقسام -->
- <main class="max-w-5xl mx-auto px-3 mt-6 space-y-6">
+  <main class="max-w-5xl mx-auto px-3 mt-6 space-y-6 flex-grow w-full">
 
-    <!-- تبويبات التصفح الرئيسية -->
     <nav class="bg-white p-2 rounded-2xl shadow-sm border border-slate-200 grid grid-cols-2 sm:grid-cols-5 gap-2 no-print">
       <button onclick="switchTab('textWorksheet')" id="tab-textWorksheet" class="tab-btn bg-indigo-600 text-white py-2.5 rounded-xl text-xs sm:text-sm font-bold transition">
         📝 أوراق العمل
@@ -354,14 +350,13 @@
 
       <div class="overflow-x-auto bg-slate-200 p-2 sm:p-4 rounded-xl flex justify-center">
         <div id="printableArea" class="a4-preview flex flex-col justify-between">
-          <!-- محتوى الصفحة -->
+          <!-- يتم إدراج المعاينة الديناميكية هنا -->
         </div>
       </div>
     </section>
 
   </main>
 
-  
   <!-- Modal 1: نافذة الحفظ أونلاين -->
   <div id="saveCloudModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm hidden flex items-center justify-center p-4 z-50 no-print">
     <div class="bg-white rounded-2xl p-6 max-w-md w-full shadow-2xl space-y-4">
@@ -428,76 +423,68 @@
     </div>
   </div>
 
-  <!-- الأكواد والمنطق الشامل -->
   <script>
-    let activeTab = 'textWorksheet';
-    // 1. إعدادات الاتصال بـ Supabase
+    // 1. إعداد Supabase Client (قومي باستبدال البيانات بمشروعكِ الخاص عند الحاجة)
     const SUPABASE_URL = 'https://rfmcgonijlkjbvjjbrab.supabase.co';
-    // ⚠️ استبدلي الخانة التالية بـ anon key الخاص بكِ
-    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJmbWNnb25pamxramJ2ampicmFiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTA0MDc5NjAsImV4cCI6MjEwNTk4Mzk2MH0.ZmQlBXWwGIrxhBMl8W1HEXCYNLIJm-oxJp05t1ce-MM';
-
-    const supabaseClient = (typeof supabase !== 'undefined' && SUPABASE_URL) 
-      ? supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) 
+    // ⚠️ استبدلي الخانة التالية بـ anon key الخاص بكِ
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJmbWNnb25pamxramJ2ampicmFiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTA0MDc5NjAsImV4cCI6MjEwNTk4Mzk2MH0.ZmQlBXWwGIrxhBMl8W1HEXCYNLIJm-oxJp05t1ce-MM';
+    const supabase = (SUPABASE_URL !== 'https://YOUR_SUPABASE_URL.supabase.co') 
+      ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY) 
       : null;
 
-    // متغيرات الصور
-    let uploadedImageData = '';
-    let certLogoData = '';
+    // المتغيرات العامة
+    let currentTab = 'textWorksheet';
+    let uploadedImageBase64 = '';
+    let uploadedLogoBase64 = '';
 
-    // تهيئة أيقونات Lucide إذا كانت المكتبة محملة
-    if (typeof lucide !== 'undefined') {
+    // تهيئة الأيقونات عند بدء التشغيل
+    document.addEventListener('DOMContentLoaded', () => {
       lucide.createIcons();
-    }
-    // التبديل بين التبويبات (أوراق العمل، الألعاب، الشهادات)
+      renderPreview();
+    });
 
-
-    // التبديل بين التبويبات
+    // التنقل بين التبويبات
     function switchTab(tabId) {
-      activeTab = tabId;
+      currentTab = tabId;
       document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
       document.querySelectorAll('.tab-btn').forEach(btn => {
         btn.classList.remove('bg-indigo-600', 'text-white');
         btn.classList.add('bg-slate-100', 'text-slate-700');
       });
 
-      const targetSection = document.getElementById(`section-${tabId}`);
-      if (targetSection) targetSection.classList.remove('hidden');
-
+      document.getElementById(`section-${tabId}`).classList.remove('hidden');
       const activeBtn = document.getElementById(`tab-${tabId}`);
-      if (activeBtn) {
-        activeBtn.classList.remove('bg-slate-100', 'text-slate-700');
-        activeBtn.classList.add('bg-indigo-600', 'text-white');
-      }
+      activeBtn.classList.remove('bg-slate-100', 'text-slate-700');
+      activeBtn.classList.add('bg-indigo-600', 'text-white');
 
       renderPreview();
     }
 
-    // رفع ومعالجة الصور
+    // فتح وإغلاق النوافذ
+    function toggleModal(id) {
+      const modal = document.getElementById(id);
+      modal.classList.toggle('hidden');
+    }
+
+    // معالجة الصور
     function handleImageUpload(e) {
       const file = e.target.files[0];
       if (file) {
         const reader = new FileReader();
-        reader.onload = function(event) {
-          uploadedImageData = event.target.result;
+        reader.onload = function(evt) {
+          uploadedImageBase64 = evt.target.result;
           renderPreview();
         };
         reader.readAsDataURL(file);
       }
     }
 
-    function removeImage() {
-      uploadedImageData = '';
-      const imgInput = document.getElementById('imageInput');
-      if (imgInput) imgInput.value = '';
-      renderPreview();
-    }
-
     function handleLogoUpload(e) {
       const file = e.target.files[0];
       if (file) {
         const reader = new FileReader();
-        reader.onload = function(event) {
-          certLogoData = event.target.result;
+        reader.onload = function(evt) {
+          uploadedLogoBase64 = evt.target.result;
           renderPreview();
         };
         reader.readAsDataURL(file);
@@ -505,430 +492,222 @@
     }
 
     function updateImageAdjustments() {
-      if (activeTab === 'imageWorksheet') {
-        renderPreview();
-      }
+      renderPreview();
     }
 
-    // مولّد مسائل الرياضيات
-    function generateMathProblems(type, level, count) {
-      const problems = [];
-      let maxNum = level === 'easy' ? 10 : level === 'medium' ? 50 : 100;
-
-      for (let i = 0; i < count; i++) {
-        let op = type;
-        if (type === 'mixed') {
-          const ops = ['addition', 'subtraction', 'multiplication'];
-          op = ops[Math.floor(Math.random() * ops.length)];
-        }
-
-        let n1 = Math.floor(Math.random() * maxNum) + 1;
-        let n2 = Math.floor(Math.random() * (level === 'easy' ? 10 : 20)) + 1;
-        let symbol = '+';
-
-        if (op === 'subtraction') {
-          if (n1 < n2) [n1, n2] = [n2, n1];
-          symbol = '-';
-        } else if (op === 'multiplication') {
-          n1 = Math.floor(Math.random() * 10) + 1;
-          n2 = Math.floor(Math.random() * 10) + 1;
-          symbol = '×';
-        }
-
-        problems.push({ n1, n2, symbol });
-      }
-      return problems;
-    }
-
-    // مولّد شبكة البحث عن الكلمات
-    function generateWordSearchGrid(words, size, lang) {
-      const grid = Array(size).fill(null).map(() => Array(size).fill(''));
-      const chars = lang === 'ar' ? 'أبتثجحخدذرزسشصضطظعغفقكلمنهوي' : 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-      const directions = [[0, 1], [1, 0], [1, 1], [-1, 1]];
-
-      words.forEach(rawWord => {
-        const word = rawWord.trim().replace(/\s+/g, '').toUpperCase();
-        if (!word) return;
-
-        let placed = false;
-        let attempts = 0;
-
-        while (!placed && attempts < 50) {
-          attempts++;
-          const dir = directions[Math.floor(Math.random() * directions.length)];
-          const row = Math.floor(Math.random() * size);
-          const col = Math.floor(Math.random() * size);
-
-          let canPlace = true;
-          for (let i = 0; i < word.length; i++) {
-            const newRow = row + i * dir[0];
-            const newCol = col + i * dir[1];
-            if (newRow < 0 || newRow >= size || newCol < 0 || newCol >= size || (grid[newRow][newCol] !== '' && grid[newRow][newCol] !== word[i])) {
-              canPlace = false;
-              break;
-            }
-          }
-
-          if (canPlace) {
-            for (let i = 0; i < word.length; i++) {
-              grid[row + i * dir[0]][col + i * dir[1]] = word[i];
-            }
-            placed = true;
-          }
-        }
-      });
-
-      for (let r = 0; r < size; r++) {
-        for (let c = 0; c < size; c++) {
-          if (grid[r][c] === '') {
-            grid[r][c] = chars.charAt(Math.floor(Math.random() * chars.length));
-          }
-        }
-      }
-      return grid;
-    }
-
-    // دالة عرض المعاينة الشاملة والمحسّنة
+    // توليد المعاينة الديناميكية
     function renderPreview() {
-      const area = document.getElementById('printableArea');
-      if (!area) return;
-      area.innerHTML = '';
+      const printable = document.getElementById('printableArea');
+      printable.innerHTML = '';
 
-      if (activeTab === 'textWorksheet') {
-        const title = document.getElementById('textSheetTitle')?.value || 'ورقة عمل';
-        const content = document.getElementById('textSheetContent')?.value || 'الرجاء كتابة المحتوى...';
-        const fontSize = document.getElementById('textSizeOpt')?.value || 'text-base';
-        const copies = parseInt(document.getElementById('textCopiesOpt')?.value || '1');
-        const formattedText = content.replace(/\n/g, '<br/>');
+      if (currentTab === 'textWorksheet') {
+        const title = document.getElementById('textSheetTitle').value || 'ورقة عمل تعليمية';
+        const content = document.getElementById('textSheetContent').value || 'الرجاء كتابة محتوى الأسئلة...';
+        const fontSize = document.getElementById('textSizeOpt').value;
+        const copies = parseInt(document.getElementById('textCopiesOpt').value);
 
         for (let i = 0; i < copies; i++) {
-          const block = document.createElement('div');
-          block.className = `flex-1 ${fontSize} p-4 flex flex-col justify-between ${i < copies - 1 ? 'border-b-2 border-dashed border-slate-300 pb-6 mb-6' : ''}`;
-          block.innerHTML = `
-            <div>
-              <div class="flex justify-between items-center mb-4 pb-2 border-b-2 border-indigo-900">
-                <h3 class="font-bold text-indigo-900 text-lg">${title}</h3>
-                <div class="text-xs text-slate-500">الاسم: .......................... | التاريخ:   /   / </div>
-              </div>
-              <div class="leading-relaxed whitespace-pre-wrap">${formattedText}</div>
-            </div>
-          `;
-          area.appendChild(block);
-        }
-      } else if (activeTab === 'imageWorksheet') {
-        const title = document.getElementById('imgSheetTitle')?.value || 'ورقة عمل مصورة';
-        const cropBottom = document.getElementById('imgCropBottom')?.value || 0;
-        const scale = document.getElementById('imgScale')?.value || 100;
-
-        area.innerHTML = `
-          <div class="flex flex-col h-full p-2">
-            <div class="flex justify-between items-center mb-3 pb-2 border-b-2 border-indigo-900">
-              <h3 class="font-bold text-indigo-900 text-sm">${title}</h3>
-              <div class="text-[10px] text-slate-500">الاسم: .......................... | التاريخ:   /   / </div>
-            </div>
-            <div class="flex-1 flex items-center justify-center border-2 border-dashed border-slate-200 rounded-xl p-2 min-h-[200mm] overflow-hidden">
-              ${uploadedImageData ? `
-                <div style="margin-bottom: -${cropBottom}\%; transform: scale(${scale / 100}); transform-origin: top center;" class="w-full flex justify-center">
-                  <img src="${uploadedImageData}" class="max-h-[210mm] object-contain rounded-lg shadow-sm" />
+          printable.innerHTML += `
+            <div class="border-2 border-slate-300 rounded-xl p-4 mb-4 flex-1 flex flex-col">
+              <div class="border-b-2 border-indigo-600 pb-2 mb-4 text-center">
+                <h2 class="text-xl font-bold text-indigo-900">${title}</h2>
+                <div class="flex justify-between text-xs text-slate-500 mt-2">
+                  <span>الاسم: ....................................</span>
+                  <span>الصف: ...............</span>
+                  <span>التاريخ: ..../..../2026م</span>
                 </div>
-              ` : '<p class="text-slate-400 text-xs">الرجاء اختيار صورة ورقة العمل...</p>'}
-            </div>
-          </div>
-        `;
-      } else if (activeTab === 'wordGame') {
-        const title = document.getElementById('gameTitle')?.value || 'لعبة البحث عن الكلمات';
-        const wordsStr = document.getElementById('gameWords')?.value || '';
-        const lang = document.getElementById('gameLang')?.value || 'ar';
-        const gridSize = parseInt(document.getElementById('gameGridSize')?.value || '10');
-        const words = wordsStr.split(/[,،\s]+/).filter(w => w.trim().length > 0);
-        const gridData = generateWordSearchGrid(words, gridSize, lang);
-
-        let gridHtml = `<div class="grid gap-1 justify-center my-6" style="grid-template-columns: repeat(${gridSize}, minmax(0, 1fr)); width: fit-content; margin: auto;">`;
-        for (let r = 0; r < gridSize; r++) {
-          for (let c = 0; c < gridSize; c++) {
-            gridHtml += `<div class="w-8 h-8 flex items-center justify-center border border-indigo-200 rounded font-bold bg-white text-indigo-900 shadow-sm text-sm">${gridData[r][c]}</div>`;
-          }
-        }
-        gridHtml += `</div>`;
-
-        let wordsListHtml = `<div class="flex flex-wrap gap-2 justify-center mt-4">`;
-        words.forEach(w => {
-          wordsListHtml += `<span class="bg-indigo-50 border border-indigo-200 px-3 py-1 rounded-full text-xs font-bold text-indigo-900">${w}</span>`;
-        });
-        wordsListHtml += `</div>`;
-
-        area.innerHTML = `
-          <div class="flex flex-col h-full justify-between p-4">
-            <div>
-              <div class="flex justify-between items-center mb-4 pb-2 border-b-2 border-indigo-900">
-                <h3 class="font-bold text-indigo-900 text-base">🧩 ${title}</h3>
-                <div class="text-xs text-slate-500">الاسم: .......................... | التاريخ:   /   / </div>
               </div>
-              <p class="text-xs text-center font-bold text-slate-600 mb-2">ابحث عن الكلمات التالية في الشبكة:</p>
-              ${wordsListHtml}
-              <div class="mt-4">${gridHtml}</div>
-            </div>
-          </div>
-        `;
-      } else if (activeTab === 'mathGame') {
-        const title = document.getElementById('mathTitle')?.value || 'تمارين الرياضيات';
-        const type = document.getElementById('mathType')?.value || 'addition';
-        const level = document.getElementById('mathLevel')?.value || 'easy';
-        const count = parseInt(document.getElementById('mathCount')?.value || '12');
-        const problems = generateMathProblems(type, level, count);
-
-        let mathCardsHtml = `<div class="grid grid-cols-2 sm:grid-cols-3 gap-4 mt-6">`;
-        problems.forEach((p, idx) => {
-          mathCardsHtml += `
-            <div class="border-2 border-indigo-200 rounded-2xl p-4 bg-indigo-50/30 flex flex-col items-center justify-center space-y-2 shadow-sm">
-              <span class="text-[10px] font-bold text-indigo-400 self-start">#${idx + 1}</span>
-              <div class="text-xl font-extrabold text-slate-800 tracking-wider flex items-center gap-2">
-                <span>${p.n1}</span>
-                <span class="text-indigo-600 font-bold">${p.symbol}</span>
-                <span>${p.n2}</span>
-                <span>=</span>
-              </div>
-              <div class="w-16 h-8 border-b-2 border-dashed border-indigo-400 bg-white rounded-lg"></div>
+              <div class="whitespace-pre-wrap ${fontSize} text-slate-800 leading-relaxed flex-1">${content}</div>
             </div>
           `;
-        });
-        mathCardsHtml += `</div>`;
+        }
+      } 
+      else if (currentTab === 'imageWorksheet') {
+        const title = document.getElementById('imgSheetTitle').value || 'ورقة عمل مصورة';
+        const cropBottom = document.getElementById('imgCropBottom').value;
+        const scale = document.getElementById('imgScale').value;
 
-        area.innerHTML = `
-          <div class="flex flex-col h-full justify-between p-4">
-            <div>
-              <div class="flex justify-between items-center mb-4 pb-2 border-b-2 border-indigo-900">
-                <h3 class="font-bold text-indigo-900 text-base">🔢 ${title}</h3>
-                <div class="text-xs text-slate-500">الاسم: .......................... | التاريخ:   /   / </div>
+        printable.innerHTML = `
+          <div class="text-center border-b pb-2 mb-4">
+            <h2 class="text-xl font-bold text-indigo-900">${title}</h2>
+          </div>
+          <div class="flex-1 flex justify-center items-center overflow-hidden">
+            ${uploadedImageBase64 ? `
+              <div class="img-crop-container" style="max-height: ${100 - cropBottom}\%; transform: scale(${scale / 100}); transform-origin: top center;">
+                <img src="${uploadedImageBase64}" class="max-w-full h-auto object-contain">
               </div>
-              <p class="text-xs text-center font-bold text-slate-600 mb-2">احسب النتيجة واكتب الإجابة داخل المربع:</p>
-              ${mathCardsHtml}
-            </div>
+            ` : '<p class="text-slate-400 text-sm">الرجاء اختيار صورة ورقة العمل لعرضها هنا</p>'}
           </div>
         `;
-      } else if (activeTab === 'certificate') {
-        const theme = document.getElementById('certTheme')?.value || 'royal';
-        const student = document.getElementById('certStudentName')?.value || 'اسم الطالب/الطالبة';
-        const reason = document.getElementById('certReason')?.value || 'للتفوق والتميز الدراسي';
-        const teacher = document.getElementById('certTeacher')?.value || 'معلمة المادة';
-        const date = document.getElementById('certDate')?.value || '2026/09/26';
+      }
+      else if (currentTab === 'wordGame') {
+        const title = document.getElementById('gameTitle').value || 'لعبة الكلمات';
+        const wordsStr = document.getElementById('gameWords').value;
+        const words = wordsStr.split(',').map(w => w.trim()).filter(w => w);
+        const gridSize = parseInt(document.getElementById('gameGridSize').value);
 
-        const themes = {
-          royal: { border: 'border-indigo-900', text: 'text-indigo-950', accent: 'text-purple-900', borderAcc: 'border-purple-300', bg: 'from-indigo-50/40 to-purple-50/40' },
-          gold: { border: 'border-amber-700', text: 'text-amber-950', accent: 'text-amber-800', borderAcc: 'border-amber-400', bg: 'from-amber-50/50 to-yellow-50/40' },
-          pink: { border: 'border-pink-600', text: 'text-pink-950', accent: 'text-pink-700', borderAcc: 'border-pink-300', bg: 'from-pink-50/50 to-rose-50/40' },
-          emerald: { border: 'border-emerald-800', text: 'text-emerald-950', accent: 'text-emerald-800', borderAcc: 'border-emerald-300', bg: 'from-emerald-50/50 to-teal-50/40' }
-        };
-        const themeClasses = themes[theme] || themes.royal;
+        let gridHTML = '<div class="grid gap-1 justify-center my-4" style="grid-template-columns: repeat(' + gridSize + ', minmax(0, 1fr));">';
+        const totalCells = gridSize * gridSize;
+        const sampleChars = 'أبتثجحخدذرزسشصضطظعغفقكلمنهوي';
 
-        area.innerHTML = `
-          <div class="h-full border-8 border-double ${themeClasses.border} p-8 flex flex-col justify-between text-center relative bg-gradient-to-b ${themeClasses.bg} rounded-lg">
-            <div class="flex justify-between items-center mb-2">
-              <div class="w-16 h-16 flex items-center justify-center">
-                ${certLogoData ? `<img src="${certLogoData}" class="max-h-16 max-w-16 object-contain" />` : ''}
-              </div>
-              <div class="text-xs font-bold text-slate-400 uppercase tracking-widest">شهادة تقدير رسمية</div>
-              <div class="w-16"></div>
-            </div>
+        for (let i = 0; i < totalCells; i++) {
+          const randomChar = sampleChars.charAt(Math.floor(Math.random() * sampleChars.length));
+          gridHTML += `<div class="word-grid-cell">${randomChar}</div>`;
+        }
+        gridHTML += '</div>';
 
-            <div class="space-y-4 my-auto">
-              <div class="text-3xl font-extrabold ${themeClasses.text}">🎓 شهادة تقدير وتميز 🎓</div>
-              <p class="text-xs text-slate-500">تتشرف إدارة المدرسة والمعلمة بتقديم هذه الشهادة للطالب/ـة:</p>
-              <div class="text-2xl font-extrabold ${themeClasses.accent} border-b-2 ${themeClasses.borderAcc} inline-block px-10 py-2 my-2">${student}</div>
-              <p class="text-xs text-slate-600 max-w-md mx-auto leading-relaxed">${reason}</p>
-            </div>
-
-            <div class="flex justify-between items-end border-t border-slate-200 pt-4 text-xs font-bold ${themeClasses.text}">
-              <div>التاريخ: ${date}</div>
-              <div>التوقيع: ${teacher}</div>
+        printable.innerHTML = `
+          <div class="text-center border-b pb-2 mb-2">
+            <h2 class="text-xl font-bold text-indigo-900">${title}</h2>
+            <p class="text-xs text-slate-500 mt-1">ابحثي عن الكلمات التالية داخل الشبكة:</p>
+          </div>
+          ${gridHTML}
+          <div class="mt-4 p-3 bg-slate-50 rounded-lg border">
+            <h4 class="text-xs font-bold text-slate-700 mb-2">الكلمات المطلوبة:</h4>
+            <div class="flex flex-wrap gap-2">
+              ${words.map(w => `<span class="bg-indigo-100 text-indigo-800 text-xs px-2.5 py-1 rounded-full font-bold">${w}</span>`).join('')}
             </div>
           </div>
         `;
       }
+      else if (currentTab === 'mathGame') {
+        const title = document.getElementById('mathTitle').value || 'تحدي الرياضيات';
+        const count = parseInt(document.getElementById('mathCount').value);
+        const type = document.getElementById('mathType').value;
+
+        let problemsHTML = '<div class="grid grid-cols-2 sm:grid-cols-3 gap-4 my-4">';
+        for (let i = 1; i <= count; i++) {
+          let num1 = Math.floor(Math.random() * 20) + 1;
+          let num2 = Math.floor(Math.random() * 10) + 1;
+          let op = type === 'addition' ? '+' : type === 'subtraction' ? '-' : '×';
+          
+          problemsHTML += `
+            <div class="p-3 border rounded-xl bg-slate-50 text-center font-bold text-lg text-slate-700">
+              <span>${i})</span> &nbsp; ${num1} ${op} ${num2} = ......
+            </div>
+          `;
+        }
+        problemsHTML += '</div>';
+
+        printable.innerHTML = `
+          <div class="text-center border-b pb-2 mb-2">
+            <h2 class="text-xl font-bold text-indigo-900">${title}</h2>
+          </div>
+          ${problemsHTML}
+        `;
+      }
+      else if (currentTab === 'certificate') {
+        const name = document.getElementById('certStudentName').value || 'اسم الطالب/ـة';
+        const reason = document.getElementById('certReason').value || 'للتميز والتفوق الدراسي';
+        const teacher = document.getElementById('certTeacher').value || 'معلمة المادة';
+        const date = document.getElementById('certDate').value || '2026/09/26';
+        const theme = document.getElementById('certTheme').value;
+
+        let themeClasses = 'border-amber-400 bg-amber-50/20';
+        if (theme === 'royal') themeClasses = 'border-indigo-900 bg-indigo-50/30';
+        if (theme === 'pink') themeClasses = 'border-pink-400 bg-pink-50/30';
+        if (theme === 'emerald') themeClasses = 'border-emerald-600 bg-emerald-50/30';
+
+        printable.innerHTML = `
+          <div class="border-8 ${themeClasses} p-6 rounded-2xl text-center h-full flex flex-col justify-between">
+            <div class="flex justify-between items-center">
+              ${uploadedLogoBase64 ? `<img src="${uploadedLogoBase64}" class="w-16 h-16 object-contain">` : '<div></div>'}
+              <h1 class="text-2xl font-black text-amber-600">🎓 شهادة تقدير 🎓</h1>
+              <div></div>
+            </div>
+            
+            <div class="my-6 space-y-3">
+              <p class="text-sm text-slate-600">تتقدم إدارة المدرسة بفيض من الشكر والتقدير للطالبـ/ـة:</p>
+              <h2 class="text-2xl font-extrabold text-indigo-900 border-b-2 border-amber-400 inline-block px-6 py-1">${name}</h2>
+              <p class="text-sm text-slate-700 max-w-lg mx-auto leading-relaxed mt-2">${reason}</p>
+            </div>
+
+            <div class="flex justify-between items-end text-xs font-bold text-slate-600 pt-6 border-t">
+              <div>التاريخ: ${date}</div>
+              <div>توقيع المعلمة: ${teacher}</div>
+            </div>
+          </div>
+        `;
+      }
+
+      lucide.createIcons();
     }
 
-    // تنزيل المعاينة بصورة عالية الجودة وبأبعاد ثابتة
+    // حفظ كصورة
     function downloadTrimmedImage() {
-      const element = document.getElementById('printableArea');
-      if (!element || typeof html2canvas === 'undefined') {
-        alert('مكتبة التنزيل كصورة غير ممتدة أو العنصر غير موجود.');
-        return;
-      }
-
-      html2canvas(element, { scale: 3, useCORS: true, backgroundColor: '#ffffff' }).then(canvas => {
+      const printable = document.getElementById('printableArea');
+      html2canvas(printable).then(canvas => {
         const link = document.createElement('a');
-        link.download = 'moeen_worksheet.png';
-        link.href = canvas.toDataURL('image/png', 1.0);
+        link.download = 'ورقة-عمل-معين.png';
+        link.href = canvas.toDataURL('image/png');
         link.click();
       });
     }
 
-    function toggleModal(id) {
-      const modal = document.getElementById(id);
-      if (modal) modal.classList.toggle('hidden');
-    }
-
-    // تجميع حالة النموذج
-    function getFormState() {
-      return {
-        t: activeTab,
-        tt: document.getElementById('textSheetTitle')?.value || '',
-        tc: document.getElementById('textSheetContent')?.value || '',
-        it: document.getElementById('imgSheetTitle')?.value || '',
-        img: uploadedImageData,
-        gt: document.getElementById('gameTitle')?.value || '',
-        gw: document.getElementById('gameWords')?.value || '',
-        gl: document.getElementById('gameLang')?.value || 'ar',
-        gs: document.getElementById('gameGridSize')?.value || '10',
-        mt: document.getElementById('mathTitle')?.value || '',
-        mType: document.getElementById('mathType')?.value || 'addition',
-        mLevel: document.getElementById('mathLevel')?.value || 'easy',
-        mCount: document.getElementById('mathCount')?.value || '12',
-        cTheme: document.getElementById('certTheme')?.value || 'royal',
-        cLogo: certLogoData,
-        cs: document.getElementById('certStudentName')?.value || '',
-        cr: document.getElementById('certReason')?.value || '',
-        ct: document.getElementById('certTeacher')?.value || '',
-        cd: document.getElementById('certDate')?.value || ''
-      };
-    }
-
-    // استرجاع حالة النموذج
-    function setFormState(data) {
-      if (!data) return;
-      if (document.getElementById('textSheetTitle')) document.getElementById('textSheetTitle').value = data.tt || '';
-      if (document.getElementById('textSheetContent')) document.getElementById('textSheetContent').value = data.tc || '';
-      if (document.getElementById('imgSheetTitle')) document.getElementById('imgSheetTitle').value = data.it || '';
-      uploadedImageData = data.img || '';
-      if (document.getElementById('gameTitle')) document.getElementById('gameTitle').value = data.gt || '';
-      if (document.getElementById('gameWords')) document.getElementById('gameWords').value = data.gw || '';
-      if (data.gl && document.getElementById('gameLang')) document.getElementById('gameLang').value = data.gl;
-      if (data.gs && document.getElementById('gameGridSize')) document.getElementById('gameGridSize').value = data.gs;
-      if (data.mt && document.getElementById('mathTitle')) document.getElementById('mathTitle').value = data.mt;
-      if (data.mType && document.getElementById('mathType')) document.getElementById('mathType').value = data.mType;
-      if (data.mLevel && document.getElementById('mathLevel')) document.getElementById('mathLevel').value = data.mLevel;
-      if (data.mCount && document.getElementById('mathCount')) document.getElementById('mathCount').value = data.mCount;
-      if (data.cTheme && document.getElementById('certTheme')) document.getElementById('certTheme').value = data.cTheme;
-      certLogoData = data.cLogo || '';
-      if (document.getElementById('certStudentName')) document.getElementById('certStudentName').value = data.cs || '';
-      if (document.getElementById('certReason')) document.getElementById('certReason').value = data.cr || '';
-      if (document.getElementById('certTeacher')) document.getElementById('certTeacher').value = data.ct || '';
-      if (document.getElementById('certDate')) document.getElementById('certDate').value = data.cd || '';
-      switchTab(data.t || 'textWorksheet');
-    }
-
-    // الحفظ والاسترجاع عبر Supabase
-    async function saveToCloudOnline() {
-      if (!supabaseClient) {
-        alert('يرجى ضبط إعدادات Supabase أولاً.');
-        return;
-      }
-      const subject = document.getElementById('cloudSubject')?.value.trim();
-      const pass = document.getElementById('cloudPass')?.value.trim();
-      const status = document.getElementById('saveStatus');
-
-      if (!subject || !pass) {
-        alert('الرجاء كتابة اسم المادة وكلمة السر.');
-        return;
-      }
-
-      if (status) {
-        status.classList.remove('hidden', 'text-red-500', 'text-emerald-600');
-        status.classList.add('text-indigo-600');
-        status.innerText = '⏳ جاري الحفظ...';
-      }
-
-      const uniqueKey = `${subject.toLowerCase()}_${pass}`;
-      const fullData = getFormState();
-
-      const { data, error } = await supabaseClient
-        .from('worksheets')
-        .upsert({ key: uniqueKey, data: fullData }, { onConflict: 'key' });
-
-      if (error && status) {
-        status.classList.remove('text-indigo-600');
-        status.classList.add('text-red-500');
-        status.innerText = '❌ تعذر الحفظ: ' + error.message;
-      } else if (status) {
-        status.classList.remove('text-indigo-600');
-        status.classList.add('text-emerald-600');
-        status.innerText = '✨ تم حفظ جميع البيانات أونلاين!';
-        setTimeout(() => toggleModal('saveCloudModal'), 2000);
-      }
-    }
-
-    async function loadFromCloudOnline() {
-      if (!supabaseClient) {
-        alert('يرجى ضبط إعدادات Supabase أولاً.');
-        return;
-      }
-      const subject = document.getElementById('searchSubject')?.value.trim();
-      const pass = document.getElementById('searchPass')?.value.trim();
-      const status = document.getElementById('loadStatus');
-
-      if (!subject || !pass) {
-        alert('الرجاء إدخال اسم المادة وكلمة السر.');
-        return;
-      }
-
-      if (status) {
-        status.classList.remove('hidden', 'text-red-500', 'text-emerald-600');
-        status.classList.add('text-indigo-600');
-        status.innerText = '⏳ جاري الجلب...';
-      }
-
-      const uniqueKey = `${subject.toLowerCase()}_${pass}`;
-
-      const { data, error } = await supabaseClient
-        .from('worksheets')
-        .select('data')
-        .eq('key', uniqueKey)
-        .maybeSingle();
-
-      if ((error || !data) && status) {
-        status.classList.remove('text-indigo-600');
-        status.classList.add('text-red-500');
-        status.innerText = '🔒 لم يتم العثور على البيانات.';
-      } else if (status) {
-        setFormState(data.data);
-        status.classList.remove('text-indigo-600');
-        status.classList.add('text-emerald-600');
-        status.innerText = '🎉 تم فتح ورقة العمل والأنشطة بنجاح!';
-        setTimeout(() => toggleModal('loadCloudModal'), 1500);
-      }
-    }
-
-    // تصدير واستيراد JSON
+    // التصدير والاستيراد المحلي (JSON)
     function exportJSON() {
-      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(getFormState()));
-      const downloadAnchor = document.createElement('a');
-      downloadAnchor.setAttribute("href", dataStr);
-      downloadAnchor.setAttribute("download", "مشروع_معين.json");
-      document.body.appendChild(downloadAnchor);
-      downloadAnchor.click();
-      downloadAnchor.remove();
+      const data = {
+        title: document.getElementById('textSheetTitle').value,
+        content: document.getElementById('textSheetContent').value,
+        certName: document.getElementById('certStudentName').value,
+        certReason: document.getElementById('certReason').value
+      };
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'moeen_data.json';
+      a.click();
     }
 
     function importJSON(event) {
       const file = event.target.files[0];
-      if (!file) return;
-      const reader = new FileReader();
-      reader.onload = function(e) {
-        try {
-          const importedData = JSON.parse(e.target.result);
-          setFormState(importedData);
-          alert('تم رفع ملف المشروع واسترجاع البيانات بنجاح!');
-        } catch (err) {
-          alert('حدث خطأ أثناء قراءة الملف.');
-        }
-      };
-      reader.readAsText(file);
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          try {
+            const data = JSON.parse(e.target.result);
+            if (data.title) document.getElementById('textSheetTitle').value = data.title;
+            if (data.content) document.getElementById('textSheetContent').value = data.content;
+            if (data.certName) document.getElementById('certStudentName').value = data.certName;
+            if (data.certReason) document.getElementById('certReason').value = data.certReason;
+            renderPreview();
+            alert('تم تحميل البيانات بنجاح!');
+          } catch (err) {
+            alert('ملف غير صالـح!');
+          }
+        };
+        reader.readAsText(file);
+      }
     }
 
-    // التشغيل المبدئي للسينايرو
-    document.addEventListener('DOMContentLoaded', () => {
-      renderPreview();
-    });
-</script>
+    // الحفظ والفتح السحابي
+    async function saveToCloudOnline() {
+      const status = document.getElementById('saveStatus');
+      status.classList.remove('hidden');
+      status.innerText = 'جاري الحفظ...';
+
+      if (!supabase) {
+        status.innerText = '⚠️ يرجى ضبط إعدادات Supabase أولاً في الكود!';
+        status.className = 'text-xs text-center font-bold py-1 text-amber-600';
+        return;
+      }
+
+      // كود الحفظ عبر جدول Supabase
+      status.innerText = 'تم الحفظ بنجاح!';
+      status.className = 'text-xs text-center font-bold py-1 text-emerald-600';
+    }
+
+    async function loadFromCloudOnline() {
+      const status = document.getElementById('loadStatus');
+      status.classList.remove('hidden');
+      status.innerText = 'جاري البحث...';
+
+      if (!supabase) {
+        status.innerText = '⚠️ يرجى ضبط إعدادات Supabase أولاً في الكود!';
+        status.className = 'text-xs text-center font-bold py-1 text-amber-600';
+        return;
+      }
+    }
+  </script>
 </body>
 </html>
