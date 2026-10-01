@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>منصة مُعِين التعليمية - صانع أوراق العمل والأنشطة والشهادات</title>
+  <title>منصة مُعِين التعليمية - صانع أوراق العمل والشهادات والألعاب التفاعلية</title>
   
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -19,9 +19,27 @@
     body {
       font-family: 'Tajawal', sans-serif;
     }
+
+    /* ضبط مقاس الصفحة A4 بدقة للطباعة ولتفادي الفراغات المتروكة أسفل الورقة */
+    @page {
+      size: A4 portrait;
+      margin: 10mm;
+    }
+
     @media print {
       .no-print { display: none !important; }
-      .print-area { width: 100% !important; margin: 0 !important; padding: 0 !important; box-shadow: none !important; border: none !important; }
+      body { bg-color: white !important; background: white !important; }
+      .print-area { 
+        width: 100% !important; 
+        max-width: 100% !important;
+        min-height: 277mm !important; /* A4 exact height minus margins */
+        margin: 0 auto !important; 
+        padding: 5mm !important; 
+        box-shadow: none !important; 
+        border: none !important;
+        page-break-after: avoid !important;
+        page-break-inside: avoid !important;
+      }
     }
   </style>
 </head>
@@ -34,7 +52,7 @@
         <i data-lucide="sparkles" class="w-8 h-8 text-amber-300"></i>
         <div>
           <h1 class="text-2xl font-bold">✨ منصة مُعِين التعليمية</h1>
-          <p class="text-xs text-indigo-200">مزامنة سحابية بين الأجهزة، أوراق عمل، شهادات، وألعاب تعليمية</p>
+          <p class="text-xs text-indigo-200">أوراق عمل A4، شهادات، تكرار صور، وألعاب تفاعلية للسبورة الذكية</p>
         </div>
       </div>
 
@@ -70,7 +88,7 @@
 
         <button onclick="window.print()" class="bg-amber-500 hover:bg-amber-600 px-4 py-2 rounded-lg text-sm font-bold flex items-center gap-1 shadow transition">
           <i data-lucide="printer" class="w-4 h-4"></i>
-          <span>طباعة / PDF</span>
+          <span>طباعة A4 / PDF</span>
         </button>
       </div>
     </div>
@@ -78,28 +96,32 @@
 
   <!-- تبويبات التبديل بين الأقسام -->
   <div class="bg-indigo-100 border-b border-indigo-200 no-print">
-    <div class="max-w-7xl mx-auto px-4 flex flex-wrap gap-2 py-2">
-      <button onclick="switchTab('worksheet')" id="tabWorksheet" class="py-2 px-4 font-bold rounded-lg border-b-2 border-indigo-600 text-indigo-700 bg-white flex items-center gap-2">
+    <div class="max-w-7xl mx-auto px-4 flex flex-wrap gap-2 py-2 overflow-x-auto">
+      <button onclick="switchTab('worksheet')" id="tabWorksheet" class="py-2 px-4 font-bold rounded-lg border-b-2 border-indigo-600 text-indigo-700 bg-white flex items-center gap-2 whitespace-nowrap">
         <i data-lucide="file-text" class="w-4 h-4"></i>
         <span>📝 أوراق العمل</span>
       </button>
-      <button onclick="switchTab('imageWorksheet')" id="tabImageWorksheet" class="py-2 px-4 font-bold rounded-lg text-slate-600 hover:text-indigo-600 flex items-center gap-2">
+      <button onclick="switchTab('imageWorksheet')" id="tabImageWorksheet" class="py-2 px-4 font-bold rounded-lg text-slate-600 hover:text-indigo-600 flex items-center gap-2 whitespace-nowrap">
         <i data-lucide="image" class="w-4 h-4"></i>
         <span>🖼️ ورقة مصورة / تكرار صور</span>
       </button>
-      <button onclick="switchTab('wordGames')" id="tabWordGames" class="py-2 px-4 font-bold rounded-lg text-slate-600 hover:text-indigo-600 flex items-center gap-2">
+      <button onclick="switchTab('wordGames')" id="tabWordGames" class="py-2 px-4 font-bold rounded-lg text-slate-600 hover:text-indigo-600 flex items-center gap-2 whitespace-nowrap">
         <i data-lucide="puzzle" class="w-4 h-4"></i>
         <span>🧩 ألعاب الحروف</span>
       </button>
-      <button onclick="switchTab('mathGames')" id="tabMathGames" class="py-2 px-4 font-bold rounded-lg text-slate-600 hover:text-indigo-600 flex items-center gap-2">
+      <button onclick="switchTab('mathGames')" id="tabMathGames" class="py-2 px-4 font-bold rounded-lg text-slate-600 hover:text-indigo-600 flex items-center gap-2 whitespace-nowrap">
         <i data-lucide="calculator" class="w-4 h-4"></i>
-        <span>🔢 ألعاب Math</span>
+        <span>🔢 ألعاب Math الورقية</span>
       </button>
-      <button onclick="switchTab('games')" id="tabGames" class="py-2 px-4 font-bold rounded-lg text-slate-600 hover:text-indigo-600 flex items-center gap-2">
+      <button onclick="switchTab('interactiveBoard')" id="tabInteractiveBoard" class="py-2 px-4 font-bold rounded-lg text-slate-600 hover:text-indigo-600 flex items-center gap-2 whitespace-nowrap bg-amber-200/60">
+        <i data-lucide="tv" class="w-4 h-4 text-amber-700"></i>
+        <span>🖥️ ألعاب تفاعلية (Smart Board)</span>
+      </button>
+      <button onclick="switchTab('games')" id="tabGames" class="py-2 px-4 font-bold rounded-lg text-slate-600 hover:text-indigo-600 flex items-center gap-2 whitespace-nowrap">
         <i data-lucide="gamepad-2" class="w-4 h-4"></i>
         <span>🎮 بطاقات الأسئلة</span>
       </button>
-      <button onclick="switchTab('certificates')" id="tabCertificates" class="py-2 px-4 font-bold rounded-lg text-slate-600 hover:text-indigo-600 flex items-center gap-2">
+      <button onclick="switchTab('certificates')" id="tabCertificates" class="py-2 px-4 font-bold rounded-lg text-slate-600 hover:text-indigo-600 flex items-center gap-2 whitespace-nowrap">
         <i data-lucide="award" class="w-4 h-4"></i>
         <span>🎓 شهادات التقدير</span>
       </button>
@@ -118,17 +140,17 @@
 
         <div>
           <label class="block text-xs font-bold text-slate-600 mb-1">عنوان ورقة العمل / الترويسة:</label>
-          <input type="text" id="inputTitle"  oninput="updatePreview()" class="w-full border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-indigo-500 outline-none">
+          <input type="text" id="inputTitle" value="ورقة عمل: المادة والدروس" oninput="updatePreview()" class="w-full border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-indigo-500 outline-none">
         </div>
 
         <div class="grid grid-cols-2 gap-2">
           <div>
             <label class="block text-xs font-bold text-slate-600 mb-1">الصف / المادة</label>
-            <input type="text" id="inputSubject"  oninput="updatePreview()" class="w-full border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-indigo-500 outline-none">
+            <input type="text" id="inputSubject" value="الصف الرابع - العلوم" oninput="updatePreview()" class="w-full border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-indigo-500 outline-none">
           </div>
           <div>
             <label class="block text-xs font-bold text-slate-600 mb-1">اسم المعلم/ـة</label>
-            <input type="text" id="inputTeacher"  oninput="updatePreview()" class="w-full border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-indigo-500 outline-none">
+            <input type="text" id="inputTeacher" value="أ. أوليفيا" oninput="updatePreview()" class="w-full border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-indigo-500 outline-none">
           </div>
         </div>
 
@@ -155,7 +177,7 @@
           <div>
             <label class="block text-xs font-bold text-slate-600 mb-1">عدد النسخ في الصفحة:</label>
             <select id="copiesSelect" onchange="updatePreview()" class="w-full border rounded-lg p-2 text-sm font-bold text-indigo-700 bg-indigo-50">
-              <option value="1" selected>نسخة واحدة (صفحة كاملة)</option>
+              <option value="1" selected>نسخة واحدة (صفحة كاملة A4)</option>
               <option value="2">نسختان (2 في الصفحة)</option>
               <option value="3">3 نسخ (3 في الصفحة)</option>
               <option value="4">4 نسخ (4 في الصفحة)</option>
@@ -167,10 +189,10 @@
       <!-- معاينة ورقة العمل -->
       <section class="lg:col-span-8 space-y-3">
         <div class="no-print flex justify-between items-center bg-white p-3 rounded-xl border">
-          <span class="font-bold text-sm text-slate-700 flex items-center gap-1">👁️ المعاينة والتحميل:</span>
+          <span class="font-bold text-sm text-slate-700 flex items-center gap-1">👁️️ المعاينة والتحميل (مقاس A4):</span>
           <div class="flex gap-2">
             <button onclick="exportToWord('worksheetPrintArea')" class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1">
-              📄 فتح في Word للتعديل
+              📄 فتح في Word
             </button>
             <button onclick="downloadAsImage('worksheetPrintArea')" class="bg-purple-600 hover:bg-purple-700 text-white px-3 py-1.5 rounded-lg text-xs font-bold">
               🖼️ حفظ كصورة
@@ -181,20 +203,20 @@
           </div>
         </div>
 
-        <div id="worksheetPrintArea" class="bg-white p-8 rounded-2xl shadow-md border border-slate-200 print-area min-h-[600px]">
-          <div id="copiesContainer" class="space-y-8">
+        <div id="worksheetPrintArea" class="bg-white p-8 rounded-2xl shadow-md border border-slate-200 print-area min-h-[277mm] flex flex-col justify-between">
+          <div id="copiesContainer" class="space-y-6 flex-grow">
             <!-- سيتم توليد النسخ هنا ديناميكياً -->
           </div>
         </div>
       </section>
     </div>
 
-    <!-- 2. قسم ورقة مصورة مع تكرار الصورة (1, 10, 20, 30 صورة) وأدوات القص -->
+    <!-- 2. قسم ورقة مصورة مع تكرار الصورة وإمكانية التغيير والتعديل المباشر -->
     <div id="sectionImageWorksheet" class="hidden grid grid-cols-1 lg:grid-cols-12 gap-6">
       <section class="lg:col-span-4 bg-white p-5 rounded-2xl shadow-sm border border-slate-200 space-y-4 no-print">
         <h2 class="text-lg font-bold border-b pb-2 flex items-center gap-2 text-indigo-700">
           <i data-lucide="image" class="w-5 h-5"></i>
-          <span>🖼️ إدراج وتكرار الصور للطباعة:</span>
+          <span>🖼️️ إدراج وتكرار الصور للطباعة:</span>
         </h2>
 
         <div>
@@ -219,41 +241,53 @@
 
         <div class="bg-amber-50 p-4 rounded-xl border border-amber-200 space-y-3">
           <h3 class="text-xs font-bold text-amber-800 flex items-center gap-1">
-            ✂️ أدوات قص وتعديل الصورة:
+            ✂️ تعديل وحجم الصور المكررة (تغيير فوري):
           </h3>
           <div>
-            <label class="block text-xs font-semibold text-slate-600 mb-1">حجم تكبير/تصغير الصورة:</label>
-            <input type="range" id="imgScale" min="50" max="150" value="100" oninput="updateImgWorksheet()" class="w-full">
+            <div class="flex justify-between text-xs font-semibold text-slate-600 mb-1">
+              <span>حجم تكبير/تصغير الصورة:</span>
+              <span id="scaleValueText" class="text-indigo-600 font-bold">100%</span>
+            </div>
+            <input type="range" id="imgScale" min="20" max="200" value="100" oninput="updateImgWorksheet()" class="w-full">
           </div>
           <div>
-            <label class="block text-xs font-semibold text-slate-600 mb-1">قص وإخفاء الجزء السفلي:</label>
-            <input type="range" id="imgCropBottom" min="0" max="100" value="0" oninput="updateImgWorksheet()" class="w-full">
+            <div class="flex justify-between text-xs font-semibold text-slate-600 mb-1">
+              <span>قص وإخفاء الجزء السفلي:</span>
+              <span id="cropValueText" class="text-indigo-600 font-bold">0%</span>
+            </div>
+            <input type="range" id="imgCropBottom" min="0" max="90" value="0" oninput="updateImgWorksheet()" class="w-full">
           </div>
         </div>
       </section>
 
       <section class="lg:col-span-8 space-y-3">
         <div class="no-print flex justify-between items-center bg-white p-3 rounded-xl border">
-          <span class="font-bold text-sm text-slate-700">👁️ المعاينة والتحميل:</span>
+          <span class="font-bold text-sm text-slate-700">👁️ المعاينة والتحميل (A4):</span>
           <div class="flex gap-2">
             <button onclick="downloadAsImage('imgWorksheetPrintArea')" class="bg-purple-600 hover:bg-purple-700 text-white px-3 py-1.5 rounded-lg text-xs font-bold">
               🖼️ حفظ كصورة
             </button>
             <button onclick="window.print()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1.5 rounded-lg text-xs font-bold">
-              🖨️ طباعة / PDF
+              🖨️ طباعة A4 / PDF
             </button>
           </div>
         </div>
 
-        <div id="imgWorksheetPrintArea" class="bg-white p-8 rounded-2xl shadow-md border border-slate-200 print-area min-h-[600px]">
-          <div class="border-b-2 border-indigo-600 pb-3 mb-4 flex justify-between items-center">
-            <h1 id="prevImgTitle" class="text-xl font-bold text-indigo-900">ورقة عمل مصورة</h1>
-            <span class="text-sm text-slate-500">الاسم: ....................................... | التاريخ: / /</span>
+        <div id="imgWorksheetPrintArea" class="bg-white p-8 rounded-2xl shadow-md border border-slate-200 print-area min-h-[277mm] flex flex-col justify-between">
+          <div>
+            <div class="border-b-2 border-indigo-600 pb-3 mb-4 flex justify-between items-center">
+              <h1 id="prevImgTitle" class="text-xl font-bold text-indigo-900">ورقة عمل مصورة</h1>
+              <span class="text-sm text-slate-500">الاسم: ....................................... | التاريخ: / /</span>
+            </div>
+
+            <div id="imgGridWrapper" class="min-h-[400px] flex items-center justify-center">
+              <p id="imgPlaceholder" class="text-slate-400 font-semibold text-sm">الرجاء اختيار صورة من القائمة الجانبية...</p>
+              <div id="imgRepeatGrid" class="w-full hidden"></div>
+            </div>
           </div>
 
-          <div id="imgGridWrapper" class="min-h-[400px] flex items-center justify-center">
-            <p id="imgPlaceholder" class="text-slate-400 font-semibold text-sm">الرجاء اختيار صورة من القائمة الجانبية...</p>
-            <div id="imgRepeatGrid" class="w-full hidden"></div>
+          <div class="border-t pt-2 text-center text-[10px] text-slate-400">
+            منصة مُعِين التعليمية - طباعة مصورة
           </div>
         </div>
       </section>
@@ -297,29 +331,35 @@
 
       <section class="lg:col-span-8 space-y-3">
         <div class="no-print flex justify-between items-center bg-white p-3 rounded-xl border">
-          <span class="font-bold text-sm text-slate-700">👁️ المعاينة والتحميل:</span>
+          <span class="font-bold text-sm text-slate-700">👁️ المعاينة والتحميل (A4):</span>
           <div class="flex gap-2">
             <button onclick="downloadAsImage('wordGamePrintArea')" class="bg-purple-600 hover:bg-purple-700 text-white px-3 py-1.5 rounded-lg text-xs font-bold">
               🖼️ حفظ كصورة
             </button>
             <button onclick="window.print()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1.5 rounded-lg text-xs font-bold">
-              🖨️ طباعة / PDF
+              🖨️ طباعة A4 / PDF
             </button>
           </div>
         </div>
 
-        <div id="wordGamePrintArea" class="bg-white p-8 rounded-2xl shadow-md border border-slate-200 print-area text-center space-y-6">
-          <div class="border-b pb-3 flex justify-between items-center">
-            <h1 id="prevWordGameTitle" class="text-xl font-bold text-indigo-900">🧩 لعبة البحث عن الكلمات المختبئة</h1>
-            <span class="text-sm text-slate-500">الاسم: ....................................... | التاريخ: / /</span>
-          </div>
-
+        <div id="wordGamePrintArea" class="bg-white p-8 rounded-2xl shadow-md border border-slate-200 print-area min-h-[277mm] flex flex-col justify-between text-center space-y-6">
           <div>
-            <p class="text-sm font-bold text-slate-600 mb-3">ابحث عن الكلمات التالية داخل الشبكة:</p>
-            <div id="wordTags" class="flex flex-wrap justify-center gap-2 mb-6"></div>
+            <div class="border-b pb-3 flex justify-between items-center">
+              <h1 id="prevWordGameTitle" class="text-xl font-bold text-indigo-900">🧩 لعبة البحث عن الكلمات المختبئة</h1>
+              <span class="text-sm text-slate-500">الاسم: ....................................... | التاريخ: / /</span>
+            </div>
+
+            <div class="mt-4">
+              <p class="text-sm font-bold text-slate-600 mb-3">ابحث عن الكلمات التالية داخل الشبكة:</p>
+              <div id="wordTags" class="flex flex-wrap justify-center gap-2 mb-6"></div>
+            </div>
+
+            <div id="wordGrid" class="inline-grid gap-1.5 justify-center bg-indigo-50/50 p-4 rounded-2xl border border-indigo-100"></div>
           </div>
 
-          <div id="wordGrid" class="inline-grid gap-1.5 justify-center bg-indigo-50/50 p-4 rounded-2xl border border-indigo-100"></div>
+          <div class="border-t pt-2 text-center text-[10px] text-slate-400">
+            منصة مُعِين التعليمية - ألعاب الحروف
+          </div>
         </div>
       </section>
     </div>
@@ -329,7 +369,7 @@
       <section class="lg:col-span-4 bg-white p-5 rounded-2xl shadow-sm border border-slate-200 space-y-4 no-print">
         <h2 class="text-lg font-bold border-b pb-2 flex items-center gap-2 text-indigo-700">
           <i data-lucide="calculator" class="w-5 h-5"></i>
-          <span>🔢 تصميم أنشطة وألعاب الرياضيات (Math Worksheets):</span>
+          <span>🔢 تصميم أنشطة وألعاب الرياضيات الورقية:</span>
         </h2>
 
         <div>
@@ -366,35 +406,118 @@
 
       <section class="lg:col-span-8 space-y-3">
         <div class="no-print flex justify-between items-center bg-white p-3 rounded-xl border">
-          <span class="font-bold text-sm text-slate-700">👁️ المعاينة والتحميل:</span>
+          <span class="font-bold text-sm text-slate-700">👁️ المعاينة والتحميل (A4):</span>
           <div class="flex gap-2">
             <button onclick="downloadAsImage('mathPrintArea')" class="bg-purple-600 hover:bg-purple-700 text-white px-3 py-1.5 rounded-lg text-xs font-bold">
               🖼️ حفظ كصورة
             </button>
             <button onclick="window.print()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1.5 rounded-lg text-xs font-bold">
-              🖨️ طباعة / PDF
+              🖨️ طباعة A4 / PDF
             </button>
           </div>
         </div>
 
-        <div id="mathPrintArea" class="bg-white p-8 rounded-2xl shadow-md border border-slate-200 print-area space-y-6">
-          <div class="border-b pb-3 flex justify-between items-center">
-            <h1 id="prevMathTitle" class="text-xl font-bold text-indigo-900">🔢 تحدي أبطال الرياضيات</h1>
-            <span class="text-sm text-slate-500">الاسم: ....................................... | التاريخ: / /</span>
+        <div id="mathPrintArea" class="bg-white p-8 rounded-2xl shadow-md border border-slate-200 print-area min-h-[277mm] flex flex-col justify-between space-y-6">
+          <div>
+            <div class="border-b pb-3 flex justify-between items-center">
+              <h1 id="prevMathTitle" class="text-xl font-bold text-indigo-900">🔢 تحدي أبطال الرياضيات</h1>
+              <span class="text-sm text-slate-500">الاسم: ....................................... | التاريخ: / /</span>
+            </div>
+
+            <p class="text-center text-sm font-bold text-slate-600 my-4">احسب النتيجة واكتب الإجابة في المربع:</p>
+            <div id="mathGrid" class="grid grid-cols-3 gap-4"></div>
           </div>
 
-          <p class="text-center text-sm font-bold text-slate-600">احسب النتيجة واكتب الإجابة في المربع:</p>
-          <div id="mathGrid" class="grid grid-cols-3 gap-4"></div>
+          <div class="border-t pt-2 text-center text-[10px] text-slate-400">
+            منصة مُعِين التعليمية - الرياضيات
+          </div>
         </div>
       </section>
     </div>
 
-    <!-- 5. قسم الألعاب التفاعلية وبطاقات الأسئلة -->
+    <!-- 5. الإضافة الجديدة: قسم الألعاب التفاعلية للسبورة الذكية Smart Board -->
+    <div id="sectionInteractiveBoard" class="hidden space-y-6">
+      <div class="bg-gradient-to-r from-amber-500 via-orange-500 to-indigo-600 rounded-2xl p-6 text-white shadow-lg no-print flex flex-wrap justify-between items-center gap-4">
+        <div>
+          <h2 class="text-2xl font-extrabold flex items-center gap-2">
+            <i data-lucide="tv" class="w-8 h-8 text-amber-200"></i>
+            <span>🎮 الألعاب التفاعلية للسبورة الذكية (Smart Board)</span>
+          </h2>
+          <p class="text-xs text-amber-100 mt-1">اختر المادة ثم دع الطلاب يجيبون مباشرة بالنقر على الشاشات التفاعلية والسبورة الذكية</p>
+        </div>
+
+        <!-- أزرار اختيار المواد -->
+        <div class="flex flex-wrap gap-2">
+          <button onclick="loadSubjectGame('math')" id="btnSubjectMath" class="bg-white text-indigo-900 font-extrabold px-4 py-2 rounded-xl text-sm shadow hover:bg-amber-100 transition flex items-center gap-1">
+            <span>🔢 Math / رياضيات</span>
+          </button>
+          <button onclick="loadSubjectGame('english')" id="btnSubjectEnglish" class="bg-white/20 hover:bg-white/30 text-white font-extrabold px-4 py-2 rounded-xl text-sm transition flex items-center gap-1">
+            <span>🔤 English</span>
+          </button>
+          <button onclick="loadSubjectGame('computer')" id="btnSubjectComputer" class="bg-white/20 hover:bg-white/30 text-white font-extrabold px-4 py-2 rounded-xl text-sm transition flex items-center gap-1">
+            <span>💻 حاسوب / Computer</span>
+          </button>
+          <button onclick="loadSubjectGame('social')" id="btnSubjectSocial" class="bg-white/20 hover:bg-white/30 text-white font-extrabold px-4 py-2 rounded-xl text-sm transition flex items-center gap-1">
+            <span>🌍 دراسات / Social</span>
+          </button>
+          <button onclick="loadSubjectGame('arabic')" id="btnSubjectArabic" class="bg-white/20 hover:bg-white/30 text-white font-extrabold px-4 py-2 rounded-xl text-sm transition flex items-center gap-1">
+            <span>📖 اللغة العربية</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- منصة عرض اللعبة التفاعلية للسبورة الذكية -->
+      <div class="bg-slate-900 rounded-3xl p-6 md:p-10 text-white shadow-2xl border-4 border-amber-400 relative overflow-hidden min-h-[500px] flex flex-col justify-between">
+        
+        <!-- الشريط العلوي للعبة -->
+        <div class="flex justify-between items-center border-b border-slate-800 pb-4">
+          <div class="flex items-center gap-3">
+            <span id="gameSubjectBadge" class="bg-amber-400 text-slate-900 font-extrabold text-xs px-3 py-1 rounded-full uppercase">Math</span>
+            <span id="gameProgress" class="text-slate-400 font-bold text-sm">السؤال 1 من 3</span>
+          </div>
+          <div class="flex items-center gap-2 bg-slate-800 px-4 py-2 rounded-xl border border-slate-700">
+            <i data-lucide="trophy" class="w-5 h-5 text-amber-400"></i>
+            <span class="text-xs text-slate-300">النقاط:</span>
+            <span id="gameScore" class="text-xl font-black text-amber-300">0</span>
+          </div>
+        </div>
+
+        <!-- منطقة السؤال المركزي المخصص للسمارت بورد -->
+        <div class="my-8 text-center space-y-6">
+          <h3 id="interactiveQuestion" class="text-2xl md:text-4xl font-extrabold text-amber-200 leading-snug tracking-wide">
+            جاري تحميل اللعبة التفاعلية...
+          </h3>
+
+          <!-- خيارات الإجابة بالنقر المباشر (Smart Board Clickable Options) -->
+          <div id="interactiveOptions" class="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-2xl mx-auto pt-4">
+            <!-- سيتم إضافة خيارات الإجابة هنا ديناميكياً -->
+          </div>
+        </div>
+
+        <!-- إشعار النتيجة والتغذية الراجعة -->
+        <div id="gameFeedback" class="text-center font-extrabold text-lg md:text-2xl min-h-[40px] flex items-center justify-center">
+          <!-- رسائل الفوز والخطأ -->
+        </div>
+
+        <!-- شريط التحكم والتنقل للسبورة -->
+        <div class="flex justify-between items-center border-t border-slate-800 pt-4">
+          <button onclick="resetCurrentGame()" class="text-slate-400 hover:text-white text-xs font-bold flex items-center gap-1">
+            <i data-lucide="rotate-ccw" class="w-4 h-4"></i>
+            <span>إعادة اللعبة</span>
+          </button>
+          <button onclick="nextInteractiveQuestion()" id="btnNextQ" class="hidden bg-amber-400 hover:bg-amber-500 text-slate-950 px-6 py-2.5 rounded-xl font-extrabold text-sm shadow-lg transition">
+            السؤال التالي ⬅️
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 6. قسم الألعاب التفاعلية وبطاقات الأسئلة الورقية -->
     <div id="sectionGames" class="hidden grid grid-cols-1 lg:grid-cols-12 gap-6">
       <section class="lg:col-span-4 bg-white p-5 rounded-2xl shadow-sm border border-slate-200 space-y-4 no-print">
         <h2 class="text-lg font-bold border-b pb-2 flex items-center gap-2 text-indigo-700">
           <i data-lucide="gamepad-2" class="w-5 h-5"></i>
-          <span>إعداد لعبة بطاقات الأسئلة</span>
+          <span>إعداد لعبة بطاقات الأسئلة الورقية</span>
         </h2>
         <div>
           <label class="block text-xs font-bold text-slate-600 mb-1">السؤال الأول</label>
@@ -408,30 +531,50 @@
         </div>
       </section>
 
-      <section class="lg:col-span-8 bg-white p-8 rounded-2xl shadow-md border border-slate-200 print-area">
-        <h2 class="text-xl font-bold text-indigo-900 mb-6 border-b pb-2">🎮 نشاط البطاقات المتقاطعة (قص وتطابق)</h2>
-        <div class="grid grid-cols-2 gap-4">
-          <div class="border-2 border-dashed border-indigo-300 p-4 rounded-xl bg-indigo-50/50">
-            <span class="text-xs font-bold text-indigo-500 block mb-2">بطاقة سؤال 1</span>
-            <p id="prevQ1" class="font-bold text-slate-800">ما عاصمة ليبيا؟</p>
+      <section class="lg:col-span-8 space-y-3">
+        <div class="no-print flex justify-between items-center bg-white p-3 rounded-xl border">
+          <span class="font-bold text-sm text-slate-700">👁️️ المعاينة والتحميل (A4):</span>
+          <div class="flex gap-2">
+            <button onclick="downloadAsImage('cardsPrintArea')" class="bg-purple-600 hover:bg-purple-700 text-white px-3 py-1.5 rounded-lg text-xs font-bold">
+              🖼️ حفظ كصورة
+            </button>
+            <button onclick="window.print()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1.5 rounded-lg text-xs font-bold">
+              🖨️ طباعة A4 / PDF
+            </button>
           </div>
-          <div class="border-2 border-dashed border-emerald-300 p-4 rounded-xl bg-emerald-50/50">
-            <span class="text-xs font-bold text-emerald-500 block mb-2">بطاقة إجابة 1</span>
-            <p id="prevA1" class="font-bold text-slate-800">طرابلس</p>
+        </div>
+
+        <div id="cardsPrintArea" class="bg-white p-8 rounded-2xl shadow-md border border-slate-200 print-area min-h-[277mm] flex flex-col justify-between">
+          <div>
+            <h2 class="text-xl font-bold text-indigo-900 mb-6 border-b pb-2">🎮 نشاط البطاقات المتقاطعة (قص وتطابق)</h2>
+            <div class="grid grid-cols-2 gap-4">
+              <div class="border-2 border-dashed border-indigo-300 p-4 rounded-xl bg-indigo-50/50">
+                <span class="text-xs font-bold text-indigo-500 block mb-2">بطاقة سؤال 1</span>
+                <p id="prevQ1" class="font-bold text-slate-800">ما عاصمة ليبيا؟</p>
+              </div>
+              <div class="border-2 border-dashed border-emerald-300 p-4 rounded-xl bg-emerald-50/50">
+                <span class="text-xs font-bold text-emerald-500 block mb-2">بطاقة إجابة 1</span>
+                <p id="prevA1" class="font-bold text-slate-800">طرابلس</p>
+              </div>
+              <div class="border-2 border-dashed border-indigo-300 p-4 rounded-xl bg-indigo-50/50">
+                <span class="text-xs font-bold text-indigo-500 block mb-2">بطاقة سؤال 2</span>
+                <p id="prevQ2" class="font-bold text-slate-800">كم عدد أضلاع المربع؟</p>
+              </div>
+              <div class="border-2 border-dashed border-emerald-300 p-4 rounded-xl bg-emerald-50/50">
+                <span class="text-xs font-bold text-emerald-500 block mb-2">بطاقة إجابة 2</span>
+                <p id="prevA2" class="font-bold text-slate-800">4 أضلاع</p>
+              </div>
+            </div>
           </div>
-          <div class="border-2 border-dashed border-indigo-300 p-4 rounded-xl bg-indigo-50/50">
-            <span class="text-xs font-bold text-indigo-500 block mb-2">بطاقة سؤال 2</span>
-            <p id="prevQ2" class="font-bold text-slate-800">كم عدد أضلاع المربع؟</p>
-          </div>
-          <div class="border-2 border-dashed border-emerald-300 p-4 rounded-xl bg-emerald-50/50">
-            <span class="text-xs font-bold text-emerald-500 block mb-2">بطاقة إجابة 2</span>
-            <p id="prevA2" class="font-bold text-slate-800">4 أضلاع</p>
+
+          <div class="border-t pt-2 text-center text-[10px] text-slate-400">
+            منصة مُعِين التعليمية - بطاقات الأسئلة
           </div>
         </div>
       </section>
     </div>
 
-    <!-- 6. قسم شهادات التقدير -->
+    <!-- 7. قسم شهادات التقدير مع التحكم المباشر بحجم الشعار -->
     <div id="sectionCertificates" class="hidden grid grid-cols-1 lg:grid-cols-12 gap-6">
       <section class="lg:col-span-4 bg-white p-5 rounded-2xl shadow-sm border border-slate-200 space-y-4 no-print">
         <h2 class="text-lg font-bold border-b pb-2 flex items-center gap-2 text-indigo-700">
@@ -452,6 +595,15 @@
             <label class="block text-xs font-bold text-slate-600 mb-1">شعار المدرسة / المؤسسة:</label>
             <input type="file" id="certLogoInput" accept="image/*" onchange="handleCertLogoUpload(event)" class="w-full text-xs border p-1 rounded-lg">
           </div>
+        </div>
+
+        <!-- أداة التعديل الجديدة: تغيير حجم الشعار -->
+        <div class="bg-slate-50 p-3 rounded-xl border border-slate-200">
+          <div class="flex justify-between text-xs font-bold text-slate-700 mb-1">
+            <span>تعديل حجم شعار المدرسة/الشركة:</span>
+            <span id="logoSizeText" class="text-indigo-600">64px</span>
+          </div>
+          <input type="range" id="certLogoSize" min="30" max="180" value="64" oninput="updateCertLogoSize()" class="w-full">
         </div>
 
         <div>
@@ -486,32 +638,34 @@
 
       <section class="lg:col-span-8 space-y-3">
         <div class="no-print flex justify-between items-center bg-white p-3 rounded-xl border">
-          <span class="font-bold text-sm text-slate-700">👁️ المعاينة والتحميل:</span>
+          <span class="font-bold text-sm text-slate-700">👁️ المعاينة والتحميل (A4):</span>
           <div class="flex gap-2">
             <button onclick="downloadAsImage('certPrintArea')" class="bg-purple-600 hover:bg-purple-700 text-white px-3 py-1.5 rounded-lg text-xs font-bold">
               🖼️ حفظ كصورة
             </button>
             <button onclick="window.print()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1.5 rounded-lg text-xs font-bold">
-              🖨️ طباعة / PDF
+              🖨️ طباعة A4 / PDF
             </button>
           </div>
         </div>
 
-        <div id="certPrintArea" class="bg-amber-50/40 p-10 rounded-2xl border-8 border-indigo-900 text-center print-area space-y-6 relative overflow-hidden transition-all">
-          <div id="certLogoContainer" class="hidden justify-center mb-2">
-            <img id="certLogoImg" src="" alt="شعار المؤسسة" class="h-16 object-contain">
+        <div id="certPrintArea" class="bg-amber-50/40 p-10 rounded-2xl border-8 border-indigo-900 text-center print-area min-h-[277mm] flex flex-col justify-between relative overflow-hidden transition-all">
+          <div class="space-y-6">
+            <div id="certLogoContainer" class="hidden justify-center mb-2">
+              <img id="certLogoImg" src="" alt="شعار المؤسسة" class="h-16 object-contain transition-all">
+            </div>
+
+            <div id="certHeaderIcon" class="text-amber-600 flex justify-center">
+              <i data-lucide="award" class="w-16 h-16"></i>
+            </div>
+
+            <p id="certSubHeader" class="text-xs uppercase tracking-widest text-slate-500 font-bold">شهادة تقدير رسمية</p>
+            <h1 id="certMainTitle" class="text-3xl font-extrabold text-indigo-950 tracking-wide">🎓 شهادة تقدير وتميز 🎓</h1>
+
+            <p id="certIntroText" class="text-slate-600">تتقدم إدارة المدرسة بخالص الشكر والتقدير للطالب/ـة:</p>
+            <h2 id="prevCertStudent" class="text-3xl font-bold text-indigo-800 underline decoration-amber-400 py-2">سارة محمد</h2>
+            <p id="prevCertReason" class="text-slate-700 max-w-lg mx-auto leading-relaxed font-medium">لتفوقها المتميز في مادة العلوم وحصولها على الدرجة النهائية</p>
           </div>
-
-          <div id="certHeaderIcon" class="text-amber-600 flex justify-center">
-            <i data-lucide="award" class="w-16 h-16"></i>
-          </div>
-
-          <p id="certSubHeader" class="text-xs uppercase tracking-widest text-slate-500 font-bold">شهادة تقدير رسمية</p>
-          <h1 id="certMainTitle" class="text-3xl font-extrabold text-indigo-950 tracking-wide">🎓 شهادة تقدير وتميز 🎓</h1>
-
-          <p id="certIntroText" class="text-slate-600">تتقدم إدارة المدرسة بخالص الشكر والتقدير للطالب/ـة:</p>
-          <h2 id="prevCertStudent" class="text-3xl font-bold text-indigo-800 underline decoration-amber-400 py-2">سارة محمد</h2>
-          <p id="prevCertReason" class="text-slate-700 max-w-lg mx-auto leading-relaxed font-medium">لتفوقها المتميز في مادة العلوم وحصولها على الدرجة النهائية</p>
 
           <div class="pt-8 flex justify-between items-center px-12 border-t border-indigo-200/60 mt-8">
             <p id="prevCertDate" class="text-xs text-slate-500 font-semibold">التاريخ: 2026/09/26</p>
@@ -591,42 +745,79 @@
     let certLogoBase64 = '';
     let loadedWorksheetImageBase64 = '';
 
+    // بيانات الألعاب التفاعلية للسبورة الذكية (Smart Board)
+    const interactiveGamesData = {
+      math: [
+        { q: "ما هو حاصل ضرب 7 × 8 ؟", options: ["54", "56", "64", "48"], answer: 1 },
+        { q: "كم يساوي 125 + 75 ؟", options: ["190", "200", "210", "220"], answer: 1 },
+        { q: "ما هو الكسر المساوي للنصف (1/2)؟", options: ["2/4", "3/8", "1/3", "4/5"], answer: 0 }
+      ],
+      english: [
+        { q: "Choose the correct spelling:", options: ["Appel", "Apple", "Aple", "Appell"], answer: 1 },
+        { q: "What is the plural of 'Child'?", options: ["Childs", "Children", "Childes", "Childrens"], answer: 1 },
+        { q: "Complete: She _____ to school every day.", options: ["go", "going", "goes", "gone"], answer: 2 }
+      ],
+      computer: [
+        { q: "ما هي وحدة المعالجة المركزية في الحاسوب؟", options: ["RAM", "CPU", "Hard Disk", "GPU"], answer: 1 },
+        { q: "أي مما يلي يعتبر جهاز إدخال (Input Device)؟", options: ["الشاشة (Monitor)", "الطابعة (Printer)", "الفأرة (Mouse)", "السماعات"], answer: 2 },
+        { q: "ما هو الاختصار المخصص للنسخ (Copy)؟", options: ["Ctrl + V", "Ctrl + X", "Ctrl + C", "Ctrl + Z"], answer: 2 }
+      ],
+      social: [
+        { q: "ما هي عاصمة دولة ليبيا؟", options: ["بنغازي", "طرابلس", "مصراتة", "سبها"], answer: 1 },
+        { q: "أي القارات هي الأكبر مساحة في العالم؟", options: ["أفريقيا", "أوروبا", "آسيا", "أمريكا الشمالية"], answer: 2 },
+        { q: "ما المكون الأساسي للغلاف الجوي للأرض؟", options: ["الأكسجين", "النيتروجين", "ثاني أكسيد الكربون", "الهيدروجين"], answer: 1 }
+      ],
+      arabic: [
+        { q: "ما هو جمع كلمة 'كتاب'؟", options: ["كاتبون", "كتّاب", "كتب", "مكتبات"], answer: 2 },
+        { q: "أي من الكلمات التالية تعتبر فعلاً ماضياً؟", options: ["يكتبُ", "اكتبْ", "كتبَ", "كتابة"], answer: 2 },
+        { q: "ما هو الإعراب الصحيح للفاعل دائماً؟", options: ["منصوب", "مرفوع", "مجرور", "مجزي"], answer: 1 }
+      ]
+    };
+
+    let currentSubject = 'math';
+    let currentQIndex = 0;
+    let score = 0;
+
     lucide.createIcons();
 
     function switchTab(tab) {
-      const sections = ['sectionWorksheet', 'sectionImageWorksheet', 'sectionWordGames', 'sectionMathGames', 'sectionGames', 'sectionCertificates'];
+      const sections = ['sectionWorksheet', 'sectionImageWorksheet', 'sectionWordGames', 'sectionMathGames', 'sectionInteractiveBoard', 'sectionGames', 'sectionCertificates'];
       sections.forEach(s => document.getElementById(s).classList.add('hidden'));
 
-      const tabs = ['tabWorksheet', 'tabImageWorksheet', 'tabWordGames', 'tabMathGames', 'tabGames', 'tabCertificates'];
+      const tabs = ['tabWorksheet', 'tabImageWorksheet', 'tabWordGames', 'tabMathGames', 'tabInteractiveBoard', 'tabGames', 'tabCertificates'];
       tabs.forEach(t => {
         const btn = document.getElementById(t);
-        if (btn) btn.className = 'py-2 px-4 font-bold rounded-lg text-slate-600 hover:text-indigo-600 flex items-center gap-2';
+        if (btn) btn.className = 'py-2 px-4 font-bold rounded-lg text-slate-600 hover:text-indigo-600 flex items-center gap-2 whitespace-nowrap';
       });
 
       if (tab === 'worksheet') {
         document.getElementById('sectionWorksheet').classList.remove('hidden');
-        document.getElementById('tabWorksheet').className = 'py-2 px-4 font-bold rounded-lg border-b-2 border-indigo-600 text-indigo-700 bg-white flex items-center gap-2';
+        document.getElementById('tabWorksheet').className = 'py-2 px-4 font-bold rounded-lg border-b-2 border-indigo-600 text-indigo-700 bg-white flex items-center gap-2 whitespace-nowrap';
       } else if (tab === 'imageWorksheet') {
         document.getElementById('sectionImageWorksheet').classList.remove('hidden');
-        document.getElementById('tabImageWorksheet').className = 'py-2 px-4 font-bold rounded-lg border-b-2 border-indigo-600 text-indigo-700 bg-white flex items-center gap-2';
+        document.getElementById('tabImageWorksheet').className = 'py-2 px-4 font-bold rounded-lg border-b-2 border-indigo-600 text-indigo-700 bg-white flex items-center gap-2 whitespace-nowrap';
       } else if (tab === 'wordGames') {
         document.getElementById('sectionWordGames').classList.remove('hidden');
-        document.getElementById('tabWordGames').className = 'py-2 px-4 font-bold rounded-lg border-b-2 border-indigo-600 text-indigo-700 bg-white flex items-center gap-2';
+        document.getElementById('tabWordGames').className = 'py-2 px-4 font-bold rounded-lg border-b-2 border-indigo-600 text-indigo-700 bg-white flex items-center gap-2 whitespace-nowrap';
         generateWordSearch();
       } else if (tab === 'mathGames') {
         document.getElementById('sectionMathGames').classList.remove('hidden');
-        document.getElementById('tabMathGames').className = 'py-2 px-4 font-bold rounded-lg border-b-2 border-indigo-600 text-indigo-700 bg-white flex items-center gap-2';
+        document.getElementById('tabMathGames').className = 'py-2 px-4 font-bold rounded-lg border-b-2 border-indigo-600 text-indigo-700 bg-white flex items-center gap-2 whitespace-nowrap';
         generateMathSheet();
+      } else if (tab === 'interactiveBoard') {
+        document.getElementById('sectionInteractiveBoard').classList.remove('hidden');
+        document.getElementById('tabInteractiveBoard').className = 'py-2 px-4 font-bold rounded-lg border-b-2 border-amber-500 text-amber-900 bg-amber-100 flex items-center gap-2 whitespace-nowrap';
+        loadSubjectGame('math');
       } else if (tab === 'games') {
         document.getElementById('sectionGames').classList.remove('hidden');
-        document.getElementById('tabGames').className = 'py-2 px-4 font-bold rounded-lg border-b-2 border-indigo-600 text-indigo-700 bg-white flex items-center gap-2';
+        document.getElementById('tabGames').className = 'py-2 px-4 font-bold rounded-lg border-b-2 border-indigo-600 text-indigo-700 bg-white flex items-center gap-2 whitespace-nowrap';
       } else if (tab === 'certificates') {
         document.getElementById('sectionCertificates').classList.remove('hidden');
-        document.getElementById('tabCertificates').className = 'py-2 px-4 font-bold rounded-lg border-b-2 border-indigo-600 text-indigo-700 bg-white flex items-center gap-2';
+        document.getElementById('tabCertificates').className = 'py-2 px-4 font-bold rounded-lg border-b-2 border-indigo-600 text-indigo-700 bg-white flex items-center gap-2 whitespace-nowrap';
       }
     }
 
-    // 1. تحديث ورقة العمل النصية (1, 2, 3, أو 4 نسخ)
+    // 1. تحديث ورقة العمل النصية
     function updatePreview() {
       const title = document.getElementById('inputTitle').value || 'عنوان ورقة العمل';
       const subject = document.getElementById('inputSubject').value || 'الصف / المادة';
@@ -693,7 +884,7 @@
       updatePreview();
     }
 
-    // 2. ورقة مصورة وتكرار الصور (1, 10, 20, 30 صورة)
+    // 2. ورقة مصورة وتكرار الصور مع أداة التكبير والتعديل الفوري
     function loadImgWorksheet(e) {
       const file = e.target.files[0];
       if (!file) return;
@@ -715,32 +906,126 @@
       const scale = document.getElementById('imgScale').value;
       const crop = document.getElementById('imgCropBottom').value;
 
+      document.getElementById('scaleValueText').innerText = scale + '%';
+      document.getElementById('cropValueText').innerText = crop + '%';
+
       if (!loadedWorksheetImageBase64) return;
 
       grid.innerHTML = '';
 
-      // إعداد شبكة العرض
-      if (count === 1) grid.className = "w-full text-center";
-      else if (count === 10) grid.className = "grid grid-cols-2 md:grid-cols-5 gap-3 w-full";
-      else if (count === 20) grid.className = "grid grid-cols-4 md:grid-cols-5 gap-2 w-full";
-      else if (count === 30) grid.className = "grid grid-cols-5 md:grid-cols-6 gap-1.5 w-full";
+      // إعداد شبكة العرض المحددة والتعديل المباشر على الحجم
+      if (count === 1) grid.className = "w-full text-center flex justify-center items-center py-4";
+      else if (count === 10) grid.className = "grid grid-cols-2 md:grid-cols-5 gap-3 w-full justify-items-center items-center";
+      else if (count === 20) grid.className = "grid grid-cols-4 md:grid-cols-5 gap-2 w-full justify-items-center items-center";
+      else if (count === 30) grid.className = "grid grid-cols-5 md:grid-cols-6 gap-1.5 w-full justify-items-center items-center";
 
       for (let i = 0; i < count; i++) {
         const item = document.createElement('div');
-        item.className = "border border-dashed border-slate-300 p-1 rounded flex items-center justify-center overflow-hidden bg-white shadow-sm";
+        item.className = "border border-dashed border-slate-300 p-1 rounded flex items-center justify-center overflow-hidden bg-white shadow-sm w-full h-full min-h-[60px]";
         
         const img = document.createElement('img');
         img.src = loadedWorksheetImageBase64;
         img.style.width = `${scale}%`;
+        img.style.maxHeight = count === 1 ? '500px' : '130px';
         img.style.clipPath = `inset(0 0 ${crop}% 0)`;
-        img.className = "max-w-full object-contain transition-all";
+        img.className = "object-contain transition-all duration-150 mx-auto";
 
         item.appendChild(img);
         grid.appendChild(item);
       }
     }
 
-    // 3. تصدير المحتوى بملف Word (.doc)
+    // 3. ألعاب السبورة الذكية التفاعلية (Smart Board Games logic)
+    function loadSubjectGame(subject) {
+      currentSubject = subject;
+      currentQIndex = 0;
+      score = 0;
+
+      const subBtnMap = {
+        math: 'btnSubjectMath',
+        english: 'btnSubjectEnglish',
+        computer: 'btnSubjectComputer',
+        social: 'btnSubjectSocial',
+        arabic: 'btnSubjectArabic'
+      };
+
+      Object.keys(subBtnMap).forEach(key => {
+        const btn = document.getElementById(subBtnMap[key]);
+        if (key === subject) {
+          btn.className = "bg-white text-indigo-900 font-extrabold px-4 py-2 rounded-xl text-sm shadow hover:bg-amber-100 transition flex items-center gap-1";
+        } else {
+          btn.className = "bg-white/20 hover:bg-white/30 text-white font-extrabold px-4 py-2 rounded-xl text-sm transition flex items-center gap-1";
+        }
+      });
+
+      document.getElementById('gameSubjectBadge').innerText = subject.toUpperCase();
+      renderInteractiveQuestion();
+    }
+
+    function renderInteractiveQuestion() {
+      const qList = interactiveGamesData[currentSubject];
+      const qData = qList[currentQIndex];
+
+      document.getElementById('gameProgress').innerText = `السؤال ${currentQIndex + 1} من ${qList.length}`;
+      document.getElementById('gameScore').innerText = score;
+      document.getElementById('interactiveQuestion').innerText = qData.q;
+      document.getElementById('gameFeedback').innerText = '';
+      document.getElementById('btnNextQ').classList.add('hidden');
+
+      const optionsBox = document.getElementById('interactiveOptions');
+      optionsBox.innerHTML = '';
+
+      qData.options.forEach((optText, index) => {
+        const btn = document.createElement('button');
+        btn.onclick = () => checkInteractiveAnswer(index);
+        btn.className = "bg-slate-800 hover:bg-indigo-600 text-white font-bold text-lg md:text-xl py-4 px-6 rounded-2xl border-2 border-slate-700 shadow-lg transform active:scale-95 transition-all text-center";
+        btn.innerText = optText;
+        optionsBox.appendChild(btn);
+      });
+    }
+
+    function checkInteractiveAnswer(selectedIndex) {
+      const qList = interactiveGamesData[currentSubject];
+      const qData = qList[currentQIndex];
+      const feedbackBox = document.getElementById('gameFeedback');
+      const optionsBox = document.getElementById('interactiveOptions');
+
+      const buttons = optionsBox.getElementsByTagName('button');
+
+      if (selectedIndex === qData.answer) {
+        score += 10;
+        document.getElementById('gameScore').innerText = score;
+        feedbackBox.innerHTML = "<span class='text-emerald-400 flex items-center gap-2'>🎉 إجابة صحيحة! أحسنت يا بطل!</span>";
+        buttons[selectedIndex].className = "bg-emerald-600 text-white font-black text-xl py-4 px-6 rounded-2xl border-2 border-emerald-300 shadow-xl text-center";
+      } else {
+        feedbackBox.innerHTML = "<span class='text-rose-400 flex items-center gap-2'>❌ إجابة خاطئة! حاول مرة أخرى</span>";
+        buttons[selectedIndex].className = "bg-rose-600 text-white font-black text-xl py-4 px-6 rounded-2xl border-2 border-rose-300 shadow-xl text-center";
+        buttons[qData.answer].className = "bg-emerald-600 text-white font-black text-xl py-4 px-6 rounded-2xl border-2 border-emerald-300 shadow-xl text-center";
+      }
+
+      for (let btn of buttons) {
+        btn.disabled = true;
+      }
+
+      if (currentQIndex < qList.length - 1) {
+        document.getElementById('btnNextQ').classList.remove('hidden');
+      } else {
+        feedbackBox.innerHTML += `<div class="mt-2 text-amber-300 font-black">🏆 انتهت اللعبة! مجموع نقاطك: ${score}</div>`;
+      }
+    }
+
+    function nextInteractiveQuestion() {
+      currentQIndex++;
+      renderInteractiveQuestion();
+    }
+
+    function resetCurrentGame() {
+      currentQIndex = 0;
+      score = 0;
+      renderInteractiveQuestion();
+    }
+
+    // 4. تصدير المحتوى بملف Word (.doc)
     function exportToWord(elementId) {
       const content = document.getElementById(elementId).innerHTML;
       const header = "<html xmlns:o='urn:schemas-microsoft-com:office:office' " +
@@ -760,7 +1045,7 @@
       document.body.removeChild(fileDownload);
     }
 
-    // 4. خوارزمية ذكية لمتاهة الكلمات والحروف
+    // 5. لعبة البحث عن الكلمات والحروف
     function generateWordSearch() {
       const title = document.getElementById('wordGameTitle').value;
       document.getElementById('prevWordGameTitle').innerText = `🧩 ${title}`;
@@ -832,7 +1117,7 @@
       }
     }
 
-    // 5. ألعاب الرياضيات
+    // 6. ألعاب الرياضيات الورقية
     function generateMathSheet() {
       document.getElementById('prevMathTitle').innerText = `🔢 ${document.getElementById('mathTitle').value}`;
       const op = document.getElementById('mathOp').value;
@@ -857,7 +1142,7 @@
       }
     }
 
-    // 6. بطاقات الأسئلة
+    // 7. بطاقات الأسئلة
     function updateGames() {
       document.getElementById('prevQ1').innerText = document.getElementById('gameQ1').value;
       document.getElementById('prevA1').innerText = document.getElementById('gameA1').value;
@@ -865,7 +1150,7 @@
       document.getElementById('prevA2').innerText = document.getElementById('gameA2').value;
     }
 
-    // 7. الشهادات
+    // 8. الشهادات والتحكم بحجم الشعار
     function handleCertLogoUpload(e) {
       const file = e.target.files[0];
       if (!file) return;
@@ -875,8 +1160,18 @@
         document.getElementById('certLogoImg').src = certLogoBase64;
         document.getElementById('certLogoContainer').classList.remove('hidden');
         document.getElementById('certLogoContainer').classList.add('flex');
+        updateCertLogoSize();
       };
       reader.readAsDataURL(file);
+    }
+
+    function updateCertLogoSize() {
+      const size = document.getElementById('certLogoSize').value;
+      document.getElementById('logoSizeText').innerText = size + 'px';
+      const logoImg = document.getElementById('certLogoImg');
+      if (logoImg) {
+        logoImg.style.height = `${size}px`;
+      }
     }
 
     function updateCert() {
@@ -885,11 +1180,11 @@
       const certBox = document.getElementById('certPrintArea');
 
       if (theme === 'royal') {
-        certBox.className = "bg-slate-50 p-10 rounded-2xl border-8 border-indigo-900 text-center print-area space-y-6 relative overflow-hidden transition-all";
+        certBox.className = "bg-slate-50 p-10 rounded-2xl border-8 border-indigo-900 text-center print-area min-h-[277mm] flex flex-col justify-between relative overflow-hidden transition-all";
       } else if (theme === 'amber') {
-        certBox.className = "bg-amber-50/40 p-10 rounded-2xl border-8 border-amber-400 text-center print-area space-y-6 relative overflow-hidden transition-all";
+        certBox.className = "bg-amber-50/40 p-10 rounded-2xl border-8 border-amber-400 text-center print-area min-h-[277mm] flex flex-col justify-between relative overflow-hidden transition-all";
       } else if (theme === 'emerald') {
-        certBox.className = "bg-emerald-50/40 p-10 rounded-2xl border-8 border-emerald-700 text-center print-area space-y-6 relative overflow-hidden transition-all";
+        certBox.className = "bg-emerald-50/40 p-10 rounded-2xl border-8 border-emerald-700 text-center print-area min-h-[277mm] flex flex-col justify-between relative overflow-hidden transition-all";
       }
 
       if (lang === 'en') {
@@ -917,7 +1212,7 @@
       const element = document.getElementById(elementId);
       html2canvas(element, { scale: 2 }).then(canvas => {
         const link = document.createElement('a');
-        link.download = 'مشروع_معين_تصميم.png';
+        link.download = 'مشروع_معين_تصميم_A4.png';
         link.href = canvas.toDataURL('image/png');
         link.click();
       });
@@ -969,6 +1264,7 @@
           date: document.getElementById('certDate').value,
           lang: document.getElementById('certLang').value,
           theme: document.getElementById('certTheme').value,
+          logoSize: document.getElementById('certLogoSize').value,
           logo: certLogoBase64
         }
       };
@@ -1030,12 +1326,16 @@
         document.getElementById('certDate').value = data.certificates.date || '2026/09/26';
         document.getElementById('certLang').value = data.certificates.lang || 'ar';
         document.getElementById('certTheme').value = data.certificates.theme || 'royal';
+        if (data.certificates.logoSize) {
+          document.getElementById('certLogoSize').value = data.certificates.logoSize;
+        }
         if (data.certificates.logo) {
           certLogoBase64 = data.certificates.logo;
           document.getElementById('certLogoImg').src = certLogoBase64;
           document.getElementById('certLogoContainer').classList.remove('hidden');
           document.getElementById('certLogoContainer').classList.add('flex');
         }
+        updateCertLogoSize();
         updateCert();
       }
     }
