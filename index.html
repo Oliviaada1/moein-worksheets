@@ -15,10 +15,13 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&family=Amiri:wght@700&family=Cairo:wght@600;800&display=swap');
     body {
       font-family: 'Tajawal', sans-serif;
     }
+
+    .font-amiri { font-family: 'Amiri', serif; }
+    .font-cairo { font-family: 'Cairo', sans-serif; }
 
     /* ضبط مقاس الصفحة A4 بدقة للطباعة ولتفادي الفراغات المتروكة أسفل الورقة */
     @page {
@@ -40,6 +43,21 @@
         page-break-after: avoid !important;
         page-break-inside: avoid !important;
       }
+    }
+
+    /* ستايلات السحب والإفلات للسبورة الذكية */
+    .draggable-item {
+      touch-action: none;
+      user-select: none;
+      cursor: grab;
+    }
+    .draggable-item:active {
+      cursor: grabbing;
+    }
+    .drop-zone.drag-over {
+      background-color: rgba(238, 242, 255, 0.8) !important;
+      border-color: #4f46e5 !important;
+      transform: scale(1.02);
     }
   </style>
 </head>
@@ -117,6 +135,11 @@
         <i data-lucide="tv" class="w-4 h-4 text-amber-700"></i>
         <span>🖥️ ألعاب تفاعلية (Smart Board)</span>
       </button>
+      <!-- التبويب الجديد المضاف: لعبة السحب والإفلات -->
+      <button onclick="switchTab('dragDropGame')" id="tabDragDropGame" class="py-2 px-4 font-bold rounded-lg text-slate-600 hover:text-indigo-600 flex items-center gap-2 whitespace-nowrap bg-emerald-200/60">
+        <i data-lucide="move" class="w-4 h-4 text-emerald-800"></i>
+        <span>🎯 لعبة السحب والإفلات</span>
+      </button>
       <button onclick="switchTab('games')" id="tabGames" class="py-2 px-4 font-bold rounded-lg text-slate-600 hover:text-indigo-600 flex items-center gap-2 whitespace-nowrap">
         <i data-lucide="gamepad-2" class="w-4 h-4"></i>
         <span>🎮 بطاقات الأسئلة</span>
@@ -163,6 +186,12 @@
         <div>
           <label class="block text-xs font-bold text-slate-600 mb-1">نص ورقة العمل / الأسئلة والتمارين:</label>
           <textarea id="inputContent" rows="8" oninput="updatePreview()" class="w-full border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-indigo-500 outline-none" placeholder="اكتبي الأسئلة أو التمرين هنا..."></textarea>
+        </div>
+
+        <!-- تحسين مضاف: التحكم بالأسطر والتباعد -->
+        <div class="flex items-center gap-2 border-t pt-2">
+          <input type="checkbox" id="showLinesCheck" onchange="updatePreview()" class="rounded text-indigo-600">
+          <label for="showLinesCheck" class="text-xs font-bold text-slate-700">إضافة أسطر للكتابة والتدريب (أنشطة الكتابة)</label>
         </div>
 
         <div class="grid grid-cols-2 gap-2 border-t pt-3">
@@ -257,6 +286,26 @@
             </div>
             <input type="range" id="imgCropBottom" min="0" max="90" value="0" oninput="updateImgWorksheet()" class="w-full">
           </div>
+          <!-- تحسين مضاف: التدوير والإطار -->
+          <div class="grid grid-cols-2 gap-2 pt-1">
+            <div>
+              <label class="block text-[11px] font-bold text-slate-600 mb-1">تدوير الصورة:</label>
+              <select id="imgRotateSelect" onchange="updateImgWorksheet()" class="w-full text-xs border rounded p-1">
+                <option value="0">بدون تدوير</option>
+                <option value="90">90 درجة</option>
+                <option value="180">180 درجة</option>
+                <option value="270">270 درجة</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-[11px] font-bold text-slate-600 mb-1">إطار رماد للقص:</label>
+              <select id="imgBorderSelect" onchange="updateImgWorksheet()" class="w-full text-xs border rounded p-1">
+                <option value="dashed">منقط (مقص)</option>
+                <option value="solid">صلب</option>
+                <option value="none">بدون إطار</option>
+              </select>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -337,7 +386,7 @@
               🖼️ حفظ كصورة
             </button>
             <button onclick="window.print()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1.5 rounded-lg text-xs font-bold">
-              🖨️ طباعة A4 / PDF
+              🖨️️ طباعة A4 / PDF
             </button>
           </div>
         </div>
@@ -512,7 +561,91 @@
       </div>
     </div>
 
-    <!-- 6. قسم الألعاب التفاعلية وبطاقات الأسئلة الورقية -->
+    <!-- 6. القسم الجديد المضاف كلياً: لعبة السحب والإفلات التفاعلية Drag & Drop -->
+    <div id="sectionDragDropGame" class="hidden space-y-6">
+      <div class="bg-gradient-to-r from-emerald-600 via-teal-600 to-indigo-700 rounded-2xl p-6 text-white shadow-lg no-print flex flex-wrap justify-between items-center gap-4">
+        <div>
+          <h2 class="text-2xl font-extrabold flex items-center gap-2">
+            <i data-lucide="move" class="w-8 h-8 text-emerald-300"></i>
+            <span>🎯 لعبة السحب والإفلات التفاعلية (Drag & Drop)</span>
+          </h2>
+          <p class="text-xs text-emerald-100 mt-1">اسحب الكلمة أو الصورة وأسقطها في المكان المناسب على السبورة الذكية</p>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <button onclick="initDragDropGame()" class="bg-white text-emerald-900 font-extrabold px-4 py-2 rounded-xl text-sm shadow hover:bg-emerald-100 transition flex items-center gap-1">
+            <i data-lucide="rotate-ccw" class="w-4 h-4"></i>
+            <span>إعادة النشاط</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- إعدادات إدخال عناصر لعبة السحب والإفلات (للأستاذ) -->
+      <div class="bg-white p-5 rounded-2xl border border-slate-200 space-y-4 no-print shadow-sm">
+        <h3 class="font-bold text-sm text-indigo-900 flex items-center gap-2">
+          <i data-lucide="settings" class="w-4 h-4"></i>
+          <span>إعداد عناصر ومجموعات التصنيف للعبة السحب والإفلات:</span>
+        </h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">اسم المجموعة الأولى (المستهدف 1):</label>
+            <input type="text" id="target1Name" value="كائنات حية" oninput="initDragDropGame()" class="w-full border rounded-lg p-2 text-sm">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">اسم المجموعة الثانية (المستهدف 2):</label>
+            <input type="text" id="target2Name" value="أشياء غير حية" oninput="initDragDropGame()" class="w-full border rounded-lg p-2 text-sm">
+          </div>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">عناصر المجموعة الأولى (فواط بينها بفاصلة):</label>
+            <input type="text" id="group1Items" value="شجرة, قطة, طائر, إنسان" oninput="initDragDropGame()" class="w-full border rounded-lg p-2 text-sm bg-emerald-50/50">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">عناصر المجموعة الثانية (فواط بينها بفاصلة):</label>
+            <input type="text" id="group2Items" value="سيارة, صخرة, هاتف, قلم" oninput="initDragDropGame()" class="w-full border rounded-lg p-2 text-sm bg-indigo-50/50">
+          </div>
+        </div>
+      </div>
+
+      <!-- شاشة العرض التفاعلية للعبة السحب والإفلات (مناسبة للسمارت بورد) -->
+      <div class="bg-slate-900 rounded-3xl p-6 md:p-8 text-white shadow-2xl border-4 border-emerald-400 min-h-[500px] flex flex-col justify-between">
+        
+        <!-- العناصر القابلة للسحب -->
+        <div class="space-y-2">
+          <h4 class="text-xs font-bold text-emerald-300 uppercase tracking-wider text-center">اسحب العناصر من هنا للأسفل 👇</h4>
+          <div id="dragSourceContainer" class="flex flex-wrap justify-center gap-3 p-4 bg-slate-800/80 rounded-2xl border border-slate-700 min-h-[90px] items-center">
+            <!-- البطاقات القابلة للسحب ستتولد هنا -->
+          </div>
+        </div>
+
+        <!-- أهداف الإسقاط (المجموعات) -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 my-6">
+          <!-- المجموعة 1 -->
+          <div id="targetZone1" class="drop-zone bg-slate-800 border-2 border-dashed border-emerald-500/60 rounded-2xl p-4 min-h-[200px] transition-all flex flex-col items-center">
+            <h5 id="target1Title" class="text-lg font-black text-emerald-400 mb-3 border-b border-emerald-500/30 pb-1 w-full text-center">كائنات حية</h5>
+            <div id="target1Content" class="flex flex-wrap gap-2 w-full justify-center items-center flex-grow"></div>
+          </div>
+
+          <!-- المجموعة 2 -->
+          <div id="targetZone2" class="drop-zone bg-slate-800 border-2 border-dashed border-indigo-500/60 rounded-2xl p-4 min-h-[200px] transition-all flex flex-col items-center">
+            <h5 id="target2Title" class="text-lg font-black text-indigo-400 mb-3 border-b border-indigo-500/30 pb-1 w-full text-center">أشياء غير حية</h5>
+            <div id="target2Content" class="flex flex-wrap gap-2 w-full justify-center items-center flex-grow"></div>
+          </div>
+        </div>
+
+        <!-- التغذية الراجعة والتحقق -->
+        <div class="flex flex-wrap justify-between items-center border-t border-slate-800 pt-4 gap-2">
+          <div id="dragFeedback" class="text-sm font-bold text-amber-300">قم بوضع كل عنصر في مجموعته الصحيحة</div>
+          <button onclick="checkDragDropResult()" class="bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-black px-6 py-2 rounded-xl text-sm shadow-lg transition">
+            ✔️ تحقق من الإجابات
+          </button>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- 7. قسم الألعاب التفاعلية وبطاقات الأسئلة الورقية -->
     <div id="sectionGames" class="hidden grid grid-cols-1 lg:grid-cols-12 gap-6">
       <section class="lg:col-span-4 bg-white p-5 rounded-2xl shadow-sm border border-slate-200 space-y-4 no-print">
         <h2 class="text-lg font-bold border-b pb-2 flex items-center gap-2 text-indigo-700">
@@ -574,7 +707,7 @@
       </section>
     </div>
 
-    <!-- 7. قسم شهادات التقدير مع التحكم المباشر بحجم الشعار -->
+    <!-- 8. قسم شهادات التقدير مع التحكم المباشر بحجم الشعار وتحديثات التصميم -->
     <div id="sectionCertificates" class="hidden grid grid-cols-1 lg:grid-cols-12 gap-6">
       <section class="lg:col-span-4 bg-white p-5 rounded-2xl shadow-sm border border-slate-200 space-y-4 no-print">
         <h2 class="text-lg font-bold border-b pb-2 flex items-center gap-2 text-indigo-700">
@@ -597,13 +730,18 @@
           </div>
         </div>
 
-        <!-- أداة التعديل الجديدة: تغيير حجم الشعار -->
+        <!-- أداة التعديل: تغيير حجم الشعار -->
         <div class="bg-slate-50 p-3 rounded-xl border border-slate-200">
           <div class="flex justify-between text-xs font-bold text-slate-700 mb-1">
             <span>تعديل حجم شعار المدرسة/الشركة:</span>
             <span id="logoSizeText" class="text-indigo-600">64px</span>
           </div>
           <input type="range" id="certLogoSize" min="30" max="180" value="64" oninput="updateCertLogoSize()" class="w-full">
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-600 mb-1">اسم المدرسة / الجهة المانحة:</label>
+          <input type="text" id="certSchool" value="مدرسة الأجيال الواعدة" oninput="updateCert()" class="w-full border rounded-lg p-2 text-sm">
         </div>
 
         <div>
@@ -641,7 +779,7 @@
           <span class="font-bold text-sm text-slate-700">👁️ المعاينة والتحميل (A4):</span>
           <div class="flex gap-2">
             <button onclick="downloadAsImage('certPrintArea')" class="bg-purple-600 hover:bg-purple-700 text-white px-3 py-1.5 rounded-lg text-xs font-bold">
-              🖼️ حفظ كصورة
+              🖼️️ حفظ كصورة
             </button>
             <button onclick="window.print()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1.5 rounded-lg text-xs font-bold">
               🖨️ طباعة A4 / PDF
@@ -655,15 +793,17 @@
               <img id="certLogoImg" src="" alt="شعار المؤسسة" class="h-16 object-contain transition-all">
             </div>
 
+            <p id="prevCertSchool" class="text-sm font-bold text-indigo-900 tracking-wide">مدرسة الأجيال الواعدة</p>
+
             <div id="certHeaderIcon" class="text-amber-600 flex justify-center">
               <i data-lucide="award" class="w-16 h-16"></i>
             </div>
 
             <p id="certSubHeader" class="text-xs uppercase tracking-widest text-slate-500 font-bold">شهادة تقدير رسمية</p>
-            <h1 id="certMainTitle" class="text-3xl font-extrabold text-indigo-950 tracking-wide">🎓 شهادة تقدير وتميز 🎓</h1>
+            <h1 id="certMainTitle" class="text-3xl font-extrabold text-indigo-950 tracking-wide font-amiri">🎓 شهادة تقدير وتميز 🎓</h1>
 
             <p id="certIntroText" class="text-slate-600">تتقدم إدارة المدرسة بخالص الشكر والتقدير للطالب/ـة:</p>
-            <h2 id="prevCertStudent" class="text-3xl font-bold text-indigo-800 underline decoration-amber-400 py-2">سارة محمد</h2>
+            <h2 id="prevCertStudent" class="text-3xl font-bold text-indigo-800 underline decoration-amber-400 py-2 font-cairo">سارة محمد</h2>
             <p id="prevCertReason" class="text-slate-700 max-w-lg mx-auto leading-relaxed font-medium">لتفوقها المتميز في مادة العلوم وحصولها على الدرجة النهائية</p>
           </div>
 
@@ -734,11 +874,10 @@
     </div>
   </div>
 
-  <!-- JavaScript البرمجي -->
+  <!-- JavaScript البرمجي الشامل -->
   <script>
     const SUPABASE_URL = 'https://rfmcgonijlkjbvjjbrab.supabase.co';
-    // ⚠️ استبدلي الخانة التالية بـ anon key الخاص بكِ
-    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJmbWNnb25pamxramJ2ampicmFiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTA0MDc5NjAsImV4cCI6MjEwNTk4Mzk2MH0.ZmQlBXWwGIrxhBMl8W1HEXCYNLIJm-oxJp05t1ce-MM';
+    const SUPABASE_ANON_KEY = 'ضعـي_مفتاح_anon_هنا';
     const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
     let uploadedImageBase64 = '';
@@ -781,10 +920,13 @@
     lucide.createIcons();
 
     function switchTab(tab) {
-      const sections = ['sectionWorksheet', 'sectionImageWorksheet', 'sectionWordGames', 'sectionMathGames', 'sectionInteractiveBoard', 'sectionGames', 'sectionCertificates'];
-      sections.forEach(s => document.getElementById(s).classList.add('hidden'));
+      const sections = ['sectionWorksheet', 'sectionImageWorksheet', 'sectionWordGames', 'sectionMathGames', 'sectionInteractiveBoard', 'sectionDragDropGame', 'sectionGames', 'sectionCertificates'];
+      sections.forEach(s => {
+        const el = document.getElementById(s);
+        if (el) el.classList.add('hidden');
+      });
 
-      const tabs = ['tabWorksheet', 'tabImageWorksheet', 'tabWordGames', 'tabMathGames', 'tabInteractiveBoard', 'tabGames', 'tabCertificates'];
+      const tabs = ['tabWorksheet', 'tabImageWorksheet', 'tabWordGames', 'tabMathGames', 'tabInteractiveBoard', 'tabDragDropGame', 'tabGames', 'tabCertificates'];
       tabs.forEach(t => {
         const btn = document.getElementById(t);
         if (btn) btn.className = 'py-2 px-4 font-bold rounded-lg text-slate-600 hover:text-indigo-600 flex items-center gap-2 whitespace-nowrap';
@@ -808,6 +950,10 @@
         document.getElementById('sectionInteractiveBoard').classList.remove('hidden');
         document.getElementById('tabInteractiveBoard').className = 'py-2 px-4 font-bold rounded-lg border-b-2 border-amber-500 text-amber-900 bg-amber-100 flex items-center gap-2 whitespace-nowrap';
         loadSubjectGame('math');
+      } else if (tab === 'dragDropGame') {
+        document.getElementById('sectionDragDropGame').classList.remove('hidden');
+        document.getElementById('tabDragDropGame').className = 'py-2 px-4 font-bold rounded-lg border-b-2 border-emerald-600 text-emerald-900 bg-emerald-100 flex items-center gap-2 whitespace-nowrap';
+        initDragDropGame();
       } else if (tab === 'games') {
         document.getElementById('sectionGames').classList.remove('hidden');
         document.getElementById('tabGames').className = 'py-2 px-4 font-bold rounded-lg border-b-2 border-indigo-600 text-indigo-700 bg-white flex items-center gap-2 whitespace-nowrap';
@@ -825,6 +971,7 @@
       const content = document.getElementById('inputContent').value || 'اكتبي الأسئلة هنا...';
       const fontSize = document.getElementById('fontSizeSelect').value;
       const copiesCount = parseInt(document.getElementById('copiesSelect').value);
+      const showLines = document.getElementById('showLinesCheck') ? document.getElementById('showLinesCheck').checked : false;
 
       const copiesContainer = document.getElementById('copiesContainer');
       copiesContainer.innerHTML = '';
@@ -833,6 +980,14 @@
       else if (copiesCount === 3) copiesContainer.className = "grid grid-cols-1 md:grid-cols-3 gap-4 border-slate-300";
       else if (copiesCount === 4) copiesContainer.className = "grid grid-cols-2 gap-4 border-slate-300";
       else copiesContainer.className = "space-y-8";
+
+      const lineLinesHTML = showLines ? `
+        <div class="mt-4 space-y-3">
+          <div class="border-b border-slate-300 h-6"></div>
+          <div class="border-b border-slate-300 h-6"></div>
+          <div class="border-b border-slate-300 h-6"></div>
+        </div>
+      ` : '';
 
       for (let i = 0; i < copiesCount; i++) {
         const copyHTML = `
@@ -854,6 +1009,8 @@
               <div class="text-slate-800 leading-relaxed whitespace-pre-wrap ${fontSize}">
                 ${content}
               </div>
+
+              ${lineLinesHTML}
             </div>
 
             <div class="border-t pt-2 text-center text-[10px] text-slate-400 mt-6">
@@ -884,7 +1041,7 @@
       updatePreview();
     }
 
-    // 2. ورقة مصورة وتكرار الصور مع أداة التكبير والتعديل الفوري
+    // 2. ورقة مصورة وتكرار الصور مع أداة التكبير والتعديل الفوري والتدوير
     function loadImgWorksheet(e) {
       const file = e.target.files[0];
       if (!file) return;
@@ -905,6 +1062,8 @@
       const count = parseInt(document.getElementById('imgRepeatCount').value);
       const scale = document.getElementById('imgScale').value;
       const crop = document.getElementById('imgCropBottom').value;
+      const rotation = document.getElementById('imgRotateSelect') ? document.getElementById('imgRotateSelect').value : '0';
+      const borderStyle = document.getElementById('imgBorderSelect') ? document.getElementById('imgBorderSelect').value : 'dashed';
 
       document.getElementById('scaleValueText').innerText = scale + '%';
       document.getElementById('cropValueText').innerText = crop + '%';
@@ -913,21 +1072,25 @@
 
       grid.innerHTML = '';
 
-      // إعداد شبكة العرض المحددة والتعديل المباشر على الحجم
       if (count === 1) grid.className = "w-full text-center flex justify-center items-center py-4";
       else if (count === 10) grid.className = "grid grid-cols-2 md:grid-cols-5 gap-3 w-full justify-items-center items-center";
       else if (count === 20) grid.className = "grid grid-cols-4 md:grid-cols-5 gap-2 w-full justify-items-center items-center";
       else if (count === 30) grid.className = "grid grid-cols-5 md:grid-cols-6 gap-1.5 w-full justify-items-center items-center";
 
+      let borderClass = "border border-dashed border-slate-300";
+      if (borderStyle === 'solid') borderClass = "border border-slate-400";
+      else if (borderStyle === 'none') borderClass = "";
+
       for (let i = 0; i < count; i++) {
         const item = document.createElement('div');
-        item.className = "border border-dashed border-slate-300 p-1 rounded flex items-center justify-center overflow-hidden bg-white shadow-sm w-full h-full min-h-[60px]";
+        item.className = `${borderClass} p-1 rounded flex items-center justify-center overflow-hidden bg-white shadow-sm w-full h-full min-h-[60px]`;
         
         const img = document.createElement('img');
         img.src = loadedWorksheetImageBase64;
         img.style.width = `${scale}%`;
         img.style.maxHeight = count === 1 ? '500px' : '130px';
         img.style.clipPath = `inset(0 0 ${crop}% 0)`;
+        img.style.transform = `rotate(${rotation}deg)`;
         img.className = "object-contain transition-all duration-150 mx-auto";
 
         item.appendChild(img);
@@ -1025,7 +1188,172 @@
       renderInteractiveQuestion();
     }
 
-    // 4. تصدير المحتوى بملف Word (.doc)
+    // 4. برمجة لعبة السحب والإفلات التفاعلية (Drag & Drop Logic)
+    let draggedElement = null;
+
+    function initDragDropGame() {
+      const t1 = document.getElementById('target1Name').value || 'المجموعة 1';
+      const t2 = document.getElementById('target2Name').value || 'المجموعة 2';
+      document.getElementById('target1Title').innerText = t1;
+      document.getElementById('target2Title').innerText = t2;
+
+      const g1Items = document.getElementById('group1Items').value.split(',').map(s=>s.trim()).filter(s=>s);
+      const g2Items = document.getElementById('group2Items').value.split(',').map(s=>s.trim()).filter(s=>s);
+
+      const itemsArr = [];
+      g1Items.forEach(i => itemsArr.push({ text: i, group: 1 }));
+      g2Items.forEach(i => itemsArr.push({ text: i, group: 2 }));
+
+      // خلط العناصر العشوائي
+      itemsArr.sort(() => Math.random() - 0.5);
+
+      const sourceContainer = document.getElementById('dragSourceContainer');
+      const target1 = document.getElementById('target1Content');
+      const target2 = document.getElementById('target2Content');
+
+      sourceContainer.innerHTML = '';
+      target1.innerHTML = '';
+      target2.innerHTML = '';
+      document.getElementById('dragFeedback').innerText = 'قم بوضع كل عنصر في مجموعته الصحيحة بالسحب والإسقاط';
+
+      itemsArr.forEach((item, index) => {
+        const el = document.createElement('div');
+        el.id = 'drag-item-' + index;
+        el.className = 'draggable-item bg-amber-400 hover:bg-amber-300 text-slate-950 font-bold px-4 py-2 rounded-xl shadow-md cursor-grab border-2 border-amber-200 text-sm md:text-base';
+        el.innerText = item.text;
+        el.setAttribute('draggable', 'true');
+        el.dataset.group = item.group;
+
+        // أحداث HTML5 Drag
+        el.addEventListener('dragstart', handleDragStart);
+        el.addEventListener('dragend', handleDragEnd);
+
+        // أحداث Touch للمس للسمارت بورد
+        el.addEventListener('touchstart', handleTouchStart, {passive: false});
+        el.addEventListener('touchmove', handleTouchMove, {passive: false});
+        el.addEventListener('touchend', handleTouchEnd);
+
+        sourceContainer.appendChild(el);
+      });
+
+      setupDropZone('targetZone1', target1);
+      setupDropZone('targetZone2', target2);
+      setupDropZone('dragSourceContainer', sourceContainer);
+    }
+
+    function handleDragStart(e) {
+      draggedElement = this;
+      this.classList.add('opacity-50');
+      e.dataTransfer.setData('text/plain', this.id);
+    }
+
+    function handleDragEnd() {
+      this.classList.remove('opacity-50');
+      draggedElement = null;
+    }
+
+    function setupDropZone(zoneId, contentContainer) {
+      const zone = document.getElementById(zoneId);
+      zone.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        zone.classList.add('drag-over');
+      });
+      zone.addEventListener('dragleave', () => {
+        zone.classList.remove('drag-over');
+      });
+      zone.addEventListener('drop', (e) => {
+        e.preventDefault();
+        zone.classList.remove('drag-over');
+        if (draggedElement) {
+          contentContainer.appendChild(draggedElement);
+        }
+      });
+    }
+
+    // دعم اللمس للسبورات الذكية (Touch Handling)
+    let activeTouchElement = null;
+    let touchOffsetX = 0, touchOffsetY = 0;
+
+    function handleTouchStart(e) {
+      e.preventDefault();
+      activeTouchElement = this;
+      const touch = e.touches[0];
+      const rect = this.getBoundingClientRect();
+      touchOffsetX = touch.clientX - rect.left;
+      touchOffsetY = touch.clientY - rect.top;
+
+      this.style.position = 'fixed';
+      this.style.zIndex = '1000';
+      this.style.left = (touch.clientX - touchOffsetX) + 'px';
+      this.style.top = (touch.clientY - touchOffsetY) + 'px';
+    }
+
+    function handleTouchMove(e) {
+      if (!activeTouchElement) return;
+      e.preventDefault();
+      const touch = e.touches[0];
+      activeTouchElement.style.left = (touch.clientX - touchOffsetX) + 'px';
+      activeTouchElement.style.top = (touch.clientY - touchOffsetY) + 'px';
+    }
+
+    function handleTouchEnd(e) {
+      if (!activeTouchElement) return;
+      const touch = e.changedTouches[0];
+      activeTouchElement.style.position = '';
+      activeTouchElement.style.zIndex = '';
+      activeTouchElement.style.left = '';
+      activeTouchElement.style.top = '';
+
+      const dropTarget = document.elementFromPoint(touch.clientX, touch.clientY);
+      if (dropTarget) {
+        const zone1 = document.getElementById('targetZone1');
+        const zone2 = document.getElementById('targetZone2');
+        const source = document.getElementById('dragSourceContainer');
+
+        if (zone1.contains(dropTarget)) document.getElementById('target1Content').appendChild(activeTouchElement);
+        else if (zone2.contains(dropTarget)) document.getElementById('target2Content').appendChild(activeTouchElement);
+        else if (source.contains(dropTarget)) source.appendChild(activeTouchElement);
+      }
+      activeTouchElement = null;
+    }
+
+    function checkDragDropResult() {
+      const t1Items = document.getElementById('target1Content').children;
+      const t2Items = document.getElementById('target2Content').children;
+      const unassigned = document.getElementById('dragSourceContainer').children.length;
+
+      let totalCorrect = 0;
+      let totalCount = t1Items.length + t2Items.length;
+
+      for (let item of t1Items) {
+        if (item.dataset.group === '1') {
+          totalCorrect++;
+          item.className = "draggable-item bg-emerald-500 text-slate-950 font-extrabold px-3 py-1.5 rounded-lg text-sm border-2 border-emerald-300";
+        } else {
+          item.className = "draggable-item bg-rose-500 text-white font-extrabold px-3 py-1.5 rounded-lg text-sm border-2 border-rose-300";
+        }
+      }
+
+      for (let item of t2Items) {
+        if (item.dataset.group === '2') {
+          totalCorrect++;
+          item.className = "draggable-item bg-indigo-500 text-white font-extrabold px-3 py-1.5 rounded-lg text-sm border-2 border-indigo-300";
+        } else {
+          item.className = "draggable-item bg-rose-500 text-white font-extrabold px-3 py-1.5 rounded-lg text-sm border-2 border-rose-300";
+        }
+      }
+
+      const feedback = document.getElementById('dragFeedback');
+      if (unassigned > 0) {
+        feedback.innerHTML = `<span class="text-amber-300">⚠️ يرجى تصنيف باقي العناصر المتبقية (${unassigned}) أولاً</span>`;
+      } else if (totalCorrect === totalCount) {
+        feedback.innerHTML = `<span class="text-emerald-400 text-lg">🎉 ممتاز جداً! تم تصنيف جميع العناصر (${totalCorrect}/${totalCount}) بنجاح!</span>`;
+      } else {
+        feedback.innerHTML = `<span class="text-rose-400">❌ هناك بعض العناصر المصنفة بشكل خاطئ (الإجابات الصحيحة ${totalCorrect} من ${totalCount})</span>`;
+      }
+    }
+
+    // 5. تصدير المحتوى بملف Word (.doc)
     function exportToWord(elementId) {
       const content = document.getElementById(elementId).innerHTML;
       const header = "<html xmlns:o='urn:schemas-microsoft-com:office:office' " +
@@ -1045,7 +1373,7 @@
       document.body.removeChild(fileDownload);
     }
 
-    // 5. لعبة البحث عن الكلمات والحروف
+    // 6. لعبة البحث عن الكلمات والحروف
     function generateWordSearch() {
       const title = document.getElementById('wordGameTitle').value;
       document.getElementById('prevWordGameTitle').innerText = `🧩 ${title}`;
@@ -1117,7 +1445,7 @@
       }
     }
 
-    // 6. ألعاب الرياضيات الورقية
+    // 7. ألعاب الرياضيات الورقية
     function generateMathSheet() {
       document.getElementById('prevMathTitle').innerText = `🔢 ${document.getElementById('mathTitle').value}`;
       const op = document.getElementById('mathOp').value;
@@ -1142,7 +1470,7 @@
       }
     }
 
-    // 7. بطاقات الأسئلة
+    // 8. بطاقات الأسئلة
     function updateGames() {
       document.getElementById('prevQ1').innerText = document.getElementById('gameQ1').value;
       document.getElementById('prevA1').innerText = document.getElementById('gameA1').value;
@@ -1150,7 +1478,7 @@
       document.getElementById('prevA2').innerText = document.getElementById('gameA2').value;
     }
 
-    // 8. الشهادات والتحكم بحجم الشعار
+    // 9. الشهادات والتحكم بحجم الشعار
     function handleCertLogoUpload(e) {
       const file = e.target.files[0];
       if (!file) return;
@@ -1178,6 +1506,9 @@
       const lang = document.getElementById('certLang').value;
       const theme = document.getElementById('certTheme').value;
       const certBox = document.getElementById('certPrintArea');
+
+      const schoolName = document.getElementById('certSchool') ? document.getElementById('certSchool').value : 'مدرسة الأجيال الواعدة';
+      document.getElementById('prevCertSchool').innerText = schoolName;
 
       if (theme === 'royal') {
         certBox.className = "bg-slate-50 p-10 rounded-2xl border-8 border-indigo-900 text-center print-area min-h-[277mm] flex flex-col justify-between relative overflow-hidden transition-all";
@@ -1230,6 +1561,7 @@
           teacher: document.getElementById('inputTeacher').value,
           content: document.getElementById('inputContent').value,
           copies: document.getElementById('copiesSelect').value,
+          showLines: document.getElementById('showLinesCheck') ? document.getElementById('showLinesCheck').checked : false,
           image: uploadedImageBase64
         },
         imgWorksheet: {
@@ -1237,6 +1569,7 @@
           repeat: document.getElementById('imgRepeatCount').value,
           scale: document.getElementById('imgScale').value,
           crop: document.getElementById('imgCropBottom').value,
+          rotation: document.getElementById('imgRotateSelect') ? document.getElementById('imgRotateSelect').value : '0',
           image: loadedWorksheetImageBase64
         },
         wordGames: {
@@ -1251,6 +1584,12 @@
           level: document.getElementById('mathLevel').value,
           count: document.getElementById('mathCount').value
         },
+        dragDropGame: {
+          target1Name: document.getElementById('target1Name').value,
+          target2Name: document.getElementById('target2Name').value,
+          group1Items: document.getElementById('group1Items').value,
+          group2Items: document.getElementById('group2Items').value
+        },
         games: {
           q1: document.getElementById('gameQ1').value,
           a1: document.getElementById('gameA1').value,
@@ -1258,6 +1597,7 @@
           a2: document.getElementById('gameA2').value
         },
         certificates: {
+          school: document.getElementById('certSchool') ? document.getElementById('certSchool').value : '',
           student: document.getElementById('certStudent').value,
           reason: document.getElementById('certReason').value,
           sign: document.getElementById('certSign').value,
@@ -1278,6 +1618,7 @@
         document.getElementById('inputTeacher').value = data.worksheet.teacher || '';
         document.getElementById('inputContent').value = data.worksheet.content || '';
         if (data.worksheet.copies) document.getElementById('copiesSelect').value = data.worksheet.copies;
+        if (document.getElementById('showLinesCheck')) document.getElementById('showLinesCheck').checked = !!data.worksheet.showLines;
         if (data.worksheet.image) {
           uploadedImageBase64 = data.worksheet.image;
           document.getElementById('btnRemoveImg').classList.remove('hidden');
@@ -1291,6 +1632,9 @@
         if (data.imgWorksheet.repeat) document.getElementById('imgRepeatCount').value = data.imgWorksheet.repeat;
         document.getElementById('imgScale').value = data.imgWorksheet.scale || 100;
         document.getElementById('imgCropBottom').value = data.imgWorksheet.crop || 0;
+        if (document.getElementById('imgRotateSelect') && data.imgWorksheet.rotation) {
+          document.getElementById('imgRotateSelect').value = data.imgWorksheet.rotation;
+        }
         if (data.imgWorksheet.image) {
           loadedWorksheetImageBase64 = data.imgWorksheet.image;
           document.getElementById('imgPlaceholder').classList.add('hidden');
@@ -1312,6 +1656,13 @@
         document.getElementById('mathCount').value = data.mathGames.count || 12;
         generateMathSheet();
       }
+      if (data.dragDropGame) {
+        document.getElementById('target1Name').value = data.dragDropGame.target1Name || '';
+        document.getElementById('target2Name').value = data.dragDropGame.target2Name || '';
+        document.getElementById('group1Items').value = data.dragDropGame.group1Items || '';
+        document.getElementById('group2Items').value = data.dragDropGame.group2Items || '';
+        initDragDropGame();
+      }
       if (data.games) {
         document.getElementById('gameQ1').value = data.games.q1 || '';
         document.getElementById('gameA1').value = data.games.a1 || '';
@@ -1320,6 +1671,7 @@
         updateGames();
       }
       if (data.certificates) {
+        if (document.getElementById('certSchool')) document.getElementById('certSchool').value = data.certificates.school || '';
         document.getElementById('certStudent').value = data.certificates.student || '';
         document.getElementById('certReason').value = data.certificates.reason || '';
         document.getElementById('certSign').value = data.certificates.sign || '';
@@ -1438,6 +1790,7 @@
     updatePreview();
     generateWordSearch();
     generateMathSheet();
+    initDragDropGame();
     updateGames();
     updateCert();
   </script>
