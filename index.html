@@ -386,7 +386,7 @@
               🖼️ حفظ كصورة
             </button>
             <button onclick="window.print()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1.5 rounded-lg text-xs font-bold">
-              🖨️️ طباعة A4 / PDF
+              🖨 طباعة A4 / PDF
             </button>
           </div>
         </div>
@@ -779,7 +779,7 @@
           <span class="font-bold text-sm text-slate-700">👁️ المعاينة والتحميل (A4):</span>
           <div class="flex gap-2">
             <button onclick="downloadAsImage('certPrintArea')" class="bg-purple-600 hover:bg-purple-700 text-white px-3 py-1.5 rounded-lg text-xs font-bold">
-              🖼️️ حفظ كصورة
+              🖼 حفظ كصورة
             </button>
             <button onclick="window.print()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1.5 rounded-lg text-xs font-bold">
               🖨️ طباعة A4 / PDF
@@ -877,7 +877,8 @@
   <!-- JavaScript البرمجي الشامل -->
   <script>
     const SUPABASE_URL = 'https://rfmcgonijlkjbvjjbrab.supabase.co';
-    const SUPABASE_ANON_KEY = 'ضعـي_مفتاح_anon_هنا';
+    // ⚠️ استبدلي الخانة التالية بـ anon key الخاص بكِ
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJmbWNnb25pamxramJ2ampicmFiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTA0MDc5NjAsImV4cCI6MjEwNTk4Mzk2MH0.ZmQlBXWwGIrxhBMl8W1HEXCYNLIJm-oxJp05t1ce-MM';
     const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
     let uploadedImageBase64 = '';
@@ -1561,6 +1562,7 @@
           teacher: document.getElementById('inputTeacher').value,
           content: document.getElementById('inputContent').value,
           copies: document.getElementById('copiesSelect').value,
+          fontSize: document.getElementById('fontSizeSelect').value,
           showLines: document.getElementById('showLinesCheck') ? document.getElementById('showLinesCheck').checked : false,
           image: uploadedImageBase64
         },
@@ -1570,13 +1572,14 @@
           scale: document.getElementById('imgScale').value,
           crop: document.getElementById('imgCropBottom').value,
           rotation: document.getElementById('imgRotateSelect') ? document.getElementById('imgRotateSelect').value : '0',
+          borderStyle: document.getElementById('imgBorderSelect') ? document.getElementById('imgBorderSelect').value : 'dashed',
           image: loadedWorksheetImageBase64
         },
         wordGames: {
           title: document.getElementById('wordGameTitle').value,
-          list: document.getElementById('wordGameList').value,
+          words: document.getElementById('wordGameList').value,
           lang: document.getElementById('wordGameLang').value,
-          size: document.getElementById('wordGameGridSize').value
+          gridSize: document.getElementById('wordGameGridSize').value
         },
         mathGames: {
           title: document.getElementById('mathTitle').value,
@@ -1590,20 +1593,20 @@
           group1Items: document.getElementById('group1Items').value,
           group2Items: document.getElementById('group2Items').value
         },
-        games: {
+        cardsGame: {
           q1: document.getElementById('gameQ1').value,
           a1: document.getElementById('gameA1').value,
           q2: document.getElementById('gameQ2').value,
           a2: document.getElementById('gameA2').value
         },
-        certificates: {
-          school: document.getElementById('certSchool') ? document.getElementById('certSchool').value : '',
+        certificate: {
+          theme: document.getElementById('certTheme').value,
+          school: document.getElementById('certSchool').value,
           student: document.getElementById('certStudent').value,
           reason: document.getElementById('certReason').value,
           sign: document.getElementById('certSign').value,
           date: document.getElementById('certDate').value,
           lang: document.getElementById('certLang').value,
-          theme: document.getElementById('certTheme').value,
           logoSize: document.getElementById('certLogoSize').value,
           logo: certLogoBase64
         }
@@ -1612,28 +1615,34 @@
 
     function setFormState(data) {
       if (!data) return;
+
       if (data.worksheet) {
-        document.getElementById('inputTitle').value = data.worksheet.title || '';
-        document.getElementById('inputSubject').value = data.worksheet.subject || '';
-        document.getElementById('inputTeacher').value = data.worksheet.teacher || '';
-        document.getElementById('inputContent').value = data.worksheet.content || '';
-        if (data.worksheet.copies) document.getElementById('copiesSelect').value = data.worksheet.copies;
-        if (document.getElementById('showLinesCheck')) document.getElementById('showLinesCheck').checked = !!data.worksheet.showLines;
+        if (data.worksheet.title !== undefined) document.getElementById('inputTitle').value = data.worksheet.title;
+        if (data.worksheet.subject !== undefined) document.getElementById('inputSubject').value = data.worksheet.subject;
+        if (data.worksheet.teacher !== undefined) document.getElementById('inputTeacher').value = data.worksheet.teacher;
+        if (data.worksheet.content !== undefined) document.getElementById('inputContent').value = data.worksheet.content;
+        if (data.worksheet.copies !== undefined) document.getElementById('copiesSelect').value = data.worksheet.copies;
+        if (data.worksheet.fontSize !== undefined) document.getElementById('fontSizeSelect').value = data.worksheet.fontSize;
+        if (data.worksheet.showLines !== undefined && document.getElementById('showLinesCheck')) {
+          document.getElementById('showLinesCheck').checked = data.worksheet.showLines;
+        }
         if (data.worksheet.image) {
           uploadedImageBase64 = data.worksheet.image;
           document.getElementById('btnRemoveImg').classList.remove('hidden');
-        } else {
-          removeImage();
         }
         updatePreview();
       }
+
       if (data.imgWorksheet) {
-        document.getElementById('imgWorksheetTitle').value = data.imgWorksheet.title || '';
-        if (data.imgWorksheet.repeat) document.getElementById('imgRepeatCount').value = data.imgWorksheet.repeat;
-        document.getElementById('imgScale').value = data.imgWorksheet.scale || 100;
-        document.getElementById('imgCropBottom').value = data.imgWorksheet.crop || 0;
-        if (document.getElementById('imgRotateSelect') && data.imgWorksheet.rotation) {
+        if (data.imgWorksheet.title !== undefined) document.getElementById('imgWorksheetTitle').value = data.imgWorksheet.title;
+        if (data.imgWorksheet.repeat !== undefined) document.getElementById('imgRepeatCount').value = data.imgWorksheet.repeat;
+        if (data.imgWorksheet.scale !== undefined) document.getElementById('imgScale').value = data.imgWorksheet.scale;
+        if (data.imgWorksheet.crop !== undefined) document.getElementById('imgCropBottom').value = data.imgWorksheet.crop;
+        if (data.imgWorksheet.rotation !== undefined && document.getElementById('imgRotateSelect')) {
           document.getElementById('imgRotateSelect').value = data.imgWorksheet.rotation;
+        }
+        if (data.imgWorksheet.borderStyle !== undefined && document.getElementById('imgBorderSelect')) {
+          document.getElementById('imgBorderSelect').value = data.imgWorksheet.borderStyle;
         }
         if (data.imgWorksheet.image) {
           loadedWorksheetImageBase64 = data.imgWorksheet.image;
@@ -1642,54 +1651,85 @@
         }
         updateImgWorksheet();
       }
+
       if (data.wordGames) {
-        document.getElementById('wordGameTitle').value = data.wordGames.title || '';
-        document.getElementById('wordGameList').value = data.wordGames.list || '';
-        document.getElementById('wordGameLang').value = data.wordGames.lang || 'ar';
-        document.getElementById('wordGameGridSize').value = data.wordGames.size || 10;
+        if (data.wordGames.title !== undefined) document.getElementById('wordGameTitle').value = data.wordGames.title;
+        if (data.wordGames.words !== undefined) document.getElementById('wordGameList').value = data.wordGames.words;
+        if (data.wordGames.lang !== undefined) document.getElementById('wordGameLang').value = data.wordGames.lang;
+        if (data.wordGames.gridSize !== undefined) document.getElementById('wordGameGridSize').value = data.wordGames.gridSize;
         generateWordSearch();
       }
+
       if (data.mathGames) {
-        document.getElementById('mathTitle').value = data.mathGames.title || '';
-        document.getElementById('mathOp').value = data.mathGames.op || '+';
-        document.getElementById('mathLevel').value = data.mathGames.level || 10;
-        document.getElementById('mathCount').value = data.mathGames.count || 12;
+        if (data.mathGames.title !== undefined) document.getElementById('mathTitle').value = data.mathGames.title;
+        if (data.mathGames.op !== undefined) document.getElementById('mathOp').value = data.mathGames.op;
+        if (data.mathGames.level !== undefined) document.getElementById('mathLevel').value = data.mathGames.level;
+        if (data.mathGames.count !== undefined) document.getElementById('mathCount').value = data.mathGames.count;
         generateMathSheet();
       }
+
       if (data.dragDropGame) {
-        document.getElementById('target1Name').value = data.dragDropGame.target1Name || '';
-        document.getElementById('target2Name').value = data.dragDropGame.target2Name || '';
-        document.getElementById('group1Items').value = data.dragDropGame.group1Items || '';
-        document.getElementById('group2Items').value = data.dragDropGame.group2Items || '';
+        if (data.dragDropGame.target1Name !== undefined) document.getElementById('target1Name').value = data.dragDropGame.target1Name;
+        if (data.dragDropGame.target2Name !== undefined) document.getElementById('target2Name').value = data.dragDropGame.target2Name;
+        if (data.dragDropGame.group1Items !== undefined) document.getElementById('group1Items').value = data.dragDropGame.group1Items;
+        if (data.dragDropGame.group2Items !== undefined) document.getElementById('group2Items').value = data.dragDropGame.group2Items;
         initDragDropGame();
       }
-      if (data.games) {
-        document.getElementById('gameQ1').value = data.games.q1 || '';
-        document.getElementById('gameA1').value = data.games.a1 || '';
-        document.getElementById('gameQ2').value = data.games.q2 || '';
-        document.getElementById('gameA2').value = data.games.a2 || '';
+
+      if (data.cardsGame) {
+        if (data.cardsGame.q1 !== undefined) document.getElementById('gameQ1').value = data.cardsGame.q1;
+        if (data.cardsGame.a1 !== undefined) document.getElementById('gameA1').value = data.cardsGame.a1;
+        if (data.cardsGame.q2 !== undefined) document.getElementById('gameQ2').value = data.cardsGame.q2;
+        if (data.cardsGame.a2 !== undefined) document.getElementById('gameA2').value = data.cardsGame.a2;
         updateGames();
       }
-      if (data.certificates) {
-        if (document.getElementById('certSchool')) document.getElementById('certSchool').value = data.certificates.school || '';
-        document.getElementById('certStudent').value = data.certificates.student || '';
-        document.getElementById('certReason').value = data.certificates.reason || '';
-        document.getElementById('certSign').value = data.certificates.sign || '';
-        document.getElementById('certDate').value = data.certificates.date || '2026/09/26';
-        document.getElementById('certLang').value = data.certificates.lang || 'ar';
-        document.getElementById('certTheme').value = data.certificates.theme || 'royal';
-        if (data.certificates.logoSize) {
-          document.getElementById('certLogoSize').value = data.certificates.logoSize;
-        }
-        if (data.certificates.logo) {
-          certLogoBase64 = data.certificates.logo;
+
+      if (data.certificate) {
+        if (data.certificate.theme !== undefined) document.getElementById('certTheme').value = data.certificate.theme;
+        if (data.certificate.school !== undefined) document.getElementById('certSchool').value = data.certificate.school;
+        if (data.certificate.student !== undefined) document.getElementById('certStudent').value = data.certificate.student;
+        if (data.certificate.reason !== undefined) document.getElementById('certReason').value = data.certificate.reason;
+        if (data.certificate.sign !== undefined) document.getElementById('certSign').value = data.certificate.sign;
+        if (data.certificate.date !== undefined) document.getElementById('certDate').value = data.certificate.date;
+        if (data.certificate.lang !== undefined) document.getElementById('certLang').value = data.certificate.lang;
+        if (data.certificate.logoSize !== undefined) document.getElementById('certLogoSize').value = data.certificate.logoSize;
+        if (data.certificate.logo) {
+          certLogoBase64 = data.certificate.logo;
           document.getElementById('certLogoImg').src = certLogoBase64;
           document.getElementById('certLogoContainer').classList.remove('hidden');
           document.getElementById('certLogoContainer').classList.add('flex');
+          updateCertLogoSize();
         }
-        updateCertLogoSize();
         updateCert();
       }
+    }
+
+    function exportJSON() {
+      const state = getFormState();
+      const jsonStr = JSON.stringify(state, null, 2);
+      const blob = new Blob([jsonStr], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'معين_مسودة_تفاعلية.json';
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    function importJSON(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        try {
+          const data = JSON.parse(e.target.result);
+          setFormState(data);
+          alert('تم استيراد البيانات بنجاح!');
+        } catch (err) {
+          alert('الملف غير صالح أو يتضمن خطأ في التنسيق.');
+        }
+      };
+      reader.readAsText(file);
     }
 
     async function saveToCloudOnline() {
@@ -1698,30 +1738,30 @@
       const status = document.getElementById('saveStatus');
 
       if (!subject || !pass) {
-        alert('الرجاء كتابة اسم المادة وكلمة السر.');
+        status.innerText = 'يرجى إدخال اسم المادة وكلمة السر.';
+        status.className = 'text-xs text-center font-bold py-1 text-rose-600 block';
         return;
       }
 
-      status.classList.remove('hidden', 'text-red-500', 'text-emerald-600');
-      status.classList.add('text-indigo-600');
-      status.innerText = '⏳ جاري الحفظ...';
+      status.innerText = 'جاري الحفظ سحابياً...';
+      status.className = 'text-xs text-center font-bold py-1 text-indigo-600 block';
 
-      const uniqueKey = `${subject.toLowerCase()}_${pass}`;
-      const fullData = getFormState();
+      const formData = getFormState();
 
-      const { data, error } = await supabaseClient
-        .from('worksheets')
-        .upsert({ key: uniqueKey, data: fullData }, { onConflict: 'key' });
+      try {
+        const { data, error } = await supabaseClient
+          .from('worksheets')
+          .upsert({ subject: subject, pass: pass, data: formData }, { onConflict: 'subject' });
 
-      if (error) {
-        status.classList.remove('text-indigo-600');
-        status.classList.add('text-red-500');
-        status.innerText = '❌ تعذر الحفظ: ' + error.message;
-      } else {
-        status.classList.remove('text-indigo-600');
-        status.classList.add('text-emerald-600');
-        status.innerText = '✨ تم حفظ جميع البيانات أونلاين!';
-        setTimeout(() => toggleModal('saveCloudModal'), 2000);
+        if (error) throw error;
+
+        status.innerText = 'تم الحفظ سحابياً بنجاح! ✨';
+        status.className = 'text-xs text-center font-bold py-1 text-emerald-600 block';
+        setTimeout(() => toggleModal('saveCloudModal'), 1500);
+      } catch (err) {
+        console.error(err);
+        status.innerText = 'حدث خطأ أثناء الحفظ. تأكدي من إعداد الجدول والمفتاح في Supabase.';
+        status.className = 'text-xs text-center font-bold py-1 text-rose-600 block';
       }
     }
 
@@ -1731,68 +1771,43 @@
       const status = document.getElementById('loadStatus');
 
       if (!subject || !pass) {
-        alert('الرجاء إدخال اسم المادة وكلمة السر.');
+        status.innerText = 'يرجى إدخال اسم المادة وكلمة السر.';
+        status.className = 'text-xs text-center font-bold py-1 text-rose-600 block';
         return;
       }
 
-      status.classList.remove('hidden', 'text-red-500', 'text-emerald-600');
-      status.classList.add('text-indigo-600');
-      status.innerText = '⏳ جاري الجلب...';
+      status.innerText = 'جاري البحث والجلب...';
+      status.className = 'text-xs text-center font-bold py-1 text-indigo-600 block';
 
-      const uniqueKey = `${subject.toLowerCase()}_${pass}`;
+      try {
+        const { data, error } = await supabaseClient
+          .from('worksheets')
+          .select('*')
+          .eq('subject', subject)
+          .eq('pass', pass)
+          .single();
 
-      const { data, error } = await supabaseClient
-        .from('worksheets')
-        .select('data')
-        .eq('key', uniqueKey)
-        .maybeSingle();
+        if (error || !data) {
+          status.innerText = 'لم يتم العثور على المسودة أو كلمة السر غير صحيحة.';
+          status.className = 'text-xs text-center font-bold py-1 text-rose-600 block';
+          return;
+        }
 
-      if (error || !data) {
-        status.classList.remove('text-indigo-600');
-        status.classList.add('text-red-500');
-        status.innerText = '🔒 لم يتم العثور على البيانات.';
-      } else {
         setFormState(data.data);
-        status.classList.remove('text-indigo-600');
-        status.classList.add('text-emerald-600');
-        status.innerText = '🎉 تم فتح ورقة العمل والأنشطة بنجاح!';
+        status.innerText = 'تم استرجاع وفتح البيانات بنجاح! ✨';
+        status.className = 'text-xs text-center font-bold py-1 text-emerald-600 block';
         setTimeout(() => toggleModal('loadCloudModal'), 1500);
+      } catch (err) {
+        console.error(err);
+        status.innerText = 'حدث خطأ أثناء جلب البيانات من السحابة.';
+        status.className = 'text-xs text-center font-bold py-1 text-rose-600 block';
       }
     }
 
-    function exportJSON() {
-      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(getFormState()));
-      const downloadAnchor = document.createElement('a');
-      downloadAnchor.setAttribute("href", dataStr);
-      downloadAnchor.setAttribute("download", "مشروع_معين.json");
-      document.body.appendChild(downloadAnchor);
-      downloadAnchor.click();
-      downloadAnchor.remove();
-    }
-
-    function importJSON(event) {
-      const file = event.target.files[0];
-      if (!file) return;
-      const reader = new FileReader();
-      reader.onload = function(e) {
-        try {
-          const importedData = JSON.parse(e.target.result);
-          setFormState(importedData);
-          alert('تم رفع ملف المشروع واسترجاع البيانات بنجاح!');
-        } catch (err) {
-          alert('حدث خطأ أثناء قراءة الملف.');
-        }
-      };
-      reader.readAsText(file);
-    }
-
-    // التشغيل المبدئي
-    updatePreview();
-    generateWordSearch();
-    generateMathSheet();
-    initDragDropGame();
-    updateGames();
-    updateCert();
+    window.onload = function() {
+      updatePreview();
+      updateCert();
+    };
   </script>
 </body>
 </html>
