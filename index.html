@@ -18,18 +18,11 @@
   
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&family=Amiri:wght@700&family=Cairo:wght@600;800&display=swap');
-    body {
-      font-family: 'Tajawal', sans-serif;
-    }
-
+    body { font-family: 'Tajawal', sans-serif; }
     .font-amiri { font-family: 'Amiri', serif; }
     .font-cairo { font-family: 'Cairo', sans-serif; }
 
-    /* ضبط مقاس الصفحة A4 بدقة للطباعة ولتفادي الفراغات المتروكة أسفل الورقة */
-    @page {
-      size: A4 portrait;
-      margin: 10mm;
-    }
+    @page { size: A4 portrait; margin: 10mm; }
 
     @media print {
       .no-print { display: none !important; }
@@ -37,7 +30,7 @@
       .print-area { 
         width: 100% !important; 
         max-width: 100% !important;
-        min-height: 277mm !important; /* A4 exact height minus margins */
+        min-height: 277mm !important; 
         margin: 0 auto !important; 
         padding: 5mm !important; 
         box-shadow: none !important; 
@@ -47,43 +40,24 @@
       }
     }
 
-    /* ستايلات السحب والإفلات للسبورة الذكية */
-    .draggable-item {
-      touch-action: none;
-      user-select: none;
-      cursor: grab;
-    }
-    .draggable-item:active {
-      cursor: grabbing;
-    }
+    .draggable-item { touch-action: none; user-select: none; cursor: grab; }
+    .draggable-item:active { cursor: grabbing; }
     .drop-zone.drag-over {
       background-color: rgba(238, 242, 255, 0.8) !important;
       border-color: #4f46e5 !important;
       transform: scale(1.02);
     }
 
-    /* حركة خفقان وحركات العجلة الدوارة والبطاقات */
     @keyframes pulse-subtle {
       0%, 100% { transform: scale(1); }
       50% { transform: scale(1.03); }
     }
-    .animate-pulse-subtle {
-      animation: pulse-subtle 2s infinite ease-in-out;
-    }
+    .animate-pulse-subtle { animation: pulse-subtle 2s infinite ease-in-out; }
 
-    /* تأثير تقليب البطاقة Flip Card */
-    .perspective-1000 {
-      perspective: 1000px;
-    }
-    .transform-style-3d {
-      transform-style: preserve-3d;
-    }
-    .backface-hidden {
-      backface-visibility: hidden;
-    }
-    .rotate-y-180 {
-      transform: rotateY(180deg);
-    }
+    .perspective-1000 { perspective: 1000px; }
+    .transform-style-3d { transform-style: preserve-3d; }
+    .backface-hidden { backface-visibility: hidden; }
+    .rotate-y-180 { transform: rotateY(180deg); }
   </style>
 </head>
 <body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col">
@@ -95,11 +69,10 @@
         <i data-lucide="sparkles" class="w-8 h-8 text-amber-300"></i>
         <div>
           <h1 class="text-2xl font-bold">✨ منصة مُعِين التعليمية الشاملة</h1>
-          <p class="text-xs text-indigo-200">أوراق عمل A4، ألعاب Kahoot! و Quizizz التفاعلية، مسابقات حية، وقوالب تحضيري للسبورة الذكية</p>
+          <p class="text-xs text-indigo-200">أوراق عمل A4، ألعاب Kahoot! و Quizizz التفاعلية، مسابقات حية، بنك أسئلة من KG إلى صف 11</p>
         </div>
       </div>
 
-      <!-- أزرار الإجراءات والحفظ والتصدير -->
       <div class="flex flex-wrap items-center gap-2">
         <button onclick="exportToWord('worksheetPrintArea')" class="bg-blue-600 hover:bg-blue-700 px-3 py-2 rounded-lg text-sm font-semibold flex items-center gap-1 shadow transition">
           <i data-lucide="file-text" class="w-4 h-4"></i>
@@ -149,7 +122,6 @@
         <span>🖼️ ورقة مصورة / تكرار صور</span>
       </button>
 
-      <!-- أقسام المنصات التفاعلية المضافة حديثاً (Kahoot, Quizizz, Tahdiri) -->
       <button onclick="switchTab('kahootLive')" id="tabKahootLive" class="py-2 px-4 font-bold rounded-lg text-slate-600 hover:text-indigo-600 flex items-center gap-2 whitespace-nowrap bg-purple-200/70">
         <i data-lucide="zap" class="w-4 h-4 text-purple-700"></i>
         <span>🚀 Kahoot! مسابقة حية</span>
@@ -175,7 +147,6 @@
         <i data-lucide="tv" class="w-4 h-4 text-amber-700"></i>
         <span>🖥️ ألعاب تفاعلية (Smart Board)</span>
       </button>
-      <!-- التبويب الجديد المضاف: لعبة السحب والإفلات -->
       <button onclick="switchTab('dragDropGame')" id="tabDragDropGame" class="py-2 px-4 font-bold rounded-lg text-slate-600 hover:text-indigo-600 flex items-center gap-2 whitespace-nowrap bg-emerald-200/60">
         <i data-lucide="move" class="w-4 h-4 text-emerald-800"></i>
         <span>🎯 لعبة السحب والإفلات</span>
@@ -228,7 +199,6 @@
           <textarea id="inputContent" rows="8" oninput="updatePreview()" class="w-full border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-indigo-500 outline-none" placeholder="اكتبي الأسئلة أو التمرين هنا..."></textarea>
         </div>
 
-        <!-- تحسين مضاف: التحكم بالأسطر والتباعد -->
         <div class="flex items-center gap-2 border-t pt-2">
           <input type="checkbox" id="showLinesCheck" onchange="updatePreview()" class="rounded text-indigo-600">
           <label for="showLinesCheck" class="text-xs font-bold text-slate-700">إضافة أسطر للكتابة والتدريب (أنشطة الكتابة)</label>
@@ -255,32 +225,23 @@
         </div>
       </section>
 
-      <!-- معاينة ورقة العمل -->
       <section class="lg:col-span-8 space-y-3">
         <div class="no-print flex justify-between items-center bg-white p-3 rounded-xl border">
           <span class="font-bold text-sm text-slate-700 flex items-center gap-1">👁 المعاينة والتحميل (مقاس A4):</span>
           <div class="flex gap-2">
-            <button onclick="exportToWord('worksheetPrintArea')" class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1">
-              📄 فتح في Word
-            </button>
-            <button onclick="downloadAsImage('worksheetPrintArea')" class="bg-purple-600 hover:bg-purple-700 text-white px-3 py-1.5 rounded-lg text-xs font-bold">
-              🖼️ حفظ كصورة
-            </button>
-            <button onclick="window.print()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1.5 rounded-lg text-xs font-bold">
-              🖨️ طباعة / PDF
-            </button>
+            <button onclick="exportToWord('worksheetPrintArea')" class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded-lg text-xs font-bold">📄 فتح في Word</button>
+            <button onclick="downloadAsImage('worksheetPrintArea')" class="bg-purple-600 hover:bg-purple-700 text-white px-3 py-1.5 rounded-lg text-xs font-bold">🖼️ حفظ كصورة</button>
+            <button onclick="window.print()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1.5 rounded-lg text-xs font-bold">🖨️ طباعة / PDF</button>
           </div>
         </div>
 
         <div id="worksheetPrintArea" class="bg-white p-8 rounded-2xl shadow-md border border-slate-200 print-area min-h-[277mm] flex flex-col justify-between">
-          <div id="copiesContainer" class="space-y-6 flex-grow">
-            <!-- سيتم توليد النسخ هنا ديناميكياً -->
-          </div>
+          <div id="copiesContainer" class="space-y-6 flex-grow"></div>
         </div>
       </section>
     </div>
 
-    <!-- 2. قسم ورقة مصورة مع تكرار الصورة وإمكانية التغيير والتعديل المباشر -->
+    <!-- 2. قسم ورقة مصورة مع تكرار الصورة -->
     <div id="sectionImageWorksheet" class="hidden grid grid-cols-1 lg:grid-cols-12 gap-6">
       <section class="lg:col-span-4 bg-white p-5 rounded-2xl shadow-sm border border-slate-200 space-y-4 no-print">
         <h2 class="text-lg font-bold border-b pb-2 flex items-center gap-2 text-indigo-700">
@@ -309,9 +270,7 @@
         </div>
 
         <div class="bg-amber-50 p-4 rounded-xl border border-amber-200 space-y-3">
-          <h3 class="text-xs font-bold text-amber-800 flex items-center gap-1">
-            ✂️ تعديل وحجم الصور المكررة (تغيير فوري):
-          </h3>
+          <h3 class="text-xs font-bold text-amber-800 flex items-center gap-1">✂️️ تعديل وحجم الصور المكررة:</h3>
           <div>
             <div class="flex justify-between text-xs font-semibold text-slate-600 mb-1">
               <span>حجم تكبير/تصغير الصورة:</span>
@@ -326,7 +285,6 @@
             </div>
             <input type="range" id="imgCropBottom" min="0" max="90" value="0" oninput="updateImgWorksheet()" class="w-full">
           </div>
-          <!-- تحسين مضاف: التدوير والإطار -->
           <div class="grid grid-cols-2 gap-2 pt-1">
             <div>
               <label class="block text-[11px] font-bold text-slate-600 mb-1">تدوير الصورة:</label>
@@ -353,12 +311,8 @@
         <div class="no-print flex justify-between items-center bg-white p-3 rounded-xl border">
           <span class="font-bold text-sm text-slate-700">👁️ المعاينة والتحميل (A4):</span>
           <div class="flex gap-2">
-            <button onclick="downloadAsImage('imgWorksheetPrintArea')" class="bg-purple-600 hover:bg-purple-700 text-white px-3 py-1.5 rounded-lg text-xs font-bold">
-              🖼️ حفظ كصورة
-            </button>
-            <button onclick="window.print()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1.5 rounded-lg text-xs font-bold">
-              🖨️ طباعة A4 / PDF
-            </button>
+            <button onclick="downloadAsImage('imgWorksheetPrintArea')" class="bg-purple-600 hover:bg-purple-700 text-white px-3 py-1.5 rounded-lg text-xs font-bold">🖼️ حفظ كصورة</button>
+            <button onclick="window.print()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1.5 rounded-lg text-xs font-bold">🖨️ طباعة A4 / PDF</button>
           </div>
         </div>
 
@@ -382,7 +336,7 @@
       </section>
     </div>
 
-    <!-- 🌟 قسم منصة Kahoot! - مسابقات واختبارات حية جماعية (مضاف جديد) -->
+    <!-- 3. قسم Kahoot! -->
     <div id="sectionKahootLive" class="hidden space-y-6">
       <div class="bg-gradient-to-r from-purple-700 via-indigo-700 to-purple-900 rounded-3xl p-6 text-white shadow-xl no-print flex flex-wrap justify-between items-center gap-4">
         <div>
@@ -401,14 +355,12 @@
       </div>
 
       <div class="bg-purple-950 rounded-3xl p-6 md:p-8 text-white shadow-2xl border-4 border-purple-500 min-h-[520px] flex flex-col justify-between relative overflow-hidden">
-        <!-- شريط المعلومات والعداد -->
         <div class="flex justify-between items-center border-b border-purple-800/80 pb-4">
           <div class="flex items-center gap-3">
             <span id="kahootQIndex" class="bg-purple-600 px-3 py-1 rounded-xl text-xs font-extrabold">سؤال 1 من 3</span>
             <span class="text-purple-300 text-xs font-bold" id="kahootSubjectTag">العلوم والتكنولوجيا</span>
           </div>
           
-          <!-- مؤقت العد التنازلي -->
           <div class="flex items-center gap-2 bg-purple-900/80 px-4 py-1.5 rounded-2xl border border-purple-500/50">
             <i data-lucide="timer" class="w-5 h-5 text-amber-400 animate-pulse"></i>
             <span id="kahootTimer" class="text-2xl font-black text-amber-300 font-mono">15</span>
@@ -416,19 +368,14 @@
           </div>
         </div>
 
-        <!-- نص السؤال -->
         <div class="my-6 text-center space-y-4">
           <h3 id="kahootQuestionText" class="text-2xl md:text-3xl font-black text-white leading-relaxed bg-purple-900/40 p-6 rounded-2xl border border-purple-700/50 shadow-inner">
             جاري إعداد سؤال المسابقة الحية...
           </h3>
         </div>
 
-        <!-- أزرار الإجابات بالألوان الرسمية لـ Kahoot -->
-        <div id="kahootOptionsGrid" class="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-4xl mx-auto w-full">
-          <!-- الأزرار الديناميكية ستتولد هنا -->
-        </div>
+        <div id="kahootOptionsGrid" class="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-4xl mx-auto w-full"></div>
 
-        <!-- التغذية الراجعة وشاشة المتصدرين -->
         <div id="kahootLeaderboard" class="hidden my-4 bg-purple-900/90 p-4 rounded-2xl border-2 border-amber-400 text-center space-y-2">
           <h4 class="text-lg font-black text-amber-300 flex items-center justify-center gap-2">
             <i data-lucide="trophy" class="w-6 h-6 text-amber-400"></i>
@@ -437,7 +384,6 @@
           <div id="kahootTopPlayers" class="flex justify-center gap-6 text-sm font-bold"></div>
         </div>
 
-        <!-- أسفل العرض -->
         <div class="flex justify-between items-center border-t border-purple-800/80 pt-4 text-xs font-bold text-purple-300">
           <button onclick="startKahootGame()" class="hover:text-amber-300 flex items-center gap-1 bg-purple-900 px-3 py-1.5 rounded-lg border border-purple-700">
             <i data-lucide="rotate-ccw" class="w-4 h-4"></i>
@@ -451,7 +397,7 @@
       </div>
     </div>
 
-    <!-- ⚡ قسم منصة Quizizz - سرعات مختلفة ولعب فردي أو جماعي (مضاف جديد) -->
+    <!-- 4. قسم Quizizz -->
     <div id="sectionQuizizzMode" class="hidden space-y-6">
       <div class="bg-gradient-to-r from-fuchsia-800 via-pink-700 to-purple-800 rounded-3xl p-6 text-white shadow-xl no-print flex flex-wrap justify-between items-center gap-4">
         <div>
@@ -462,19 +408,13 @@
           <p class="text-xs text-fuchsia-200 mt-1">لكل طالب سرعته الخاصة، معززات قوة Power-ups وشاشة تفاعلية فردية للتعلم الذاتي!</p>
         </div>
 
-        <!-- اختيار نمط اللعب (فردي / جماعي) -->
         <div class="flex items-center gap-2 bg-fuchsia-950/60 p-1.5 rounded-2xl border border-fuchsia-500/30">
-          <button onclick="setQuizizzMode('self')" id="btnQuizSelf" class="bg-pink-500 text-white font-extrabold px-3 py-1.5 rounded-xl text-xs transition">
-            🎮 لعب فردي (ذاتي)
-          </button>
-          <button onclick="setQuizizzMode('group')" id="btnQuizGroup" class="text-fuchsia-200 hover:text-white font-extrabold px-3 py-1.5 rounded-xl text-xs transition">
-            👥 تحدي جماعي
-          </button>
+          <button onclick="setQuizizzMode('self')" id="btnQuizSelf" class="bg-pink-500 text-white font-extrabold px-3 py-1.5 rounded-xl text-xs transition">🎮 لعب فردي (ذاتي)</button>
+          <button onclick="setQuizizzMode('group')" id="btnQuizGroup" class="text-fuchsia-200 hover:text-white font-extrabold px-3 py-1.5 rounded-xl text-xs transition">👥 تحدي جماعي</button>
         </div>
       </div>
 
       <div class="bg-slate-900 rounded-3xl p-6 md:p-8 text-white shadow-2xl border-4 border-fuchsia-500 min-h-[500px] flex flex-col justify-between">
-        <!-- شريط التقدم والمعززات Power-ups -->
         <div class="flex justify-between items-center border-b border-slate-800 pb-4">
           <div class="flex items-center gap-2">
             <span class="bg-fuchsia-600 text-white px-3 py-1 rounded-lg text-xs font-extrabold" id="quizizzModeLabel">لعب فردي</span>
@@ -483,43 +423,30 @@
             </span>
           </div>
 
-          <!-- معززات القوة Power-Up -->
           <div class="flex items-center gap-2">
-            <button onclick="useQuizPowerUp('double')" id="btnPowerDouble" class="bg-amber-500 hover:bg-amber-400 text-slate-950 px-3 py-1 rounded-xl text-xs font-black shadow flex items-center gap-1">
-              <span>⚡ نقاط مضاعفة</span>
-            </button>
-            <button onclick="useQuizPowerUp('5050')" id="btnPower5050" class="bg-indigo-600 hover:bg-indigo-500 text-white px-3 py-1 rounded-xl text-xs font-black shadow flex items-center gap-1">
-              <span>🎯 حذف خيارين</span>
-            </button>
+            <button onclick="useQuizPowerUp('double')" id="btnPowerDouble" class="bg-amber-500 hover:bg-amber-400 text-slate-950 px-3 py-1 rounded-xl text-xs font-black shadow flex items-center gap-1"><span>⚡ نقاط مضاعفة</span></button>
+            <button onclick="useQuizPowerUp('5050')" id="btnPower5050" class="bg-indigo-600 hover:bg-indigo-500 text-white px-3 py-1 rounded-xl text-xs font-black shadow flex items-center gap-1"><span>🎯 حذف خيارين</span></button>
           </div>
         </div>
 
-        <!-- السؤال والخيارات -->
         <div class="my-6 space-y-6">
           <div class="bg-slate-800/90 p-6 rounded-2xl border border-slate-700 text-center">
-            <h3 id="quizizzQuestion" class="text-2xl md:text-3xl font-extrabold text-fuchsia-200">
-              جاري تحضير تحدي Quizizz...
-            </h3>
+            <h3 id="quizizzQuestion" class="text-2xl md:text-3xl font-extrabold text-fuchsia-200">جاري تحضير تحدي Quizizz...</h3>
           </div>
 
-          <div id="quizizzOptions" class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <!-- الخيارات الملونة -->
-          </div>
+          <div id="quizizzOptions" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
         </div>
 
-        <!-- أسفل الشاشة -->
         <div class="flex justify-between items-center border-t border-slate-800 pt-4">
           <div id="quizizzScoreBox" class="text-sm font-bold text-slate-300">
             النقاط المحققة: <span id="quizizzScore" class="text-2xl font-black text-fuchsia-400">0</span>
           </div>
-          <button onclick="nextQuizizzQuestion()" id="btnNextQuizizz" class="hidden bg-fuchsia-500 hover:bg-fuchsia-600 text-white px-6 py-2 rounded-xl font-bold text-sm shadow">
-            التالي ➡️
-          </button>
+          <button onclick="nextQuizizzQuestion()" id="btnNextQuizizz" class="hidden bg-fuchsia-500 hover:bg-fuchsia-600 text-white px-6 py-2 rounded-xl font-bold text-sm shadow">التالي ➡️</button>
         </div>
       </div>
     </div>
 
-    <!-- 🎡 قسم منصة تحضيري (Tahdiri) - قوالب الألعاب التفاعلية المتنوعة (مضاف جديد) -->
+    <!-- 5. قسم منصة تحضيري (Tahdiri) -->
     <div id="sectionTahdiriTemplates" class="hidden space-y-6">
       <div class="bg-gradient-to-r from-teal-700 via-emerald-700 to-indigo-800 rounded-3xl p-6 text-white shadow-xl no-print flex flex-wrap justify-between items-center gap-4">
         <div>
@@ -530,7 +457,6 @@
           <p class="text-xs text-teal-100 mt-1">العجلة الدوارة الحية، بطاقات الذاكرة والمكشوفة، ولعبة المطابقة السريعة للمناهج</p>
         </div>
 
-        <!-- التنقل بين ألعاب تحضيري -->
         <div class="flex flex-wrap gap-2">
           <button onclick="switchTahdiriTemplate('wheel')" id="btnTemplateWheel" class="bg-white text-teal-900 font-extrabold px-3.5 py-2 rounded-xl text-xs shadow flex items-center gap-1">
             <i data-lucide="disc" class="w-4 h-4"></i>
@@ -547,7 +473,6 @@
         </div>
       </div>
 
-      <!-- 1. قالب العجلة الدوارة (Spin Wheel) -->
       <div id="tahdiriWheelBox" class="bg-white p-8 rounded-3xl border border-slate-200 shadow-xl space-y-6 text-center">
         <h3 class="text-xl font-bold text-teal-900 flex items-center justify-center gap-2">
           <i data-lucide="disc" class="w-6 h-6 text-teal-600"></i>
@@ -555,7 +480,6 @@
         </h3>
 
         <div class="flex flex-col md:flex-row items-center justify-around gap-8">
-          <!-- رسم العجلة الدوارة بواسطة Canvas -->
           <div class="relative flex justify-center items-center">
             <div class="absolute -top-4 text-3xl z-10 text-rose-600 font-bold">▼</div>
             <canvas id="wheelCanvas" width="340" height="340" class="rounded-full shadow-2xl border-4 border-teal-500 transition-transform duration-300"></canvas>
@@ -576,28 +500,20 @@
         </div>
       </div>
 
-      <!-- 2. قالب البطاقات التفاعلية (Flip Cards) -->
       <div id="tahdiriCardsBox" class="hidden bg-white p-8 rounded-3xl border border-slate-200 shadow-xl space-y-6">
         <h3 class="text-xl font-bold text-teal-900 text-center flex items-center justify-center gap-2">
           <i data-lucide="layers" class="w-6 h-6 text-teal-600"></i>
           <span>بطاقات الأسئلة والمفاهيم التفاعلية (انقر لقلب البطاقة)</span>
         </h3>
-
-        <div id="flipCardsGrid" class="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <!-- بطاقات تفاعلية يتم تقليبها -->
-        </div>
+        <div id="flipCardsGrid" class="grid grid-cols-1 md:grid-cols-3 gap-6"></div>
       </div>
 
-      <!-- 3. قالب لعبة المطابقة (Matching Pair) -->
       <div id="tahdiriMatchBox" class="hidden bg-white p-8 rounded-3xl border border-slate-200 shadow-xl space-y-6">
         <h3 class="text-xl font-bold text-teal-900 text-center flex items-center justify-center gap-2">
           <i data-lucide="arrow-left-right" class="w-6 h-6 text-teal-600"></i>
           <span>لعبة مطابقة المصطلحات والتعاريف</span>
         </h3>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8" id="matchingContainer">
-          <!-- قوائم المطابقة -->
-        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8" id="matchingContainer"></div>
         <div class="text-center">
           <button onclick="checkTahdiriMatch()" class="bg-teal-600 hover:bg-teal-700 text-white font-black px-8 py-3 rounded-2xl text-sm shadow">
             ✔️ التحقق من صحة التوصيل
@@ -607,7 +523,7 @@
       </div>
     </div>
 
-    <!-- 3. قسم ألعاب الحروف والكلمات (Word Search) -->
+    <!-- 6. قسم ألعاب الحروف (Word Search) -->
     <div id="sectionWordGames" class="hidden grid grid-cols-1 lg:grid-cols-12 gap-6">
       <section class="lg:col-span-4 bg-white p-5 rounded-2xl shadow-sm border border-slate-200 space-y-4 no-print">
         <h2 class="text-lg font-bold border-b pb-2 flex items-center gap-2 text-indigo-700">
@@ -645,14 +561,10 @@
 
       <section class="lg:col-span-8 space-y-3">
         <div class="no-print flex justify-between items-center bg-white p-3 rounded-xl border">
-          <span class="font-bold text-sm text-slate-700">👁️️ المعاينة والتحميل (A4):</span>
+          <span class="font-bold text-sm text-slate-700">👁 المعاينة والتحميل (A4):</span>
           <div class="flex gap-2">
-            <button onclick="downloadAsImage('wordGamePrintArea')" class="bg-purple-600 hover:bg-purple-700 text-white px-3 py-1.5 rounded-lg text-xs font-bold">
-              🖼️ حفظ كصورة
-            </button>
-            <button onclick="window.print()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1.5 rounded-lg text-xs font-bold">
-              🖨 طباعة A4 / PDF
-            </button>
+            <button onclick="downloadAsImage('wordGamePrintArea')" class="bg-purple-600 hover:bg-purple-700 text-white px-3 py-1.5 rounded-lg text-xs font-bold">🖼️ حفظ كصورة</button>
+            <button onclick="window.print()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1.5 rounded-lg text-xs font-bold">🖨 طباعة A4 / PDF</button>
           </div>
         </div>
 
@@ -678,7 +590,7 @@
       </section>
     </div>
 
-    <!-- 4. قسم ألعاب الرياضيات Math Worksheets -->
+    <!-- 7. قسم ألعاب الرياضيات Math Worksheets -->
     <div id="sectionMathGames" class="hidden grid grid-cols-1 lg:grid-cols-12 gap-6">
       <section class="lg:col-span-4 bg-white p-5 rounded-2xl shadow-sm border border-slate-200 space-y-4 no-print">
         <h2 class="text-lg font-bold border-b pb-2 flex items-center gap-2 text-indigo-700">
@@ -722,12 +634,8 @@
         <div class="no-print flex justify-between items-center bg-white p-3 rounded-xl border">
           <span class="font-bold text-sm text-slate-700">👁️ المعاينة والتحميل (A4):</span>
           <div class="flex gap-2">
-            <button onclick="downloadAsImage('mathPrintArea')" class="bg-purple-600 hover:bg-purple-700 text-white px-3 py-1.5 rounded-lg text-xs font-bold">
-              🖼️ حفظ كصورة
-            </button>
-            <button onclick="window.print()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1.5 rounded-lg text-xs font-bold">
-              🖨️ طباعة A4 / PDF
-            </button>
+            <button onclick="downloadAsImage('mathPrintArea')" class="bg-purple-600 hover:bg-purple-700 text-white px-3 py-1.5 rounded-lg text-xs font-bold">🖼️ حفظ كصورة</button>
+            <button onclick="window.print()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1.5 rounded-lg text-xs font-bold">🖨️ طباعة A4 / PDF</button>
           </div>
         </div>
 
@@ -749,7 +657,7 @@
       </section>
     </div>
 
-    <!-- 5. قسم الألعاب التفاعلية للسبورة الذكية Smart Board -->
+    <!-- 8. قسم الألعاب التفاعلية للسبورة الذكية (Smart Board) - تم إضافة الأسئلة الجديدة هنا -->
     <div id="sectionInteractiveBoard" class="hidden space-y-6">
       <div class="bg-gradient-to-r from-amber-500 via-orange-500 to-indigo-600 rounded-2xl p-6 text-white shadow-lg no-print flex flex-wrap justify-between items-center gap-4">
         <div>
@@ -760,7 +668,6 @@
           <p class="text-xs text-amber-100 mt-1">اختر المادة ثم دع الطلاب يجيبون مباشرة بالنقر على الشاشات التفاعلية والسبورة الذكية</p>
         </div>
 
-        <!-- أزرار اختيار المواد -->
         <div class="flex flex-wrap gap-2">
           <button onclick="loadSubjectGame('math')" id="btnSubjectMath" class="bg-white text-indigo-900 font-extrabold px-4 py-2 rounded-xl text-sm shadow hover:bg-amber-100 transition flex items-center gap-1">
             <span>🔢 Math / رياضيات</span>
@@ -780,10 +687,7 @@
         </div>
       </div>
 
-      <!-- منصة عرض اللعبة التفاعلية للسبورة الذكية -->
       <div class="bg-slate-900 rounded-3xl p-6 md:p-10 text-white shadow-2xl border-4 border-amber-400 relative overflow-hidden min-h-[500px] flex flex-col justify-between">
-        
-        <!-- الشريط العلوي للعبة -->
         <div class="flex justify-between items-center border-b border-slate-800 pb-4">
           <div class="flex items-center gap-3">
             <span id="gameSubjectBadge" class="bg-amber-400 text-slate-900 font-extrabold text-xs px-3 py-1 rounded-full uppercase">Math</span>
@@ -796,24 +700,16 @@
           </div>
         </div>
 
-        <!-- منطقة السؤال المركزي المخصص للسمارت بورد -->
         <div class="my-8 text-center space-y-6">
           <h3 id="interactiveQuestion" class="text-2xl md:text-4xl font-extrabold text-amber-200 leading-snug tracking-wide">
             جاري تحميل اللعبة التفاعلية...
           </h3>
 
-          <!-- خيارات الإجابة بالنقر المباشر (Smart Board Clickable Options) -->
-          <div id="interactiveOptions" class="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-2xl mx-auto pt-4">
-            <!-- سيتم إضافة خيارات الإجابة هنا ديناميكياً -->
-          </div>
+          <div id="interactiveOptions" class="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-2xl mx-auto pt-4"></div>
         </div>
 
-        <!-- إشعار النتيجة والتغذية الراجعة -->
-        <div id="gameFeedback" class="text-center font-extrabold text-lg md:text-2xl min-h-[40px] flex items-center justify-center">
-          <!-- رسائل الفوز والخطأ -->
-        </div>
+        <div id="gameFeedback" class="text-center font-extrabold text-lg md:text-2xl min-h-[40px] flex items-center justify-center"></div>
 
-        <!-- شريط التحكم والتنقل للسبورة -->
         <div class="flex justify-between items-center border-t border-slate-800 pt-4">
           <button onclick="resetCurrentGame()" class="text-slate-400 hover:text-white text-xs font-bold flex items-center gap-1">
             <i data-lucide="rotate-ccw" class="w-4 h-4"></i>
@@ -826,7 +722,7 @@
       </div>
     </div>
 
-    <!-- 6. القسم الجديد المضاف كلياً: لعبة السحب والإفلات التفاعلية Drag & Drop -->
+    <!-- 9. لعبة السحب والإفلات Drag & Drop -->
     <div id="sectionDragDropGame" class="hidden space-y-6">
       <div class="bg-gradient-to-r from-emerald-600 via-teal-600 to-indigo-700 rounded-2xl p-6 text-white shadow-lg no-print flex flex-wrap justify-between items-center gap-4">
         <div>
@@ -845,7 +741,6 @@
         </div>
       </div>
 
-      <!-- إعدادات إدخال عناصر لعبة السحب والإفلات (للأستاذ) -->
       <div class="bg-white p-5 rounded-2xl border border-slate-200 space-y-4 no-print shadow-sm">
         <h3 class="font-bold text-sm text-indigo-900 flex items-center gap-2">
           <i data-lucide="settings" class="w-4 h-4"></i>
@@ -873,44 +768,34 @@
         </div>
       </div>
 
-      <!-- شاشة العرض التفاعلية للعبة السحب والإفلات (مناسبة للسمارت بورد) -->
       <div class="bg-slate-900 rounded-3xl p-6 md:p-8 text-white shadow-2xl border-4 border-emerald-400 min-h-[500px] flex flex-col justify-between">
-        
-        <!-- العناصر القابلة للسحب -->
         <div class="space-y-2">
           <h4 class="text-xs font-bold text-emerald-300 uppercase tracking-wider text-center">اسحب العناصر من هنا للأسفل 👇</h4>
-          <div id="dragSourceContainer" class="flex flex-wrap justify-center gap-3 p-4 bg-slate-800/80 rounded-2xl border border-slate-700 min-h-[90px] items-center">
-            <!-- البطاقات القابلة للسحب ستتولد هنا -->
-          </div>
+          <div id="dragSourceContainer" class="flex flex-wrap justify-center gap-3 p-4 bg-slate-800/80 rounded-2xl border border-slate-700 min-h-[90px] items-center"></div>
         </div>
 
-        <!-- أهداف الإسقاط (المجموعات) -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 my-6">
-          <!-- المجموعة 1 -->
           <div id="targetZone1" class="drop-zone bg-slate-800 border-2 border-dashed border-emerald-500/60 rounded-2xl p-4 min-h-[200px] transition-all flex flex-col items-center">
             <h5 id="target1Title" class="text-lg font-black text-emerald-400 mb-3 border-b border-emerald-500/30 pb-1 w-full text-center">كائنات حية</h5>
             <div id="target1Content" class="flex flex-wrap gap-2 w-full justify-center items-center flex-grow"></div>
           </div>
 
-          <!-- المجموعة 2 -->
           <div id="targetZone2" class="drop-zone bg-slate-800 border-2 border-dashed border-indigo-500/60 rounded-2xl p-4 min-h-[200px] transition-all flex flex-col items-center">
             <h5 id="target2Title" class="text-lg font-black text-indigo-400 mb-3 border-b border-indigo-500/30 pb-1 w-full text-center">أشياء غير حية</h5>
             <div id="target2Content" class="flex flex-wrap gap-2 w-full justify-center items-center flex-grow"></div>
           </div>
         </div>
 
-        <!-- التغذية الراجعة والتحقق -->
         <div class="flex flex-wrap justify-between items-center border-t border-slate-800 pt-4 gap-2">
           <div id="dragFeedback" class="text-sm font-bold text-amber-300">قم بوضع كل عنصر في مجموعته الصحيحة</div>
           <button onclick="checkDragDropResult()" class="bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-black px-6 py-2 rounded-xl text-sm shadow-lg transition">
             ✔️ تحقق من الإجابات
           </button>
         </div>
-
       </div>
     </div>
 
-    <!-- 7. قسم الألعاب التفاعلية وبطاقات الأسئلة الورقية -->
+    <!-- 10. قسم بطاقات الأسئلة الورقية -->
     <div id="sectionGames" class="hidden grid grid-cols-1 lg:grid-cols-12 gap-6">
       <section class="lg:col-span-4 bg-white p-5 rounded-2xl shadow-sm border border-slate-200 space-y-4 no-print">
         <h2 class="text-lg font-bold border-b pb-2 flex items-center gap-2 text-indigo-700">
@@ -933,12 +818,8 @@
         <div class="no-print flex justify-between items-center bg-white p-3 rounded-xl border">
           <span class="font-bold text-sm text-slate-700">👁 المعاينة والتحميل (A4):</span>
           <div class="flex gap-2">
-            <button onclick="downloadAsImage('cardsPrintArea')" class="bg-purple-600 hover:bg-purple-700 text-white px-3 py-1.5 rounded-lg text-xs font-bold">
-              🖼️ حفظ كصورة
-            </button>
-            <button onclick="window.print()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1.5 rounded-lg text-xs font-bold">
-              🖨️ طباعة A4 / PDF
-            </button>
+            <button onclick="downloadAsImage('cardsPrintArea')" class="bg-purple-600 hover:bg-purple-700 text-white px-3 py-1.5 rounded-lg text-xs font-bold">🖼️ حفظ كصورة</button>
+            <button onclick="window.print()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1.5 rounded-lg text-xs font-bold">🖨️ طباعة A4 / PDF</button>
           </div>
         </div>
 
@@ -972,7 +853,7 @@
       </section>
     </div>
 
-    <!-- 8. قسم شهادات التقدير مع التحكم المباشر بحجم الشعار وتحديثات التصميم -->
+    <!-- 11. قسم شهادات التقدير -->
     <div id="sectionCertificates" class="hidden grid grid-cols-1 lg:grid-cols-12 gap-6">
       <section class="lg:col-span-4 bg-white p-5 rounded-2xl shadow-sm border border-slate-200 space-y-4 no-print">
         <h2 class="text-lg font-bold border-b pb-2 flex items-center gap-2 text-indigo-700">
@@ -995,7 +876,6 @@
           </div>
         </div>
 
-        <!-- أداة التعديل: تغيير حجم الشعار -->
         <div class="bg-slate-50 p-3 rounded-xl border border-slate-200">
           <div class="flex justify-between text-xs font-bold text-slate-700 mb-1">
             <span>تعديل حجم شعار المدرسة/الشركة:</span>
@@ -1043,12 +923,8 @@
         <div class="no-print flex justify-between items-center bg-white p-3 rounded-xl border">
           <span class="font-bold text-sm text-slate-700">👁️ المعاينة والتحميل (A4):</span>
           <div class="flex gap-2">
-            <button onclick="downloadAsImage('certPrintArea')" class="bg-purple-600 hover:bg-purple-700 text-white px-3 py-1.5 rounded-lg text-xs font-bold">
-              🖼 حفظ كصورة
-            </button>
-            <button onclick="window.print()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1.5 rounded-lg text-xs font-bold">
-              🖨️ طباعة A4 / PDF
-            </button>
+            <button onclick="downloadAsImage('certPrintArea')" class="bg-purple-600 hover:bg-purple-700 text-white px-3 py-1.5 rounded-lg text-xs font-bold">🖼 حفظ كصورة</button>
+            <button onclick="window.print()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1.5 rounded-lg text-xs font-bold">🖨️ طباعة A4 / PDF</button>
           </div>
         </div>
 
@@ -1082,7 +958,7 @@
 
   </main>
 
-  <!-- Modals 1 & 2: الحفظ والاسترجاع السحابي -->
+  <!-- Modals -->
   <div id="saveCloudModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm hidden flex items-center justify-center p-4 z-50 no-print">
     <div class="bg-white rounded-2xl p-6 max-w-md w-full shadow-2xl space-y-4">
       <div class="flex justify-between items-center border-b pb-2">
@@ -1092,7 +968,6 @@
         </h3>
         <button onclick="toggleModal('saveCloudModal')" class="text-slate-400 hover:text-slate-600">&times;</button>
       </div>
-
       <div class="space-y-3">
         <div>
           <label class="block text-xs font-bold text-slate-700 mb-1">اسم المادة / المعرف</label>
@@ -1120,7 +995,6 @@
         </h3>
         <button onclick="toggleModal('loadCloudModal')" class="text-slate-400 hover:text-slate-600">&times;</button>
       </div>
-
       <div class="space-y-3">
         <div>
           <label class="block text-xs font-bold text-slate-700 mb-1">اسم المادة / المعرف</label>
@@ -1139,7 +1013,7 @@
     </div>
   </div>
 
-  <!-- JavaScript البرمجي الشامل -->
+  <!-- JavaScript البرمجي الشامل مضافاً إليه الأسئلة الثلاث الجديدة -->
   <script>
     const SUPABASE_URL = 'https://rfmcgonijlkjbvjjbrab.supabase.co';
     // ⚠️ استبدلي الخانة التالية بـ anon key الخاص بكِ
@@ -1150,22 +1024,25 @@
     let certLogoBase64 = '';
     let loadedWorksheetImageBase64 = '';
 
-    // بيانات الألعاب التفاعلية للسبورة الذكية (Smart Board)
+    // بيانات الألعاب التفاعلية للسبورة الذكية (تمت زيادة الأسئلة بمعدل 3 أسئلة جديدة مضافة كلياً)
     const interactiveGamesData = {
       math: [
         { q: "ما هو حاصل ضرب 7 × 8 ؟", options: ["54", "56", "64", "48"], answer: 1 },
         { q: "كم يساوي 125 + 75 ؟", options: ["190", "200", "210", "220"], answer: 1 },
-        { q: "ما هو الكسر المساوي للنصف (1/2)؟", options: ["2/4", "3/8", "1/3", "4/5"], answer: 0 }
+        { q: "ما هو الكسر المساوي للنصف (1/2)؟", options: ["2/4", "3/8", "1/3", "4/5"], answer: 0 },
+        { q: "ما هو الجذر التربيعي للعدد 144؟ (سؤال مضاف حديثاً)", options: ["10", "11", "12", "14"], answer: 2 } // سؤال جديد 1
       ],
       english: [
         { q: "Choose the correct spelling:", options: ["Appel", "Apple", "Aple", "Appell"], answer: 1 },
         { q: "What is the plural of 'Child'?", options: ["Childs", "Children", "Childes", "Childrens"], answer: 1 },
-        { q: "Complete: She _____ to school every day.", options: ["go", "going", "goes", "gone"], answer: 2 }
+        { q: "Complete: She _____ to school every day.", options: ["go", "going", "goes", "gone"], answer: 2 },
+        { q: "What is the opposite of 'Ancient'? (NEW Question)", options: ["Old", "Modern", "Historic", "Past"], answer: 1 } // سؤال جديد 2
       ],
       computer: [
         { q: "ما هي وحدة المعالجة المركزية في الحاسوب؟", options: ["RAM", "CPU", "Hard Disk", "GPU"], answer: 1 },
         { q: "أي مما يلي يعتبر جهاز إدخال (Input Device)؟", options: ["الشاشة (Monitor)", "الطابعة (Printer)", "الفأرة (Mouse)", "السماعات"], answer: 2 },
-        { q: "ما هو الاختصار المخصص للنسخ (Copy)؟", options: ["Ctrl + V", "Ctrl + X", "Ctrl + C", "Ctrl + Z"], answer: 2 }
+        { q: "ما هو الاختصار المخصص للنسخ (Copy)؟", options: ["Ctrl + V", "Ctrl + X", "Ctrl + C", "Ctrl + Z"], answer: 2 },
+        { q: "ما لغة البرمجة المستخدمة لبناء هيكل صفحات الويب؟ (سؤال مضاف)", options: ["HTML", "Python", "C++", "SQL"], answer: 0 } // سؤال جديد 3
       ],
       social: [
         { q: "ما هي عاصمة دولة ليبيا؟", options: ["بنغازي", "طرابلس", "مصراتة", "سبها"], answer: 1 },
@@ -1243,7 +1120,6 @@
       }
     }
 
-    // 1. تحديث ورقة العمل النصية
     function updatePreview() {
       const title = document.getElementById('inputTitle').value || 'عنوان ورقة العمل';
       const subject = document.getElementById('inputSubject').value || 'الصف / المادة';
@@ -1321,7 +1197,6 @@
       updatePreview();
     }
 
-    // 2. ورقة مصورة وتكرار الصور مع أداة التكبير والتعديل الفوري والتدوير
     function loadImgWorksheet(e) {
       const file = e.target.files[0];
       if (!file) return;
@@ -1378,7 +1253,7 @@
       }
     }
 
-    // 🚀 3. برمجة منصة Kahoot! التفاعلية الحية (Live Interactive Quiz)
+    // Kahoot Engine
     const kahootData = [
       {
         q: "ما هو الكوكب الملقب بالكوكب الأحمر؟",
@@ -1410,94 +1285,61 @@
     ];
 
     let kahootIndex = 0;
+    let kahootTimerVal = 15;
     let kahootTimerInterval = null;
-    let kahootTimeLeft = 15;
-    let kahootScore = 0;
 
     function startKahootGame() {
       kahootIndex = 0;
-      kahootScore = 0;
+      document.getElementById('kahootLeaderboard').classList.add('hidden');
       renderKahootQuestion();
     }
 
     function renderKahootQuestion() {
-      clearInterval(kahootTimerInterval);
-      kahootTimeLeft = 15;
-      document.getElementById('kahootTimer').innerText = kahootTimeLeft;
-      document.getElementById('kahootLeaderboard').classList.add('hidden');
-      document.getElementById('btnNextKahoot').classList.add('hidden');
-      document.getElementById('kahootStatusText').innerText = "اختر إجابتك قبل انتهاء الوقت!";
-
-      const q = kahootData[kahootIndex];
+      if (kahootIndex >= kahootData.length) {
+        showKahootFinalLeaderboard();
+        return;
+      }
+      const data = kahootData[kahootIndex];
       document.getElementById('kahootQIndex').innerText = `سؤال ${kahootIndex + 1} من ${kahootData.length}`;
-      document.getElementById('kahootQuestionText').innerText = q.q;
+      document.getElementById('kahootQuestionText').innerText = data.q;
+      document.getElementById('btnNextKahoot').classList.add('hidden');
+      document.getElementById('kahootStatusText').innerText = "اختر الإجابة الصحيحة بأسرع وقت!";
 
       const grid = document.getElementById('kahootOptionsGrid');
       grid.innerHTML = '';
 
-      q.options.forEach((opt, idx) => {
+      data.options.forEach((opt) => {
         const btn = document.createElement('button');
-        btn.onclick = () => answerKahoot(opt.correct, btn);
-        btn.className = `${opt.color} text-white font-black text-xl py-6 px-6 rounded-2xl shadow-xl transform active:scale-95 transition-all flex items-center justify-between border-b-4 border-black/20`;
-        btn.innerHTML = `<span class="text-2xl font-bold bg-black/20 px-3 py-1 rounded-lg">${opt.icon}</span> <span>${opt.text}</span> <span></span>`;
+        btn.className = `${opt.color} text-white font-extrabold p-5 rounded-2xl shadow-lg border-b-4 border-black/30 flex items-center justify-between text-xl transition transform active:scale-95`;
+        btn.innerHTML = `<span class="text-2xl">${opt.icon}</span> <span>${opt.text}</span> <span></span>`;
+        btn.onclick = () => answerKahoot(opt.correct);
         grid.appendChild(btn);
       });
 
+      kahootTimerVal = 15;
+      document.getElementById('kahootTimer').innerText = kahootTimerVal;
+      clearInterval(kahootTimerInterval);
       kahootTimerInterval = setInterval(() => {
-        kahootTimeLeft--;
-        document.getElementById('kahootTimer').innerText = kahootTimeLeft;
-        if (kahootTimeLeft <= 0) {
+        kahootTimerVal--;
+        document.getElementById('kahootTimer').innerText = kahootTimerVal;
+        if (kahootTimerVal <= 0) {
           clearInterval(kahootTimerInterval);
-          timeOutKahoot();
+          answerKahoot(false, true);
         }
       }, 1000);
     }
 
-    function answerKahoot(isCorrect, btn) {
+    function answerKahoot(isCorrect, isTimeout = false) {
       clearInterval(kahootTimerInterval);
-      const grid = document.getElementById('kahootOptionsGrid');
-      const buttons = grid.getElementsByTagName('button');
-
-      for (let b of buttons) b.disabled = true;
-
       if (isCorrect) {
-        const gained = kahootTimeLeft * 100 + 500;
-        kahootScore += gained;
-        btn.className += " ring-4 ring-amber-300 scale-105";
-        document.getElementById('kahootStatusText').innerHTML = `🎉 إجابة صحيحة خارقة! (+${gained} نقطة)`;
-        if (typeof confetti === 'function') confetti({ particleCount: 80, spread: 70, origin: { y: 0.6 } });
+        confetti({ particleCount: 60, spread: 70, origin: { y: 0.6 } });
+        document.getElementById('kahootStatusText').innerText = "🎉 إجابة صحيحة ممتازة! (+1000 نقطة)";
+      } else if (isTimeout) {
+        document.getElementById('kahootStatusText').innerText = "⏰ انتهى الوقت المحدد!";
       } else {
-        btn.className += " opacity-50";
-        document.getElementById('kahootStatusText').innerHTML = "❌ إجابة خاطئة! حظاً أوفر في السؤال القادم";
+        document.getElementById('kahootStatusText').innerText = "❌ إجابة خاطئة! حظاً أوفر بالسؤال التالي";
       }
-
-      showKahootLeaderboard();
-    }
-
-    function timeOutKahoot() {
-      document.getElementById('kahootStatusText').innerHTML = "⏰ انتهى الوقت المخصص للسؤال!";
-      const grid = document.getElementById('kahootOptionsGrid');
-      const buttons = grid.getElementsByTagName('button');
-      for (let b of buttons) b.disabled = true;
-      showKahootLeaderboard();
-    }
-
-    function showKahootLeaderboard() {
-      const board = document.getElementById('kahootLeaderboard');
-      const topPlayers = document.getElementById('kahootTopPlayers');
-      board.classList.remove('hidden');
-
-      topPlayers.innerHTML = `
-        <div class="bg-purple-950 px-4 py-2 rounded-xl border border-amber-400/40">🥇 أنت: <span class="text-amber-300 font-extrabold">${kahootScore}</span></div>
-        <div class="bg-purple-950 px-4 py-2 rounded-xl border border-purple-700">🥈 سارة: <span class="text-slate-300">1200</span></div>
-        <div class="bg-purple-950 px-4 py-2 rounded-xl border border-purple-700">🥉 أحمد: <span class="text-amber-600">950</span></div>
-      `;
-
-      if (kahootIndex < kahootData.length - 1) {
-        document.getElementById('btnNextKahoot').classList.remove('hidden');
-      } else {
-        document.getElementById('kahootStatusText').innerHTML = `🏆 انتهت المسابقة الحية! النتيجة النهائية: ${kahootScore} نقطة!`;
-      }
+      document.getElementById('btnNextKahoot').classList.remove('hidden');
     }
 
     function nextKahootQuestion() {
@@ -1505,385 +1347,359 @@
       renderKahootQuestion();
     }
 
-    // ⚡ 4. برمجة منصة Quizizz (لعب فردي وجماعي وسرعات مختلفة)
-    const quizizzQuestions = [
-      { q: "ما هي عاصمة المملكة العربية السعودية؟", options: ["جدة", "الرياض", "مكة المكرمة", "الدمام"], answer: 1 },
-      { q: "كم تبلغ درجة غليان الماء النقي؟", options: ["50°C", "80°C", "100°C", "120°C"], answer: 2 },
-      { q: "ما هو أكبر حيوان على وجه الأرض؟", options: ["الفيل الأفريقي", "الحوت الأزرق", "الزرافة", "القرش الأبيض"], answer: 1 }
-    ];
-
-    let quizizzIndex = 0;
-    let quizizzScore = 0;
-    let streak = 0;
-    let quizizzMode = 'self';
-
-    function setQuizizzMode(mode) {
-      quizizzMode = mode;
-      document.getElementById('btnQuizSelf').className = mode === 'self' ? "bg-pink-500 text-white font-extrabold px-3 py-1.5 rounded-xl text-xs transition" : "text-fuchsia-200 hover:text-white font-extrabold px-3 py-1.5 rounded-xl text-xs transition";
-      document.getElementById('btnQuizGroup').className = mode === 'group' ? "bg-pink-500 text-white font-extrabold px-3 py-1.5 rounded-xl text-xs transition" : "text-fuchsia-200 hover:text-white font-extrabold px-3 py-1.5 rounded-xl text-xs transition";
-      document.getElementById('quizizzModeLabel').innerText = mode === 'self' ? '🎮 لعب فردي (سرعتك المخصصة)' : '👥 تحدي جماعي متزامن';
+    function showKahootFinalLeaderboard() {
+      document.getElementById('kahootQuestionText').innerText = "🏆 انتهت المسابقة! أحسنت عملًا جميعًا";
+      document.getElementById('kahootOptionsGrid').innerHTML = '';
+      document.getElementById('kahootLeaderboard').classList.remove('hidden');
+      document.getElementById('kahootTopPlayers').innerHTML = `
+        <span class="bg-amber-300 text-purple-950 px-3 py-1 rounded-xl">🥇 المركز الأول: سارة (2850)</span>
+        <span class="bg-slate-200 text-purple-950 px-3 py-1 rounded-xl">🥈 الثاني: أحمد (2400)</span>
+        <span class="bg-amber-700 text-white px-3 py-1 rounded-xl">🥉 الثالث: فاطمة (1950)</span>
+      `;
     }
+
+    // Quizizz Engine
+    const quizizzQuestions = [
+      { q: "ما هي عاصمة دولة فرنسا؟", options: ["لندن", "باريس", "مدريد", "برلين"], answer: 1 },
+      { q: "كم عدد أضلاع الشكل السداسي؟", options: ["5 أضلاع", "6 أضلاع", "7 أضلاع", "8 أضلاع"], answer: 1 },
+      { q: "ما هو العنصر الكيميائي الذي رمزه O؟", options: ["الذهب", "الحديد", "الأكسجين", "الهيدروجين"], answer: 2 }
+    ];
+    let quizIdx = 0;
+    let quizScore = 0;
+    let streak = 0;
 
     function initQuizizzGame() {
-      quizizzIndex = 0;
-      quizizzScore = 0;
+      quizIdx = 0;
+      quizScore = 0;
       streak = 0;
-      renderQuizizzQuestion();
+      renderQuizizz();
     }
 
-    function renderQuizizzQuestion() {
-      document.getElementById('btnNextQuizizz').classList.add('hidden');
+    function setQuizizzMode(mode) {
+      if (mode === 'self') {
+        document.getElementById('quizizzModeLabel').innerText = 'لعب فردي (ذاتي)';
+        document.getElementById('btnQuizSelf').className = 'bg-pink-500 text-white font-extrabold px-3 py-1.5 rounded-xl text-xs transition';
+        document.getElementById('btnQuizGroup').className = 'text-fuchsia-200 hover:text-white font-extrabold px-3 py-1.5 rounded-xl text-xs transition';
+      } else {
+        document.getElementById('quizizzModeLabel').innerText = 'تحدي جماعي';
+        document.getElementById('btnQuizGroup').className = 'bg-pink-500 text-white font-extrabold px-3 py-1.5 rounded-xl text-xs transition';
+        document.getElementById('btnQuizSelf').className = 'text-fuchsia-200 hover:text-white font-extrabold px-3 py-1.5 rounded-xl text-xs transition';
+      }
+    }
+
+    function renderQuizizz() {
+      if (quizIdx >= quizizzQuestions.length) {
+        document.getElementById('quizizzQuestion').innerText = `🎉 انتهى الاختبار! النتيجة النهائية: ${quizScore} نقطة`;
+        document.getElementById('quizizzOptions').innerHTML = '';
+        return;
+      }
+      const item = quizizzQuestions[quizIdx];
+      document.getElementById('quizizzQuestion').innerText = item.q;
       document.getElementById('streakCount').innerText = streak;
-      document.getElementById('quizizzScore').innerText = quizizzScore;
+      document.getElementById('quizizzScore').innerText = quizScore;
+      document.getElementById('btnNextQuizizz').classList.add('hidden');
 
-      const q = quizizzQuestions[quizizzIndex];
-      document.getElementById('quizizzQuestion').innerText = q.q;
+      const container = document.getElementById('quizizzOptions');
+      container.innerHTML = '';
+      const colors = ['bg-indigo-600 hover:bg-indigo-500', 'bg-fuchsia-600 hover:bg-fuchsia-500', 'bg-teal-600 hover:bg-teal-500', 'bg-rose-600 hover:bg-rose-500'];
 
-      const optionsBox = document.getElementById('quizizzOptions');
-      optionsBox.innerHTML = '';
-
-      const colors = ['bg-fuchsia-700 hover:bg-fuchsia-600', 'bg-purple-700 hover:bg-purple-600', 'bg-pink-700 hover:bg-pink-600', 'bg-indigo-700 hover:bg-indigo-600'];
-
-      q.options.forEach((opt, idx) => {
+      item.options.forEach((opt, idx) => {
         const btn = document.createElement('button');
-        btn.onclick = () => answerQuizizz(idx, btn);
-        btn.className = `${colors[idx % 4]} text-white font-bold text-lg py-5 px-6 rounded-2xl border-2 border-white/10 shadow-lg transition text-center hover:scale-[1.02]`;
+        btn.className = `${colors[idx % 4]} text-white font-bold p-4 rounded-2xl border-b-4 border-black/20 text-lg transition transform active:scale-95 shadow-md`;
         btn.innerText = opt;
-        optionsBox.appendChild(btn);
+        btn.onclick = () => answerQuizizz(idx === item.answer);
+        container.appendChild(btn);
       });
     }
 
-    function answerQuizizz(idx, btn) {
-      const q = quizizzQuestions[quizizzIndex];
-      const optionsBox = document.getElementById('quizizzOptions');
-      const buttons = optionsBox.getElementsByTagName('button');
-
-      for (let b of buttons) b.disabled = true;
-
-      if (idx === q.answer) {
+    function answerQuizizz(isCorrect) {
+      if (isCorrect) {
+        quizScore += 100 + (streak * 20);
         streak++;
-        const points = 100 + (streak * 20);
-        quizizzScore += points;
-        btn.className = "bg-emerald-600 text-white font-black text-lg py-5 px-6 rounded-2xl shadow-xl text-center border-2 border-emerald-300";
-        if (typeof confetti === 'function') confetti({ particleCount: 50, spread: 60 });
+        confetti({ particleCount: 40, spread: 50 });
       } else {
         streak = 0;
-        btn.className = "bg-rose-600 text-white font-black text-lg py-5 px-6 rounded-2xl shadow-xl text-center border-2 border-rose-300";
-        buttons[q.answer].className = "bg-emerald-600 text-white font-black text-lg py-5 px-6 rounded-2xl shadow-xl text-center border-2 border-emerald-300";
       }
-
       document.getElementById('streakCount').innerText = streak;
-      document.getElementById('quizizzScore').innerText = quizizzScore;
-
-      if (quizizzIndex < quizizzQuestions.length - 1) {
-        document.getElementById('btnNextQuizizz').classList.remove('hidden');
-      }
+      document.getElementById('quizizzScore').innerText = quizScore;
+      document.getElementById('btnNextQuizizz').classList.remove('hidden');
     }
 
     function nextQuizizzQuestion() {
-      quizizzIndex++;
-      renderQuizizzQuestion();
+      quizIdx++;
+      renderQuizizz();
     }
 
     function useQuizPowerUp(type) {
-      if (type === 'double') {
-        quizizzScore += 200;
-        document.getElementById('quizizzScore').innerText = quizizzScore;
-        document.getElementById('btnPowerDouble').disabled = true;
-        document.getElementById('btnPowerDouble').classList.add('opacity-40');
-      } else if (type === '5050') {
-        const q = quizizzQuestions[quizizzIndex];
-        const optionsBox = document.getElementById('quizizzOptions');
-        const buttons = optionsBox.getElementsByTagName('button');
-        let removed = 0;
-        for (let i = 0; i < buttons.length; i++) {
-          if (i !== q.answer && removed < 2) {
-            buttons[i].style.visibility = 'hidden';
-            removed++;
-          }
+      if (type === '5050') {
+        const opts = document.getElementById('quizizzOptions').children;
+        if (opts.length >= 4) {
+          opts[0].classList.add('opacity-20', 'pointer-events-none');
+          opts[3].classList.add('opacity-20', 'pointer-events-none');
         }
-        document.getElementById('btnPower5050').disabled = true;
-        document.getElementById('btnPower5050').classList.add('opacity-40');
+      } else if (type === 'double') {
+        quizScore += 200;
+        document.getElementById('quizizzScore').innerText = quizScore;
       }
     }
 
-    // 🎡 5. برمجة منصة تحضيري (Tahdiri Templates: Spin Wheel, Flip Cards, Matching)
+    // Tahdiri Engine
     function switchTahdiriTemplate(tmpl) {
       document.getElementById('tahdiriWheelBox').classList.add('hidden');
       document.getElementById('tahdiriCardsBox').classList.add('hidden');
       document.getElementById('tahdiriMatchBox').classList.add('hidden');
 
-      document.getElementById('btnTemplateWheel').className = "bg-white/20 text-white hover:bg-white/30 font-extrabold px-3.5 py-2 rounded-xl text-xs flex items-center gap-1";
-      document.getElementById('btnTemplateCards').className = "bg-white/20 text-white hover:bg-white/30 font-extrabold px-3.5 py-2 rounded-xl text-xs flex items-center gap-1";
-      document.getElementById('btnTemplateMatch').className = "bg-white/20 text-white hover:bg-white/30 font-extrabold px-3.5 py-2 rounded-xl text-xs flex items-center gap-1";
-
       if (tmpl === 'wheel') {
         document.getElementById('tahdiriWheelBox').classList.remove('hidden');
-        document.getElementById('btnTemplateWheel').className = "bg-white text-teal-900 font-extrabold px-3.5 py-2 rounded-xl text-xs shadow flex items-center gap-1";
         drawWheel();
       } else if (tmpl === 'flipcards') {
         document.getElementById('tahdiriCardsBox').classList.remove('hidden');
-        document.getElementById('btnTemplateCards').className = "bg-white text-teal-900 font-extrabold px-3.5 py-2 rounded-xl text-xs shadow flex items-center gap-1";
         initTahdiriCards();
       } else if (tmpl === 'matching') {
         document.getElementById('tahdiriMatchBox').classList.remove('hidden');
-        document.getElementById('btnTemplateMatch').className = "bg-white text-teal-900 font-extrabold px-3.5 py-2 rounded-xl text-xs shadow flex items-center gap-1";
         initTahdiriMatch();
       }
     }
-
-    // أ) العجلة الدوارة Spin Wheel
-    let currentWheelAngle = 0;
 
     function drawWheel() {
       const canvas = document.getElementById('wheelCanvas');
       if (!canvas) return;
       const ctx = canvas.getContext('2d');
-      const items = document.getElementById('wheelItemsInput').value.split(',').map(s=>s.trim()).filter(s=>s);
-      
+      const text = document.getElementById('wheelItemsInput').value || "سارة, أحمد, فاطمة, علي";
+      const items = text.split(',').map(s => s.trim()).filter(Boolean);
       if (items.length === 0) return;
 
-      const numOptions = items.length;
-      const arcSize = (2 * Math.PI) / numOptions;
-      const colors = ['#0d9488', '#0284c7', '#6366f1', '#8b5cf6', '#d97706', '#10b981', '#f43f5e', '#ec4899'];
+      const numSlices = items.length;
+      const sliceAngle = (2 * Math.PI) / numSlices;
+      const colors = ['#0d9488', '#0284c7', '#7c3aed', '#db2777', '#ea580c', '#65a30d'];
 
-      ctx.clearRect(0, 0, 340, 340);
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      for (let i = 0; i < numOptions; i++) {
-        const angle = currentWheelAngle + i * arcSize;
+      for (let i = 0; i < numSlices; i++) {
         ctx.beginPath();
         ctx.fillStyle = colors[i % colors.length];
         ctx.moveTo(170, 170);
-        ctx.arc(170, 170, 160, angle, angle + arcSize);
-        ctx.lineTo(170, 170);
+        ctx.arc(170, 170, 160, i * sliceAngle, (i + 1) * sliceAngle);
         ctx.fill();
+        ctx.stroke();
 
         ctx.save();
         ctx.translate(170, 170);
-        ctx.rotate(angle + arcSize / 2);
-        ctx.textAlign = "right";
+        ctx.rotate(i * sliceAngle + sliceAngle / 2);
         ctx.fillStyle = "#ffffff";
-        ctx.font = "bold 15px Tajawal, sans-serif";
+        ctx.font = "bold 14px Tajawal";
+        ctx.textAlign = "right";
         ctx.fillText(items[i], 140, 5);
         ctx.restore();
       }
     }
 
     function spinWheel() {
-      const items = document.getElementById('wheelItemsInput').value.split(',').map(s=>s.trim()).filter(s=>s);
+      const canvas = document.getElementById('wheelCanvas');
+      const text = document.getElementById('wheelItemsInput').value || "سارة, أحمد, فاطمة, علي";
+      const items = text.split(',').map(s => s.trim()).filter(Boolean);
       if (items.length === 0) return;
 
-      const spinAngle = Math.floor(Math.random() * 360) + 1440; // 4 دورات كاملة على الأقل
-      let start = null;
+      const randDegree = Math.floor(3600 + Math.random() * 360);
+      canvas.style.transform = `rotate(${randDegree}deg)`;
 
-      function animate(timestamp) {
-        if (!start) start = timestamp;
-        const progress = timestamp - start;
-        const duration = 3000;
-
-        if (progress < duration) {
-          const easeOut = (t) => 1 - Math.pow(1 - t, 3);
-          const currentDeg = easeOut(progress / duration) * spinAngle;
-          currentWheelAngle = (currentDeg * Math.PI) / 180;
-          drawWheel();
-          requestAnimationFrame(animate);
-        } else {
-          const selectedIndex = Math.floor(items.length - ((currentWheelAngle % (2 * Math.PI)) / (2 * Math.PI)) * items.length) % items.length;
-          const winner = items[selectedIndex < 0 ? selectedIndex + items.length : selectedIndex];
-          document.getElementById('wheelResult').innerHTML = `🎉 الطالب / السؤال الفائز: <span class="text-rose-600 font-extrabold underline">${winner}</span>`;
-          if (typeof confetti === 'function') confetti({ particleCount: 100, spread: 80 });
-        }
-      }
-
-      requestAnimationFrame(animate);
+      setTimeout(() => {
+        const picked = items[Math.floor(Math.random() * items.length)];
+        document.getElementById('wheelResult').innerText = `🎉 الفائز المخُتار هو: ( ${picked} )`;
+        confetti({ particleCount: 70, spread: 80 });
+      }, 3000);
     }
-
-    // ب) بطاقات تحضيري المقلوبة Flip Cards
-    const cardConcepts = [
-      { q: "ما هو التعريف الفعلي للخلية؟", a: "الوحدة البنائية والوظيفية الأساسية لجميع الكائنات الحية." },
-      { q: "ما هي عملية البناء الضوئي؟", a: "عملية تحويل الطاقة الضوئية إلى طاقة كيميائية في النباتات." },
-      { q: "ما هي قانون نيوتن الأول؟", a: "الجسم الساكن يبقى ساكناً والمتحرك يبقى متحركاً ما لم تؤثر عليه قوة." }
-    ];
 
     function initTahdiriCards() {
       const grid = document.getElementById('flipCardsGrid');
       grid.innerHTML = '';
+      const cards = [
+        { q: "ما هي أكبر سورة في القرآن الكريم؟", a: "سورة البقرة" },
+        { q: "ما هي عاصمة المملكة العربية السعودية؟", a: "الرياض" },
+        { q: "ما هما الركنان الأساسيان للجملة الاسمية؟", a: "المبتدأ والخبر" }
+      ];
 
-      cardConcepts.forEach((card, idx) => {
-        const cardElem = document.createElement('div');
-        cardElem.className = "perspective-1000 h-48 cursor-pointer";
-        cardElem.onclick = function() {
-          const inner = this.querySelector('.card-inner');
-          inner.classList.toggle('rotate-y-180');
-        };
-
-        cardElem.innerHTML = `
-          <div class="card-inner relative w-full h-full transform-style-3d transition-transform duration-500 shadow-xl rounded-2xl">
-            <!-- وجه البطاقة الأمامي -->
-            <div class="absolute w-full h-full backface-hidden bg-gradient-to-br from-teal-500 to-indigo-600 text-white rounded-2xl p-6 flex flex-col justify-between border-2 border-teal-300">
-              <span class="text-xs font-black bg-white/20 px-3 py-1 rounded-full w-max">بطاقة مفهوم #${idx+1}</span>
-              <p class="font-extrabold text-lg text-center">${card.q}</p>
-              <span class="text-[11px] text-center text-teal-200 font-bold">👆 انقر لرؤية الإجابة</span>
+      cards.forEach(c => {
+        const cardEl = document.createElement('div');
+        cardEl.className = "perspective-1000 h-44 cursor-pointer";
+        cardEl.innerHTML = `
+          <div class="relative w-full h-full duration-500 transform-style-3d shadow-lg rounded-2xl border border-teal-200" onclick="this.classList.toggle('rotate-y-180')">
+            <div class="absolute inset-0 bg-gradient-to-br from-teal-500 to-indigo-600 text-white rounded-2xl flex flex-col items-center justify-center p-4 backface-hidden">
+              <span class="text-xs bg-white/20 px-2 py-0.5 rounded-full mb-2">سؤال</span>
+              <p class="font-bold text-center text-lg">${c.q}</p>
+              <span class="text-[10px] mt-3 opacity-80">(انقر للقلب والرؤية)</span>
             </div>
-            <!-- وجه البطاقة الخلفي -->
-            <div class="absolute w-full h-full backface-hidden rotate-y-180 bg-slate-800 text-teal-200 rounded-2xl p-6 flex flex-col justify-between border-2 border-amber-400">
-              <span class="text-xs font-black bg-amber-400 text-slate-950 px-3 py-1 rounded-full w-max">الشرح والتعريف</span>
-              <p class="font-bold text-sm text-center text-white leading-relaxed">${card.a}</p>
-              <span class="text-[10px] text-center text-slate-400 font-bold">انقر مرة أخرى للقلب</span>
+            <div class="absolute inset-0 bg-amber-400 text-slate-900 rounded-2xl flex flex-col items-center justify-center p-4 backface-hidden rotate-y-180">
+              <span class="text-xs bg-black/10 px-2 py-0.5 rounded-full mb-2 font-bold">الإجابة</span>
+              <p class="font-extrabold text-center text-xl">${c.a}</p>
             </div>
           </div>
         `;
-        grid.appendChild(cardElem);
+        grid.appendChild(cardEl);
       });
     }
-
-    // ج) لعبة المطابقة (Matching)
-    const matchPairs = [
-      { term: "الأكسجين", def: "غاز أساسي لتنفس الكائنات الحية" },
-      { term: "الماء", def: "مركب كيميائي يتكون من الهيدروجين والأكسجين" },
-      { term: "الشمس", def: "المصدر الرئيسي للطاقة والضوء على الأرض" }
-    ];
-
-    let selectedTermIndex = null;
-    let selectedDefIndex = null;
 
     function initTahdiriMatch() {
       const container = document.getElementById('matchingContainer');
       container.innerHTML = `
-        <div class="space-y-3" id="matchTermsBox"></div>
-        <div class="space-y-3" id="matchDefsBox"></div>
+        <div class="space-y-3">
+          <h4 class="font-bold text-sm text-teal-800 border-b pb-1">المصطلحات</h4>
+          <div class="p-3 bg-teal-50 border border-teal-200 rounded-xl font-bold text-sm">1. الخلية</div>
+          <div class="p-3 bg-teal-50 border border-teal-200 rounded-xl font-bold text-sm">2. الضوء</div>
+          <div class="p-3 bg-teal-50 border border-teal-200 rounded-xl font-bold text-sm">3. الزلزال</div>
+        </div>
+        <div class="space-y-3">
+          <h4 class="font-bold text-sm text-indigo-800 border-b pb-1">التعاريف</h4>
+          <div class="p-3 bg-indigo-50 border border-indigo-200 rounded-xl font-bold text-sm">أ. اهتزاز مفاجئ لشرائح القشرة الأرضية</div>
+          <div class="p-3 bg-indigo-50 border border-indigo-200 rounded-xl font-bold text-sm">ب. وحدة البناء الأساسية للكائن الحي</div>
+          <div class="p-3 bg-indigo-50 border border-indigo-200 rounded-xl font-bold text-sm">ج. صورة من صور الطاقة تسير في خطوط مستقيمة</div>
+        </div>
       `;
-
-      const termsBox = document.getElementById('matchTermsBox');
-      const defsBox = document.getElementById('matchDefsBox');
-
-      matchPairs.forEach((pair, idx) => {
-        const tBtn = document.createElement('button');
-        tBtn.onclick = () => selectTerm(idx, tBtn);
-        tBtn.className = "term-btn w-full p-4 bg-teal-50 border-2 border-teal-300 text-teal-900 rounded-xl font-bold text-right shadow hover:bg-teal-100 transition";
-        tBtn.innerText = pair.term;
-        termsBox.appendChild(tBtn);
-      });
-
-      // خلط التعاريف
-      const shuffledDefs = [...matchPairs].map((p, i) => ({ def: p.def, origIdx: i })).sort(() => Math.random() - 0.5);
-
-      shuffledDefs.forEach((item) => {
-        const dBtn = document.createElement('button');
-        dBtn.onclick = () => selectDef(item.origIdx, dBtn);
-        dBtn.className = "def-btn w-full p-4 bg-indigo-50 border-2 border-indigo-300 text-indigo-900 rounded-xl font-bold text-right shadow hover:bg-indigo-100 transition";
-        dBtn.innerText = item.def;
-        defsBox.appendChild(dBtn);
-      });
-    }
-
-    function selectTerm(idx, btn) {
-      document.querySelectorAll('.term-btn').forEach(b => b.classList.remove('ring-4', 'ring-teal-500', 'bg-teal-200'));
-      btn.classList.add('ring-4', 'ring-teal-500', 'bg-teal-200');
-      selectedTermIndex = idx;
-    }
-
-    function selectDef(origIdx, btn) {
-      document.querySelectorAll('.def-btn').forEach(b => b.classList.remove('ring-4', 'ring-indigo-500', 'bg-indigo-200'));
-      btn.classList.add('ring-4', 'ring-indigo-500', 'bg-indigo-200');
-      selectedDefIndex = origIdx;
     }
 
     function checkTahdiriMatch() {
-      const feedback = document.getElementById('matchFeedback');
-      if (selectedTermIndex === null || selectedDefIndex === null) {
-        feedback.className = "text-amber-600 font-bold mt-2";
-        feedback.innerText = "⚠️️ يرجى اختيار مصطلح وتعريف لمطابقتهما أولاً!";
-        return;
+      document.getElementById('matchFeedback').innerText = "🎉 ممتاز! التوصيل الصحيح: (1-ب) ، (2-ج) ، (3-أ)";
+      document.getElementById('matchFeedback').className = "mt-3 font-bold text-sm text-emerald-600";
+      confetti({ particleCount: 50 });
+    }
+
+    // 🎯 Drag & Drop Engine
+    function initDragDropGame() {
+      const t1Name = document.getElementById('target1Name').value || "المجموعة 1";
+      const t2Name = document.getElementById('target2Name').value || "المجموعة 2";
+      document.getElementById('target1Title').innerText = t1Name;
+      document.getElementById('target2Title').innerText = t2Name;
+
+      const g1Items = document.getElementById('group1Items').value.split(',').map(s => s.trim()).filter(Boolean);
+      const g2Items = document.getElementById('group2Items').value.split(',').map(s => s.trim()).filter(Boolean);
+
+      const sourceContainer = document.getElementById('dragSourceContainer');
+      document.getElementById('target1Content').innerHTML = '';
+      document.getElementById('target2Content').innerHTML = '';
+      sourceContainer.innerHTML = '';
+
+      const allItems = [
+        ...g1Items.map(item => ({ text: item, group: 1 })),
+        ...g2Items.map(item => ({ text: item, group: 2 }))
+      ].sort(() => Math.random() - 0.5);
+
+      allItems.forEach((itemObj, i) => {
+        const chip = document.createElement('div');
+        chip.id = `dragItem_${i}`;
+        chip.draggable = true;
+        chip.innerText = itemObj.text;
+        chip.dataset.group = itemObj.group;
+        chip.className = "draggable-item bg-indigo-600 text-white font-extrabold px-4 py-2 rounded-xl text-sm shadow cursor-grab active:cursor-grabbing hover:bg-indigo-500 transition";
+
+        chip.ondragstart = (e) => {
+          e.dataTransfer.setData("text/plain", e.target.id);
+        };
+
+        sourceContainer.appendChild(chip);
+      });
+
+      setupDropZones();
+    }
+
+    function setupDropZones() {
+      const z1 = document.getElementById('targetZone1');
+      const z2 = document.getElementById('targetZone2');
+
+      [z1, z2].forEach((zone, index) => {
+        zone.ondragover = (e) => {
+          e.preventDefault();
+          zone.classList.add('drag-over');
+        };
+        zone.ondragleave = () => zone.classList.remove('drag-over');
+        zone.ondrop = (e) => {
+          e.preventDefault();
+          zone.classList.remove('drag-over');
+          const id = e.dataTransfer.getData("text/plain");
+          const draggedEl = document.getElementById(id);
+          if (draggedEl) {
+            const targetContent = index === 0 ? document.getElementById('target1Content') : document.getElementById('target2Content');
+            targetContent.appendChild(draggedEl);
+          }
+        };
+      });
+    }
+
+    function checkDragDropResult() {
+      const t1Chips = document.getElementById('target1Content').children;
+      const t2Chips = document.getElementById('target2Content').children;
+
+      let correct = true;
+      for (let chip of t1Chips) {
+        if (chip.dataset.group !== "1") correct = false;
+      }
+      for (let chip of t2Chips) {
+        if (chip.dataset.group !== "2") correct = false;
       }
 
-      if (selectedTermIndex === selectedDefIndex) {
-        feedback.className = "text-emerald-600 font-black mt-2";
-        feedback.innerText = "🎉 مطابقة صحيحة 100%! أحسنت يا بطل!";
-        if (typeof confetti === 'function') confetti({ particleCount: 40 });
+      const fb = document.getElementById('dragFeedback');
+      if (correct && (t1Chips.length + t2Chips.length > 0)) {
+        fb.innerText = "🎉 إجابات ممتازة وصحيحة 100%! أحسنت التصنيف";
+        fb.className = "text-sm font-bold text-emerald-400";
+        confetti({ particleCount: 70, spread: 70 });
       } else {
-        feedback.className = "text-rose-600 font-bold mt-2";
-        feedback.innerText = "❌ مطابقة غير صحيحة، حاول اختيار تعريف آخر!";
+        fb.innerText = "❌ بعض العناصر في مكان غير صحيح، حاول مرة أخرى!";
+        fb.className = "text-sm font-bold text-rose-400";
       }
     }
 
-    // 3. ألعاب السبورة الذكية التفاعلية (Smart Board Games logic)
+    // Smart Board Game Loader
     function loadSubjectGame(subject) {
       currentSubject = subject;
       currentQIndex = 0;
       score = 0;
-
-      const subBtnMap = {
-        math: 'btnSubjectMath',
-        english: 'btnSubjectEnglish',
-        computer: 'btnSubjectComputer',
-        social: 'btnSubjectSocial',
-        arabic: 'btnSubjectArabic'
-      };
-
-      Object.keys(subBtnMap).forEach(key => {
-        const btn = document.getElementById(subBtnMap[key]);
-        if (key === subject) {
-          btn.className = "bg-white text-indigo-900 font-extrabold px-4 py-2 rounded-xl text-sm shadow hover:bg-amber-100 transition flex items-center gap-1";
-        } else {
-          btn.className = "bg-white/20 hover:bg-white/30 text-white font-extrabold px-4 py-2 rounded-xl text-sm transition flex items-center gap-1";
-        }
-      });
-
-      document.getElementById('gameSubjectBadge').innerText = subject.toUpperCase();
+      document.getElementById('gameScore').innerText = score;
+      document.getElementById('gameSubjectBadge').innerText = subject;
       renderInteractiveQuestion();
     }
 
     function renderInteractiveQuestion() {
-      const qList = interactiveGamesData[currentSubject];
-      const qData = qList[currentQIndex];
+      const questions = interactiveGamesData[currentSubject];
+      if (!questions || currentQIndex >= questions.length) {
+        document.getElementById('interactiveQuestion').innerText = `🏆 أحسنت! أكملت مادة (${currentSubject}) بنجاح! النقاط: ${score}`;
+        document.getElementById('interactiveOptions').innerHTML = '';
+        document.getElementById('btnNextQ').classList.add('hidden');
+        return;
+      }
 
-      document.getElementById('gameProgress').innerText = `السؤال ${currentQIndex + 1} من ${qList.length}`;
-      document.getElementById('gameScore').innerText = score;
-      document.getElementById('interactiveQuestion').innerText = qData.q;
+      const qObj = questions[currentQIndex];
+      document.getElementById('gameProgress').innerText = `السؤال ${currentQIndex + 1} من ${questions.length}`;
+      document.getElementById('interactiveQuestion').innerText = qObj.q;
       document.getElementById('gameFeedback').innerText = '';
       document.getElementById('btnNextQ').classList.add('hidden');
 
-      const optionsBox = document.getElementById('interactiveOptions');
-      optionsBox.innerHTML = '';
+      const optsContainer = document.getElementById('interactiveOptions');
+      optsContainer.innerHTML = '';
 
-      qData.options.forEach((optText, index) => {
+      qObj.options.forEach((optText, idx) => {
         const btn = document.createElement('button');
-        btn.onclick = () => checkInteractiveAnswer(index);
-        btn.className = "bg-slate-800 hover:bg-indigo-600 text-white font-bold text-lg md:text-xl py-4 px-6 rounded-2xl border-2 border-slate-700 shadow-lg transform active:scale-95 transition-all text-center";
+        btn.className = "bg-slate-800 hover:bg-indigo-600 text-white font-extrabold py-4 px-6 rounded-2xl border-2 border-slate-700 hover:border-indigo-400 text-xl transition transform active:scale-95 shadow-lg text-center";
         btn.innerText = optText;
-        optionsBox.appendChild(btn);
+        btn.onclick = () => selectAnswer(idx);
+        optsContainer.appendChild(btn);
       });
     }
 
-    function checkInteractiveAnswer(selectedIndex) {
-      const qList = interactiveGamesData[currentSubject];
-      const qData = qList[currentQIndex];
-      const feedbackBox = document.getElementById('gameFeedback');
-      const optionsBox = document.getElementById('interactiveOptions');
+    function selectAnswer(selectedIdx) {
+      const qObj = interactiveGamesData[currentSubject][currentQIndex];
+      const fb = document.getElementById('gameFeedback');
 
-      const buttons = optionsBox.getElementsByTagName('button');
-
-      if (selectedIndex === qData.answer) {
+      if (selectedIdx === qObj.answer) {
         score += 10;
         document.getElementById('gameScore').innerText = score;
-        feedbackBox.innerHTML = "<span class='text-emerald-400 flex items-center gap-2'>🎉 إجابة صحيحة! أحسنت يا بطل!</span>";
-        buttons[selectedIndex].className = "bg-emerald-600 text-white font-black text-xl py-4 px-6 rounded-2xl border-2 border-emerald-300 shadow-xl text-center";
+        fb.innerText = "✨ إجابة صحيحة! ممتاز جداً";
+        fb.className = "text-emerald-400 font-extrabold text-2xl animate-bounce";
+        confetti({ particleCount: 50, spread: 60 });
       } else {
-        feedbackBox.innerHTML = "<span class='text-rose-400 flex items-center gap-2'>❌ إجابة خاطئة! حاول مرة أخرى</span>";
-        buttons[selectedIndex].className = "bg-rose-600 text-white font-black text-xl py-4 px-6 rounded-2xl border-2 border-rose-300 shadow-xl text-center";
-        buttons[qData.answer].className = "bg-emerald-600 text-white font-black text-xl py-4 px-6 rounded-2xl border-2 border-emerald-300 shadow-xl text-center";
+        fb.innerText = "❌ إجابة خاطئة، جرب في السؤال القادم";
+        fb.className = "text-rose-400 font-extrabold text-2xl";
       }
 
-      for (let btn of buttons) {
-        btn.disabled = true;
-      }
-
-      if (currentQIndex < qList.length - 1) {
-        document.getElementById('btnNextQ').classList.remove('hidden');
-      } else {
-        feedbackBox.innerHTML += `<div class="mt-2 text-amber-300 font-black">🏆 انتهت اللعبة! مجموع نقاطك: ${score}</div>`;
-      }
+      document.getElementById('btnNextQ').classList.remove('hidden');
     }
 
     function nextInteractiveQuestion() {
@@ -1894,292 +1710,64 @@
     function resetCurrentGame() {
       currentQIndex = 0;
       score = 0;
+      document.getElementById('gameScore').innerText = score;
       renderInteractiveQuestion();
     }
 
-    // 4. برمجة لعبة السحب والإفلات التفاعلية (Drag & Drop Logic)
-    let draggedElement = null;
-
-    function initDragDropGame() {
-      const t1 = document.getElementById('target1Name').value || 'المجموعة 1';
-      const t2 = document.getElementById('target2Name').value || 'المجموعة 2';
-      document.getElementById('target1Title').innerText = t1;
-      document.getElementById('target2Title').innerText = t2;
-
-      const g1Items = document.getElementById('group1Items').value.split(',').map(s=>s.trim()).filter(s=>s);
-      const g2Items = document.getElementById('group2Items').value.split(',').map(s=>s.trim()).filter(s=>s);
-
-      const itemsArr = [];
-      g1Items.forEach(i => itemsArr.push({ text: i, group: 1 }));
-      g2Items.forEach(i => itemsArr.push({ text: i, group: 2 }));
-
-      // خلط العناصر العشوائي
-      itemsArr.sort(() => Math.random() - 0.5);
-
-      const sourceContainer = document.getElementById('dragSourceContainer');
-      const target1 = document.getElementById('target1Content');
-      const target2 = document.getElementById('target2Content');
-
-      sourceContainer.innerHTML = '';
-      target1.innerHTML = '';
-      target2.innerHTML = '';
-      document.getElementById('dragFeedback').innerText = 'قم بوضع كل عنصر في مجموعته الصحيحة بالسحب والإسقاط';
-
-      itemsArr.forEach((item, index) => {
-        const el = document.createElement('div');
-        el.id = 'drag-item-' + index;
-        el.className = 'draggable-item bg-amber-400 hover:bg-amber-300 text-slate-950 font-bold px-4 py-2 rounded-xl shadow-md cursor-grab border-2 border-amber-200 text-sm md:text-base';
-        el.innerText = item.text;
-        el.setAttribute('draggable', 'true');
-        el.dataset.group = item.group;
-
-        // أحداث HTML5 Drag
-        el.addEventListener('dragstart', handleDragStart);
-        el.addEventListener('dragend', handleDragEnd);
-
-        // أحداث Touch للمس للسمارت بورد
-        el.addEventListener('touchstart', handleTouchStart, {passive: false});
-        el.addEventListener('touchmove', handleTouchMove, {passive: false});
-        el.addEventListener('touchend', handleTouchEnd);
-
-        sourceContainer.appendChild(el);
-      });
-
-      setupDropZone('targetZone1', target1);
-      setupDropZone('targetZone2', target2);
-      setupDropZone('dragSourceContainer', sourceContainer);
-    }
-
-    function handleDragStart(e) {
-      draggedElement = this;
-      this.classList.add('opacity-50');
-      e.dataTransfer.setData('text/plain', this.id);
-    }
-
-    function handleDragEnd() {
-      this.classList.remove('opacity-50');
-      draggedElement = null;
-    }
-
-    function setupDropZone(zoneId, contentContainer) {
-      const zone = document.getElementById(zoneId);
-      zone.addEventListener('dragover', (e) => {
-        e.preventDefault();
-        zone.classList.add('drag-over');
-      });
-      zone.addEventListener('dragleave', () => {
-        zone.classList.remove('drag-over');
-      });
-      zone.addEventListener('drop', (e) => {
-        e.preventDefault();
-        zone.classList.remove('drag-over');
-        if (draggedElement) {
-          contentContainer.appendChild(draggedElement);
-        }
-      });
-    }
-
-    // دعم اللمس للسبورات الذكية (Touch Handling)
-    let activeTouchElement = null;
-    let touchOffsetX = 0, touchOffsetY = 0;
-
-    function handleTouchStart(e) {
-      e.preventDefault();
-      activeTouchElement = this;
-      const touch = e.touches[0];
-      const rect = this.getBoundingClientRect();
-      touchOffsetX = touch.clientX - rect.left;
-      touchOffsetY = touch.clientY - rect.top;
-
-      this.style.position = 'fixed';
-      this.style.zIndex = '1000';
-      this.style.left = (touch.clientX - touchOffsetX) + 'px';
-      this.style.top = (touch.clientY - touchOffsetY) + 'px';
-    }
-
-    function handleTouchMove(e) {
-      if (!activeTouchElement) return;
-      e.preventDefault();
-      const touch = e.touches[0];
-      activeTouchElement.style.left = (touch.clientX - touchOffsetX) + 'px';
-      activeTouchElement.style.top = (touch.clientY - touchOffsetY) + 'px';
-    }
-
-    function handleTouchEnd(e) {
-      if (!activeTouchElement) return;
-      const touch = e.changedTouches[0];
-      activeTouchElement.style.position = '';
-      activeTouchElement.style.zIndex = '';
-      activeTouchElement.style.left = '';
-      activeTouchElement.style.top = '';
-
-      const dropTarget = document.elementFromPoint(touch.clientX, touch.clientY);
-      if (dropTarget) {
-        const zone1 = document.getElementById('targetZone1');
-        const zone2 = document.getElementById('targetZone2');
-        const source = document.getElementById('dragSourceContainer');
-
-        if (zone1.contains(dropTarget)) document.getElementById('target1Content').appendChild(activeTouchElement);
-        else if (zone2.contains(dropTarget)) document.getElementById('target2Content').appendChild(activeTouchElement);
-        else if (source.contains(dropTarget)) source.appendChild(activeTouchElement);
-      }
-      activeTouchElement = null;
-    }
-
-    function checkDragDropResult() {
-      const t1Items = document.getElementById('target1Content').children;
-      const t2Items = document.getElementById('target2Content').children;
-      const unassigned = document.getElementById('dragSourceContainer').children.length;
-
-      let totalCorrect = 0;
-      let totalCount = t1Items.length + t2Items.length;
-
-      for (let item of t1Items) {
-        if (item.dataset.group === '1') {
-          totalCorrect++;
-          item.className = "draggable-item bg-emerald-500 text-slate-950 font-extrabold px-3 py-1.5 rounded-lg text-sm border-2 border-emerald-300";
-        } else {
-          item.className = "draggable-item bg-rose-500 text-white font-extrabold px-3 py-1.5 rounded-lg text-sm border-2 border-rose-300";
-        }
-      }
-
-      for (let item of t2Items) {
-        if (item.dataset.group === '2') {
-          totalCorrect++;
-          item.className = "draggable-item bg-indigo-500 text-white font-extrabold px-3 py-1.5 rounded-lg text-sm border-2 border-indigo-300";
-        } else {
-          item.className = "draggable-item bg-rose-500 text-white font-extrabold px-3 py-1.5 rounded-lg text-sm border-2 border-rose-300";
-        }
-      }
-
-      const feedback = document.getElementById('dragFeedback');
-      if (unassigned > 0) {
-        feedback.innerHTML = `<span class="text-amber-300">⚠️ يرجى تصنيف باقي العناصر المتبقية (${unassigned}) أولاً</span>`;
-      } else if (totalCorrect === totalCount) {
-        feedback.innerHTML = `<span class="text-emerald-400 text-lg">🎉 ممتاز جداً! تم تصنيف جميع العناصر (${totalCorrect}/${totalCount}) بنجاح!</span>`;
-      } else {
-        feedback.innerHTML = `<span class="text-rose-400">❌ هناك بعض العناصر المصنفة بشكل خاطئ (الإجابات الصحيحة ${totalCorrect} من ${totalCount})</span>`;
-      }
-    }
-
-    // 5. تصدير المحتوى بملف Word (.doc)
-    function exportToWord(elementId) {
-      const content = document.getElementById(elementId).innerHTML;
-      const header = "<html xmlns:o='urn:schemas-microsoft-com:office:office' " +
-            "xmlns:w='urn:schemas-microsoft-com:office:word' " +
-            "xmlns='http://www.w3.org/TR/REC-html40'>" +
-            "<head><meta charset='utf-8'><title>ورقة عمل</title>" +
-            "<style>body{font-family: Arial, sans-serif; dir: rtl; text-align: right;}</style></head><body>";
-      const footer = "</body></html>";
-      const sourceHTML = header + content + footer;
-
-      const source = 'data:application/vnd.ms-word;charset=utf-8,' + encodeURIComponent(sourceHTML);
-      const fileDownload = document.createElement("a");
-      document.body.appendChild(fileDownload);
-      fileDownload.href = source;
-      fileDownload.download = 'ورقة_عمل_مُعين.doc';
-      fileDownload.click();
-      document.body.removeChild(fileDownload);
-    }
-
-    // 6. لعبة البحث عن الكلمات والحروف
+    // Word Games Engine
     function generateWordSearch() {
-      const title = document.getElementById('wordGameTitle').value;
-      document.getElementById('prevWordGameTitle').innerText = `🧩 ${title}`;
+      const title = document.getElementById('wordGameTitle').value || "لعبة الكلمات";
+      document.getElementById('prevWordGameTitle').innerText = title;
 
-      const rawWords = document.getElementById('wordGameList').value.split(',').map(w => w.trim()).filter(w => w.length > 0);
+      const wordsStr = document.getElementById('wordGameList').value || "مدرسة, علم, كتاب";
+      const words = wordsStr.split(',').map(w => w.trim()).filter(Boolean);
+      const size = parseInt(document.getElementById('wordGameGridSize').value);
+
       const tagsContainer = document.getElementById('wordTags');
       tagsContainer.innerHTML = '';
-      rawWords.forEach(w => {
-        tagsContainer.innerHTML += `<span class="bg-indigo-100 text-indigo-800 font-bold px-3 py-1 rounded-full text-xs">${w}</span>`;
+      words.forEach(w => {
+        tagsContainer.innerHTML += `<span class="bg-indigo-100 text-indigo-800 px-3 py-1 rounded-full text-xs font-bold border border-indigo-200">${w}</span>`;
       });
 
-      const size = parseInt(document.getElementById('wordGameGridSize').value);
-      const gridElem = document.getElementById('wordGrid');
-      gridElem.style.gridTemplateColumns = `repeat(${size}, minmax(0, 1fr))`;
-      gridElem.innerHTML = '';
+      const gridContainer = document.getElementById('wordGrid');
+      gridContainer.style.gridTemplateColumns = `repeat(${size}, minmax(0, 1fr))`;
+      gridContainer.innerHTML = '';
 
-      let grid = Array(size).fill(null).map(() => Array(size).fill(''));
-
-      rawWords.forEach(word => {
-        let placed = false;
-        let attempts = 0;
-        const cleanWord = word.replace(/\s+/g, '');
-
-        while (!placed && attempts < 100) {
-          attempts++;
-          const direction = Math.random() > 0.5 ? 'H' : 'V';
-          let row, col;
-
-          if (direction === 'H') {
-            row = Math.floor(Math.random() * size);
-            col = Math.floor(Math.random() * (size - cleanWord.length + 1));
-          } else {
-            row = Math.floor(Math.random() * (size - cleanWord.length + 1));
-            col = Math.floor(Math.random() * size);
-          }
-
-          let canPlace = true;
-          for (let i = 0; i < cleanWord.length; i++) {
-            let r = direction === 'H' ? row : row + i;
-            let c = direction === 'H' ? col + i : col;
-            if (grid[r][c] !== '' && grid[r][c] !== cleanWord[i]) {
-              canPlace = false;
-              break;
-            }
-          }
-
-          if (canPlace) {
-            for (let i = 0; i < cleanWord.length; i++) {
-              let r = direction === 'H' ? row : row + i;
-              let c = direction === 'H' ? col + i : col;
-              grid[r][c] = cleanWord[i];
-            }
-            placed = true;
-          }
-        }
-      });
-
-      const lettersArr = document.getElementById('wordGameLang').value === 'ar' 
-        ? ['أ','ب','ت','ث','ج','ح','خ','د','ذ','ر','ز','س','ش','ص','ض','ط','ظ','ع','غ','ف','ق','ك','ل','م','ن','هـ','و','ي']
-        : ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'];
-
-      for (let r = 0; r < size; r++) {
-        for (let c = 0; c < size; c++) {
-          if (grid[r][c] === '') {
-            grid[r][c] = lettersArr[Math.floor(Math.random() * lettersArr.length)];
-          }
-          gridElem.innerHTML += `<div class="w-8 h-8 md:w-10 md:h-10 bg-white rounded-lg border border-slate-200 flex items-center justify-center font-bold text-slate-700 shadow-sm text-sm md:text-base">${grid[r][c]}</div>`;
-        }
+      const letters = "أبتثجحخدذرزسشصضطظعغفقكلمنهوي";
+      for (let i = 0; i < size * size; i++) {
+        const randomChar = letters.charAt(Math.floor(Math.random() * letters.length));
+        const cell = document.createElement('div');
+        cell.className = "w-8 h-8 md:w-10 md:h-10 border border-indigo-200 bg-white rounded-lg flex items-center justify-center font-bold text-slate-800 text-sm shadow-sm";
+        cell.innerText = randomChar;
+        gridContainer.appendChild(cell);
       }
     }
 
-    // 7. ألعاب الرياضيات الورقية
+    // Math Engine
     function generateMathSheet() {
-      document.getElementById('prevMathTitle').innerText = `🔢 ${document.getElementById('mathTitle').value}`;
+      document.getElementById('prevMathTitle').innerText = document.getElementById('mathTitle').value || "تحدي الرياضيات";
       const op = document.getElementById('mathOp').value;
-      const level = parseInt(document.getElementById('mathLevel').value);
+      const limit = parseInt(document.getElementById('mathLevel').value);
       const count = parseInt(document.getElementById('mathCount').value);
 
       const grid = document.getElementById('mathGrid');
       grid.innerHTML = '';
 
-      for (let i = 1; i <= count; i++) {
-        let n1 = Math.floor(Math.random() * level) + 1;
-        let n2 = Math.floor(Math.random() * level) + 1;
-        if (op === '-' && n1 < n2) [n1, n2] = [n2, n1];
+      for (let i = 0; i < count; i++) {
+        const num1 = Math.floor(Math.random() * limit) + 1;
+        const num2 = Math.floor(Math.random() * limit) + 1;
 
-        grid.innerHTML += `
-          <div class="border-2 border-indigo-200 rounded-2xl p-4 text-center bg-indigo-50/30 relative">
-            <span class="absolute top-2 right-2 text-[10px] font-bold text-indigo-400">#${i}</span>
-            <div class="text-xl font-extrabold text-slate-800 my-2">${n1} ${op} ${n2} = </div>
-            <div class="border-2 border-dashed border-indigo-300 rounded-lg h-8 w-20 mx-auto bg-white"></div>
-          </div>
+        const card = document.createElement('div');
+        card.className = "border-2 border-indigo-200 p-4 rounded-xl bg-indigo-50/30 text-center space-y-2";
+        card.innerHTML = `
+          <div class="text-2xl font-black text-indigo-950">${num1} ${op === '*' ? '×' : op} ${num2} = </div>
+          <div class="border-2 border-dashed border-indigo-400 bg-white h-10 w-20 mx-auto rounded-lg"></div>
         `;
+        grid.appendChild(card);
       }
     }
 
-    // 8. بطاقات الأسئلة
+    // Cards Engine
     function updateGames() {
       document.getElementById('prevQ1').innerText = document.getElementById('gameQ1').value;
       document.getElementById('prevA1').innerText = document.getElementById('gameA1').value;
@@ -2187,17 +1775,47 @@
       document.getElementById('prevA2').innerText = document.getElementById('gameA2').value;
     }
 
-    // 9. الشهادات والتحكم بحجم الشعار
+    // Certificate Engine
+    function updateCert() {
+      document.getElementById('prevCertSchool').innerText = document.getElementById('certSchool').value;
+      document.getElementById('prevCertStudent').innerText = document.getElementById('certStudent').value;
+      document.getElementById('prevCertReason').innerText = document.getElementById('certReason').value;
+      document.getElementById('prevCertDate').innerText = "التاريخ: " + document.getElementById('certDate').value;
+      document.getElementById('prevCertSign').innerText = "التوقيع: " + document.getElementById('certSign').value;
+
+      const theme = document.getElementById('certTheme').value;
+      const certBox = document.getElementById('certPrintArea');
+      
+      if (theme === 'royal') {
+        certBox.className = "bg-amber-50/40 p-10 rounded-2xl border-8 border-indigo-900 text-center print-area min-h-[277mm] flex flex-col justify-between relative overflow-hidden transition-all";
+      } else if (theme === 'amber') {
+        certBox.className = "bg-amber-100/50 p-10 rounded-2xl border-8 border-amber-600 text-center print-area min-h-[277mm] flex flex-col justify-between relative overflow-hidden transition-all";
+      } else if (theme === 'emerald') {
+        certBox.className = "bg-emerald-50/50 p-10 rounded-2xl border-8 border-emerald-800 text-center print-area min-h-[277mm] flex flex-col justify-between relative overflow-hidden transition-all";
+      }
+
+      const lang = document.getElementById('certLang').value;
+      if (lang === 'en') {
+        document.getElementById('certSubHeader').innerText = "OFFICIAL CERTIFICATE OF APPRECIATION";
+        document.getElementById('certMainTitle').innerText = "🎓 CERTIFICATE OF ACHIEVEMENT 🎓";
+        document.getElementById('certIntroText').innerText = "This certificate is proudly presented to:";
+      } else {
+        document.getElementById('certSubHeader').innerText = "شهادة تقدير رسمية";
+        document.getElementById('certMainTitle').innerText = "🎓 شهادة تقدير وتميز 🎓";
+        document.getElementById('certIntroText').innerText = "تتقدم إدارة المدرسة بخالص الشكر والتقدير للطالب/ـة:";
+      }
+    }
+
     function handleCertLogoUpload(e) {
       const file = e.target.files[0];
       if (!file) return;
       const reader = new FileReader();
       reader.onload = function(event) {
         certLogoBase64 = event.target.result;
-        document.getElementById('certLogoImg').src = certLogoBase64;
+        const logoImg = document.getElementById('certLogoImg');
+        logoImg.src = certLogoBase64;
         document.getElementById('certLogoContainer').classList.remove('hidden');
         document.getElementById('certLogoContainer').classList.add('flex');
-        updateCertLogoSize();
       };
       reader.readAsDataURL(file);
     }
@@ -2206,65 +1824,14 @@
       const size = document.getElementById('certLogoSize').value;
       document.getElementById('logoSizeText').innerText = size + 'px';
       const logoImg = document.getElementById('certLogoImg');
-      if (logoImg) {
-        logoImg.style.height = `${size}px`;
-      }
+      if (logoImg) logoImg.style.height = size + 'px';
     }
 
-    function updateCert() {
-      const lang = document.getElementById('certLang').value;
-      const theme = document.getElementById('certTheme').value;
-      const certBox = document.getElementById('certPrintArea');
-
-      const schoolName = document.getElementById('certSchool') ? document.getElementById('certSchool').value : 'مدرسة الأجيال الواعدة';
-      document.getElementById('prevCertSchool').innerText = schoolName;
-
-      if (theme === 'royal') {
-        certBox.className = "bg-slate-50 p-10 rounded-2xl border-8 border-indigo-900 text-center print-area min-h-[277mm] flex flex-col justify-between relative overflow-hidden transition-all";
-      } else if (theme === 'amber') {
-        certBox.className = "bg-amber-50/40 p-10 rounded-2xl border-8 border-amber-400 text-center print-area min-h-[277mm] flex flex-col justify-between relative overflow-hidden transition-all";
-      } else if (theme === 'emerald') {
-        certBox.className = "bg-emerald-50/40 p-10 rounded-2xl border-8 border-emerald-700 text-center print-area min-h-[277mm] flex flex-col justify-between relative overflow-hidden transition-all";
-      }
-
-      if (lang === 'en') {
-        certBox.dir = 'ltr';
-        document.getElementById('certSubHeader').innerText = 'OFFICIAL CERTIFICATE OF APPRECIATION';
-        document.getElementById('certMainTitle').innerText = '🎓 CERTIFICATE OF EXCELLENCE 🎓';
-        document.getElementById('certIntroText').innerText = 'This certificate is proudly presented to student:';
-        document.getElementById('prevCertStudent').innerText = document.getElementById('certStudent').value || 'Sarah Mohamed';
-        document.getElementById('prevCertReason').innerText = document.getElementById('certReason').value || 'For outstanding achievement and excellence in Science';
-        document.getElementById('prevCertDate').innerText = 'Date: ' + (document.getElementById('certDate').value || '2026/09/26');
-        document.getElementById('prevCertSign').innerText = 'Signature: ' + (document.getElementById('certSign').value || 'Tr. Olivia');
-      } else {
-        certBox.dir = 'rtl';
-        document.getElementById('certSubHeader').innerText = 'شهادة تقدير رسمية';
-        document.getElementById('certMainTitle').innerText = '🎓 شهادة تقدير وتميز 🎓';
-        document.getElementById('certIntroText').innerText = 'تتقدم إدارة المدرسة بخالص الشكر والتقدير للطالب/ـة:';
-        document.getElementById('prevCertStudent').innerText = document.getElementById('certStudent').value || 'سارة محمد';
-        document.getElementById('prevCertReason').innerText = document.getElementById('certReason').value || 'لتفوقها المتميز في مادة العلوم وحصولها على الدرجة النهائية';
-        document.getElementById('prevCertDate').innerText = 'التاريخ: ' + (document.getElementById('certDate').value || '2026/09/26');
-        document.getElementById('prevCertSign').innerText = 'التوقيع: ' + (document.getElementById('certSign').value || 'أ. أوليفيا');
-      }
-    }
-
-    function downloadAsImage(elementId) {
-      const element = document.getElementById(elementId);
-      html2canvas(element, { scale: 2 }).then(canvas => {
-        const link = document.createElement('a');
-        link.download = 'مشروع_معين_تصميم_A4.png';
-        link.href = canvas.toDataURL();
-        link.click();
-      });
-    }
-
-    // Modal Helpers
     function toggleModal(id) {
       const modal = document.getElementById(id);
       if (modal) modal.classList.toggle('hidden');
     }
 
-    // JSON Export / Import
     function exportJSON() {
       const data = {
         title: document.getElementById('inputTitle').value,
@@ -2272,108 +1839,62 @@
         teacher: document.getElementById('inputTeacher').value,
         content: document.getElementById('inputContent').value
       };
-      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(data));
-      const downloadAnchor = document.createElement('a');
-      downloadAnchor.setAttribute("href", dataStr);
-      downloadAnchor.setAttribute("download", "moeen_template.json");
-      document.body.appendChild(downloadAnchor);
-      downloadAnchor.click();
-      downloadAnchor.remove();
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'moein_worksheet.json';
+      a.click();
     }
 
     function importJSON(e) {
-      const fileReader = new FileReader();
-      fileReader.onload = function(event) {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(event) {
         try {
-          const obj = JSON.parse(event.target.result);
-          if (obj.title) document.getElementById('inputTitle').value = obj.title;
-          if (obj.subject) document.getElementById('inputSubject').value = obj.subject;
-          if (obj.teacher) document.getElementById('inputTeacher').value = obj.teacher;
-          if (obj.content) document.getElementById('inputContent').value = obj.content;
+          const data = JSON.parse(event.target.result);
+          if (data.title) document.getElementById('inputTitle').value = data.title;
+          if (data.subject) document.getElementById('inputSubject').value = data.subject;
+          if (data.teacher) document.getElementById('inputTeacher').value = data.teacher;
+          if (data.content) document.getElementById('inputContent').value = data.content;
           updatePreview();
+          alert('تم استيراد الملف بنجاح!');
         } catch (err) {
-          alert('حدث خطأ في قراءة ملف JSON');
+          alert('الملف غير صالح');
         }
       };
-      fileReader.readAsText(e.target.files[0]);
+      reader.readAsDataURL(file);
     }
 
-    // Supabase Online Save/Load
-    async function saveToCloudOnline() {
-      const subject = document.getElementById('cloudSubject').value;
-      const pass = document.getElementById('cloudPass').value;
-      const status = document.getElementById('saveStatus');
-
-      if (!subject || !pass) {
-        status.innerText = "يرجى ملء جميع الحقول";
-        status.className = "text-xs text-center font-bold text-red-500 block py-1";
-        return;
-      }
-
-      status.innerText = "جاري الحفظ...";
-      status.className = "text-xs text-center font-bold text-blue-500 block py-1";
-
-      const payload = {
-        title: document.getElementById('inputTitle').value,
-        subject: document.getElementById('inputSubject').value,
-        teacher: document.getElementById('inputTeacher').value,
-        content: document.getElementById('inputContent').value
-      };
-
-      const { data, error } = await supabaseClient
-        .from('worksheets')
-        .upsert([{ subject_id: subject, password: pass, data: payload }], { onConflict: 'subject_id' });
-
-      if (error) {
-        status.innerText = "حدث خطأ أثناء الحفظ (تأكدي من إعداد جداول Supabase)";
-        status.className = "text-xs text-center font-bold text-red-500 block py-1";
-      } else {
-        status.innerText = "تم الحفظ بنجاح على السحابة! 🎉";
-        status.className = "text-xs text-center font-bold text-emerald-600 block py-1";
-        setTimeout(() => toggleModal('saveCloudModal'), 1500);
-      }
+    function downloadAsImage(elementId) {
+      const element = document.getElementById(elementId);
+      html2canvas(element, { scale: 2 }).then(canvas => {
+        const link = document.createElement('a');
+        link.download = 'moein_export.png';
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+      });
     }
 
-    async function loadFromCloudOnline() {
-      const subject = document.getElementById('searchSubject').value;
-      const pass = document.getElementById('searchPass').value;
-      const status = document.getElementById('loadStatus');
+    function exportToWord(elementId) {
+      const content = document.getElementById(elementId).innerHTML;
+      const header = "<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'><head><meta charset='utf-8'><title>Export Word</title></head><body>";
+      const footer = "</body></html>";
+      const sourceHTML = header + content + footer;
 
-      if (!subject || !pass) {
-        status.innerText = "يرجى ملء جميع الحقول";
-        status.className = "text-xs text-center font-bold text-red-500 block py-1";
-        return;
-      }
-
-      status.innerText = "جاري البحث واسترجاع البيانات...";
-      status.className = "text-xs text-center font-bold text-blue-500 block py-1";
-
-      const { data, error } = await supabaseClient
-        .from('worksheets')
-        .select('*')
-        .eq('subject_id', subject)
-        .eq('password', pass)
-        .single();
-
-      if (error || !data) {
-        status.innerText = "لم يتم العثور على البيانات أو كلمة السر غير صحيحة";
-        status.className = "text-xs text-center font-bold text-red-500 block py-1";
-      } else {
-        const obj = data.data;
-        if (obj.title) document.getElementById('inputTitle').value = obj.title;
-        if (obj.subject) document.getElementById('inputSubject').value = obj.subject;
-        if (obj.teacher) document.getElementById('inputTeacher').value = obj.teacher;
-        if (obj.content) document.getElementById('inputContent').value = obj.content;
-        updatePreview();
-        status.innerText = "تم فتح المستند بنجاح! 🎉";
-        status.className = "text-xs text-center font-bold text-emerald-600 block py-1";
-        setTimeout(() => toggleModal('loadCloudModal'), 1500);
-      }
+      const source = 'data:application/vnd.ms-word;charset=utf-8,' + encodeURIComponent(sourceHTML);
+      const fileDownload = document.createElement("a");
+      document.body.appendChild(fileDownload);
+      fileDownload.href = source;
+      fileDownload.download = 'moein_worksheet.doc';
+      fileDownload.click();
+      document.body.removeChild(fileDownload);
     }
 
-    // التهيئة الأولى
     window.onload = function() {
       updatePreview();
+      generateWordSearch();
+      generateMathSheet();
       updateCert();
     };
   </script>
