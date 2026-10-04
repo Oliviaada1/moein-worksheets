@@ -133,19 +133,21 @@
         </div>
 
         <div class="flex items-center gap-1">
-          <label class="text-xs text-indigo-200 font-bold">المادة (British Curriculum):</label>
+          <label class="text-xs text-indigo-200 font-bold">المادة الدراسية:</label>
           <select id="curriculumSubjectSelect" onchange="onGradeOrSubjectChange()" class="bg-indigo-800 text-white border border-indigo-600 text-xs rounded-lg p-1.5 font-bold focus:ring-2 focus:ring-amber-400 outline-none">
             <option value="jolly_phonics" selected>🔤 Jolly Phonics & English Literacy</option>
-            <option value="math">🔢 British Math (Key Stage 1 & 2)</option>
-            <option value="science">🔬 Primary Science (Cambridge Curriculum)</option>
+            <option value="math">🔢 British Math / رياضيات</option>
+            <option value="science">🔬 Primary Science / علوم</option>
             <option value="arabic">📖 اللغة العربية والتربية الإسلامية</option>
+            <option value="computer">💻 حاسوب / Computer Science</option>
+            <option value="social">🌍 دراسات اجتماعية / Social Studies</option>
           </select>
         </div>
       </div>
 
       <button onclick="generateSmartPhonicsActivity()" class="bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-500 hover:to-amber-600 text-indigo-950 px-4 py-1.5 rounded-xl font-extrabold text-xs shadow flex items-center gap-1.5 transform active:scale-95 transition">
         <i data-lucide="sparkles" class="w-4 h-4"></i>
-        <span>✨ إنشاء نشاط دمج الأصوات والتمارين (Smart Phonics Generator)</span>
+        <span>✨ إنشاء وتحديث الأنشطة والتمارين</span>
       </button>
     </div>
   </div>
@@ -269,7 +271,7 @@
           <div id="phonicsInteractiveBox" class="grid grid-cols-2 sm:grid-cols-3 gap-4"></div>
 
           <div class="text-center bg-slate-800/80 p-4 rounded-2xl border border-slate-700">
-            <p class="text-xs text-slate-300 font-medium">💡 **فكرة المنهج البريطاني**: انقر على كل صوت للاستماع إلى النطق الأصلي (Jolly Phonics Action & Sound)، ثم انقر على الكلمة لدمجها تلقائياً!</p>
+            <p class="text-xs text-slate-300 font-medium">💡 **فكرة المنهج البريطاني**: انقر على أي بطاقة أو كلمة للاستماع إلى النطق الصوتي الصحيح فوراً!</p>
           </div>
         </div>
       </div>
@@ -309,7 +311,7 @@
         <div class="grid grid-cols-2 gap-2">
           <div>
             <label class="block text-xs font-bold text-slate-600 mb-1">الصف / المادة</label>
-            <input type="text" id="inputSubject" value="الصف الرابع - العلوم" oninput="updatePreview()" class="w-full border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-indigo-500 outline-none">
+            <input type="text" id="inputSubject" value="الصف الخامس - اللغة العربية" oninput="updatePreview()" class="w-full border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-indigo-500 outline-none">
           </div>
           <div>
             <label class="block text-xs font-bold text-slate-600 mb-1">اسم المعلم/ـة</label>
@@ -471,7 +473,7 @@
         <div>
           <div class="flex items-center gap-2">
             <span class="bg-amber-400 text-purple-950 px-3 py-1 rounded-full font-black text-xs uppercase">Kahoot! Style</span>
-            <h2 class="text-2xl font-extrabold">🚀 منصة التحديات الحية (30 سؤالاً من KG إلى الصف 11)</h2>
+            <h2 class="text-2xl font-extrabold">🚀 منصة التحديات الحية (أسئلة تفاعلية متنوعة)</h2>
           </div>
           <p class="text-xs text-purple-200 mt-1">شاشة عرض حية مع ألوان مجسمة، مؤقت تنازلي، ولوحة تصدر فورية للطلاب!</p>
         </div>
@@ -486,7 +488,7 @@
       <div class="bg-purple-950 rounded-3xl p-6 md:p-8 text-white shadow-2xl border-4 border-purple-500 min-h-[520px] flex flex-col justify-between relative overflow-hidden">
         <div class="flex justify-between items-center border-b border-purple-800/80 pb-4">
           <div class="flex items-center gap-3">
-            <span id="kahootQIndex" class="bg-purple-600 px-3 py-1 rounded-xl text-xs font-extrabold">سؤال 1 من 30</span>
+            <span id="kahootQIndex" class="bg-purple-600 px-3 py-1 rounded-xl text-xs font-extrabold">سؤال 1</span>
             <span class="text-purple-300 text-xs font-bold" id="kahootSubjectTag">موزع على المراحل التعليمية</span>
           </div>
           
@@ -532,7 +534,7 @@
         <div>
           <div class="flex items-center gap-2">
             <span class="bg-pink-400 text-fuchsia-950 px-3 py-1 rounded-full font-black text-xs uppercase">Quizizz Style</span>
-            <h2 class="text-2xl font-extrabold">⚡ وضع الإتقان بالسرعات الفردية والجماعية (30 سؤالاً)</h2>
+            <h2 class="text-2xl font-extrabold">⚡ وضع الإتقان بالسرعات الفردية والجماعية</h2>
           </div>
           <p class="text-xs text-fuchsia-200 mt-1">لكل طالب سرعته الخاصة، معززات قوة Power-ups وشاشة تفاعلية فردية للتعلم الذاتي!</p>
         </div>
@@ -792,7 +794,7 @@
         <div>
           <h2 class="text-2xl font-extrabold flex items-center gap-2">
             <i data-lucide="tv" class="w-8 h-8 text-amber-200"></i>
-            <span>🎮 الألعاب التفاعلية للسبورة الذكية (30 سؤالاً شاملاً)</span>
+            <span>🎮 الألعاب التفاعلية للسبورة الذكية</span>
           </h2>
           <p class="text-xs text-amber-100 mt-1">اختر المادة ثم دع الطلاب يجيبون مباشرة بالنقر على الشاشات التفاعلية والسبورة الذكية</p>
         </div>
@@ -820,7 +822,7 @@
         <div class="flex justify-between items-center border-b border-slate-800 pb-4">
           <div class="flex items-center gap-3">
             <span id="gameSubjectBadge" class="bg-amber-400 text-slate-900 font-extrabold text-xs px-3 py-1 rounded-full uppercase">Math</span>
-            <span id="gameProgress" class="text-slate-400 font-bold text-sm">السؤال 1 من 30</span>
+            <span id="gameProgress" class="text-slate-400 font-bold text-sm">السؤال 1</span>
           </div>
           <div class="flex items-center gap-2 bg-slate-800 px-4 py-2 rounded-xl border border-slate-700">
             <i data-lucide="trophy" class="w-5 h-5 text-amber-400"></i>
@@ -1029,7 +1031,7 @@
 
         <div>
           <label class="block text-xs font-bold text-slate-600 mb-1">سبب التقدير / نص الشهادة:</label>
-          <input type="text" id="certReason" value="لتفوقها المتميز في مادة العلوم وحصولها على الدرجة النهائية" oninput="updateCert()" class="w-full border rounded-lg p-2 text-sm">
+          <input type="text" id="certReason" value="لتفوقها المتميز وحصولها على الدرجة النهائية" oninput="updateCert()" class="w-full border rounded-lg p-2 text-sm">
         </div>
 
         <div class="grid grid-cols-2 gap-2">
@@ -1039,7 +1041,7 @@
           </div>
           <div>
             <label class="block text-xs font-bold text-slate-600 mb-1">التاريخ:</label>
-            <input type="text" id="certDate" value="2026/09/26" oninput="updateCert()" class="w-full border rounded-lg p-2 text-sm">
+            <input type="text" id="certDate" value="2026/10/04" oninput="updateCert()" class="w-full border rounded-lg p-2 text-sm">
           </div>
         </div>
 
@@ -1078,11 +1080,11 @@
 
             <p id="certIntroText" class="text-slate-600">تتقدم إدارة المدرسة بخالص الشكر والتقدير للطالب/ـة:</p>
             <h2 id="prevCertStudent" class="text-3xl font-bold text-indigo-800 underline decoration-amber-400 py-2 font-cairo">سارة محمد</h2>
-            <p id="prevCertReason" class="text-slate-700 max-w-lg mx-auto leading-relaxed font-medium">لتفوقها المتميز في مادة العلوم وحصولها على الدرجة النهائية</p>
+            <p id="prevCertReason" class="text-slate-700 max-w-lg mx-auto leading-relaxed font-medium">لتفوقها المتميز وحصولها على الدرجة النهائية</p>
           </div>
 
           <div class="pt-8 flex justify-between items-center px-12 border-t border-indigo-200/60 mt-8">
-            <p id="prevCertDate" class="text-xs text-slate-500 font-semibold">التاريخ: 2026/09/26</p>
+            <p id="prevCertDate" class="text-xs text-slate-500 font-semibold">التاريخ: 2026/10/04</p>
             <p id="prevCertSign" class="font-bold text-indigo-950">التوقيع: أ. أوليفيا</p>
           </div>
         </div>
@@ -1104,7 +1106,7 @@
       <div class="space-y-3">
         <div>
           <label class="block text-xs font-bold text-slate-700 mb-1">اسم المادة / المعرف</label>
-          <input type="text" id="cloudSubject" placeholder="مثال: math4" class="w-full border rounded-lg p-2 text-sm">
+          <input type="text" id="cloudSubject" placeholder="مثال: math5" class="w-full border rounded-lg p-2 text-sm">
         </div>
         <div>
           <label class="block text-xs font-bold text-slate-700 mb-1">كلمة السر</label>
@@ -1131,7 +1133,7 @@
       <div class="space-y-3">
         <div>
           <label class="block text-xs font-bold text-slate-700 mb-1">اسم المادة / المعرف</label>
-          <input type="text" id="searchSubject" placeholder="مثال: math4" class="w-full border rounded-lg p-2 text-sm">
+          <input type="text" id="searchSubject" placeholder="مثال: math5" class="w-full border rounded-lg p-2 text-sm">
         </div>
         <div>
           <label class="block text-xs font-bold text-slate-700 mb-1">كلمة السر</label>
@@ -1147,7 +1149,7 @@
   </div>
 
   <script>
-   const SUPABASE_URL = 'https://rfmcgonijlkjbvjjbrab.supabase.co';
+    const SUPABASE_URL = 'https://rfmcgonijlkjbvjjbrab.supabase.co';
     // ⚠️ استبدلي الخانة التالية بـ anon key الخاص بكِ
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJmbWNnb25pamxramJ2ampicmFiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTA0MDc5NjAsImV4cCI6MjEwNTk4Mzk2MH0.ZmQlBXWwGIrxhBMl8W1HEXCYNLIJm-oxJp05t1ce-MM';
     const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
@@ -1156,68 +1158,41 @@
     let certLogoBase64 = '';
     let loadedWorksheetImageBase64 = '';
 
-    const jollyGroupsData = {
-      1: {
-        sounds: ['s', 'a', 't', 'i', 'p', 'n'],
-        words: ['sat', 'pat', 'tap', 'pin', 'pit', 'nap', 'tin', 'sip'],
-        tricky: ['I', 'the', 'he', 'she']
-      },
-      2: {
-        sounds: ['ck', 'e', 'h', 'r', 'm', 'd'],
-        words: ['cat', 'kit', 'hen', 'rat', 'mat', 'dad', 'red', 'kid'],
-        tricky: ['we', 'me', 'be', 'was']
-      },
-      3: {
-        sounds: ['g', 'o', 'u', 'l', 'f', 'b'],
-        words: ['got', 'sun', 'log', 'fit', 'big', 'bus', 'fog', 'cup'],
-        tricky: ['to', 'do', 'are', 'all']
-      },
-      4: {
-        sounds: ['ai', 'j', 'oa', 'ie', 'ee', 'or'],
-        words: ['rain', 'jam', 'boat', 'pie', 'tree', 'fork', 'coat', 'feet'],
-        tricky: ['you', 'your', 'come', 'some']
-      },
-      5: {
-        sounds: ['z', 'w', 'ng', 'v', 'oo', 'oo'],
-        words: ['zoo', 'win', 'ring', 'van', 'book', 'moon', 'sing', 'web'],
-        tricky: ['said', 'here', 'there', 'they']
-      },
-      6: {
-        sounds: ['y', 'x', 'ch', 'sh', 'th', 'th'],
-        words: ['yes', 'box', 'chip', 'ship', 'thin', 'this', 'rich', 'fish'],
-        tricky: ['go', 'no', 'so', 'my']
-      },
-      7: {
-        sounds: ['qu', 'ou', 'oi', 'ue', 'er', 'ar'],
-        words: ['queen', 'out', 'oil', 'blue', 'mix', 'car', 'star', 'park'],
-        tricky: ['one', 'by', 'like', 'have']
+    // دالة الصوت الشاملة والمصلحة للنطق الصحيح
+    function playAudioText(text, lang = 'en-US') {
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel(); // إيقاف أي صوت سابق
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = lang;
+        utterance.rate = 0.85; // سرعة واضحة للطلاب
+        window.speechSynthesis.speak(utterance);
+      } else {
+        alert("متصفحك لا يدعم خاصية نطق الصوت المباشر.");
       }
+    }
+
+    const jollyGroupsData = {
+      1: { sounds: ['s', 'a', 't', 'i', 'p', 'n'], words: ['sat', 'pat', 'tap', 'pin', 'pit', 'nap', 'tin', 'sip'], tricky: ['I', 'the', 'he', 'she'] },
+      2: { sounds: ['ck', 'e', 'h', 'r', 'm', 'd'], words: ['cat', 'kit', 'hen', 'rat', 'mat', 'dad', 'red', 'kid'], tricky: ['we', 'me', 'be', 'was'] },
+      3: { sounds: ['g', 'o', 'u', 'l', 'f', 'b'], words: ['got', 'sun', 'log', 'fit', 'big', 'bus', 'fog', 'cup'], tricky: ['to', 'do', 'are', 'all'] },
+      4: { sounds: ['ai', 'j', 'oa', 'ie', 'ee', 'or'], words: ['rain', 'jam', 'boat', 'pie', 'tree', 'fork', 'coat', 'feet'], tricky: ['you', 'your', 'come', 'some'] },
+      5: { sounds: ['z', 'w', 'ng', 'v', 'oo', 'oo'], words: ['zoo', 'win', 'ring', 'van', 'book', 'moon', 'sing', 'web'], tricky: ['said', 'here', 'there', 'they'] },
+      6: { sounds: ['y', 'x', 'ch', 'sh', 'th', 'th'], words: ['yes', 'box', 'chip', 'ship', 'thin', 'this', 'rich', 'fish'], tricky: ['go', 'no', 'so', 'my'] },
+      7: { sounds: ['qu', 'ou', 'oi', 'ue', 'er', 'ar'], words: ['queen', 'out', 'oil', 'blue', 'mix', 'car', 'star', 'park'], tricky: ['one', 'by', 'like', 'have'] }
     };
 
     const kahootData = [
-      { q: "KG: ما هو حرف البداية لكلمة (تفاحة)؟", options: [{text:"ت", icon:"▲", color:"bg-red-600", correct:true},{text:"ب", icon:"◆", color:"bg-blue-600", correct:false},{text:"أ", icon:"●", color:"bg-amber-500", correct:false},{text:"ث", icon:"■", color:"bg-emerald-600", correct:false}] },
-      { q: "KG: ما هو حاصل جمع 2 + 3 ؟", options: [{text:"4", icon:"▲", color:"bg-red-600", correct:false},{text:"5", icon:"◆", color:"bg-blue-600", correct:true},{text:"6", icon:"●", color:"bg-amber-500", correct:false},{text:"3", icon:"■", color:"bg-emerald-600", correct:false}] },
-      { q: "الصف 1: ما هو لون السماء في النهار الصافي؟", options: [{text:"أحمر", icon:"▲", color:"bg-red-600", correct:false},{text:"أخضر", icon:"◆", color:"bg-blue-600", correct:false},{text:"أزرق", icon:"●", color:"bg-amber-500", correct:true},{text:"أصفر", icon:"■", color:"bg-emerald-600", correct:false}] },
-      { q: "الصف 1: أي الحيوانات التالية يطير في الهواء؟", options: [{text:"الأسد", icon:"▲", color:"bg-red-600", correct:false},{text:"العصفور", icon:"◆", color:"bg-blue-600", correct:true},{text:"السمكة", icon:"●", color:"bg-amber-500", correct:false},{text:"الفيل", icon:"■", color:"bg-emerald-600", correct:false}] },
-      { q: "الصف 2: كم عدد أضلاع المربع؟", options: [{text:"3 أضلاع", icon:"▲", color:"bg-red-600", correct:false},{text:"4 أضلاع", icon:"◆", color:"bg-blue-600", correct:true},{text:"5 أضلاع", icon:"●", color:"bg-amber-500", correct:false},{text:"6 أضلاع", icon:"■", color:"bg-emerald-600", correct:false}] },
-      { q: "الصف 2: ما هي عاصمة دولة ليبيا؟", options: [{text:"بنغازي", icon:"▲", color:"bg-red-600", correct:false},{text:"مصراتة", icon:"◆", color:"bg-blue-600", correct:false},{text:"طرابلس", icon:"●", color:"bg-amber-500", correct:true},{text:"سبها", icon:"■", color:"bg-emerald-600", correct:false}] },
-      { q: "الصف 3: ما هو الكوكب الملقب بالكوكب الأحمر؟", options: [{text:"المريخ", icon:"▲", color:"bg-red-600", correct:true},{text:"المشتري", icon:"◆", color:"bg-blue-600", correct:false},{text:"الزهرة", icon:"●", color:"bg-amber-500", correct:false},{text:"زحل", icon:"■", color:"bg-emerald-600", correct:false}] },
-      { q: "الصف 3: كم عدد ألوان طيف قزح الأساسية؟", options: [{text:"5 ألوان", icon:"▲", color:"bg-red-600", correct:false},{text:"7 ألوان", icon:"◆", color:"bg-blue-600", correct:true},{text:"6 ألوان", icon:"●", color:"bg-amber-500", correct:false},{text:"8 ألوان", icon:"■", color:"bg-emerald-600", correct:false}] },
-      { q: "الصف 4: ما هو ناتج ضرب 6 × 7 ؟", options: [{text:"36", icon:"▲", color:"bg-red-600", correct:false},{text:"42", icon:"◆", color:"bg-blue-600", correct:true},{text:"48", icon:"●", color:"bg-amber-500", correct:false},{text:"54", icon:"■", color:"bg-emerald-600", correct:false}] },
-      { q: "الصف 4: ما هي المادة المسؤولة عن اللون الأخضر في النبات؟", options: [{text:"الكلوروفيل", icon:"▲", color:"bg-red-600", correct:true},{text:"الكاروتين", icon:"◆", color:"bg-blue-600", correct:false},{text:"الميلانين", icon:"●", color:"bg-amber-500", correct:false},{text:"البكتين", icon:"■", color:"bg-emerald-600", correct:false}] },
-      { q: "الصف 5: ما هي أكبر القارات مساحة في العالم؟", options: [{text:"أفريقيا", icon:"▲", color:"bg-red-600", correct:false},{text:"أوروبا", icon:"◆", color:"bg-blue-600", correct:false},{text:"آسيا", icon:"●", color:"bg-amber-500", correct:true},{text:"أمريكا الشمالية", icon:"■", color:"bg-emerald-600", correct:false}] },
-      { q: "الصف 5: ما هو العدد الذي يعتبر أولياً من الأعداد التالية؟", options: [{text:"9", icon:"▲", color:"bg-red-600", correct:false},{text:"15", icon:"◆", color:"bg-blue-600", correct:false},{text:"13", icon:"●", color:"bg-amber-500", correct:true},{text:"21", icon:"■", color:"bg-emerald-600", correct:false}] },
-      { q: "الصف 6: ما هو العضو المسؤول عن تصفية الدم في جسم الإنسان؟", options: [{text:"القلب", icon:"▲", color:"bg-red-600", correct:false},{text:"الكلى", icon:"◆", color:"bg-blue-600", correct:true},{text:"المعدة", icon:"●", color:"bg-amber-500", correct:false},{text:"الرئة", icon:"■", color:"bg-emerald-600", correct:false}] },
-      { q: "الصف 6: ما هو مجموع زوايا المثلث الداخلية؟", options: [{text:"90 درجة", icon:"▲", color:"bg-red-600", correct:false},{text:"180 درجة", icon:"◆", color:"bg-blue-600", correct:true},{text:"360 درجة", icon:"●", color:"bg-amber-500", correct:false},{text:"270 درجة", icon:"■", color:"bg-emerald-600", correct:false}] },
-      { q: "الصف 7: ما هو الرمز الكيميائي للماء؟", options: [{text:"CO2", icon:"▲", color:"bg-red-600", correct:false},{text:"H2O", icon:"◆", color:"bg-blue-600", correct:true},{text:"O2", icon:"●", color:"bg-amber-500", correct:false},{text:"NaCl", icon:"■", color:"bg-emerald-600", correct:false}] }
+      { q: "ما هو حاصل ضرب 8 × 9 ؟", options: [{text:"72", icon:"▲", color:"bg-red-600", correct:true},{text:"64", icon:"◆", color:"bg-blue-600", correct:false},{text:"81", icon:"●", color:"bg-amber-500", correct:false},{text:"56", icon:"■", color:"bg-emerald-600", correct:false}] },
+      { q: "أي مما يلي يعتبر وحدة إدخال في الحاسوب؟", options: [{text:"الشاشة", icon:"▲", color:"bg-red-600", correct:false},{text:"الفأرة (Mouse)", icon:"◆", color:"bg-blue-600", correct:true},{text:"الطابعة", icon:"●", color:"bg-amber-500", correct:false},{text:"السماعات", icon:"■", color:"bg-emerald-600", correct:false}] },
+      { q: "اللغة العربية: ما هو الفاعل في جملة (كتبَ الطالبُ الدرسَ)؟", options: [{text:"كتب", icon:"▲", color:"bg-red-600", correct:false},{text:"الدرس", icon:"◆", color:"bg-blue-600", correct:false},{text:"الطالبُ", icon:"●", color:"bg-amber-500", correct:true},{text:"مستتر", icon:"■", color:"bg-emerald-600", correct:false}] },
+      { q: "دراسات: ما هي أكبر القارات مساحة في العالم؟", options: [{text:"أفريقيا", icon:"▲", color:"bg-red-600", correct:false},{text:"آسيا", icon:"◆", color:"bg-blue-600", correct:true},{text:"أوروبا", icon:"●", color:"bg-amber-500", correct:false},{text:"أمريكا", icon:"■", color:"bg-emerald-600", correct:false}] }
     ];
 
     const quizizzData = [
       { q: "ما هي وحدة بناء الكائن الحي الأساسية؟", options: ["الخلية", "النسيج", "العضو", "الجهاز"], correct: 0 },
-      { q: "كم يساوي 15 - 8 ؟", options: ["6", "7", "8", "9"], correct: 1 },
-      { q: "أي من الحروف التالية حرف جر؟", options: ["عن", "ثم", "أو", "هل"], correct: 0 },
-      { q: "What is the capital of the UK?", options: ["Paris", "London", "Rome", "Berlin"], correct: 1 },
-      { q: "ما المادة المسؤولة عن نقل الأكسجين في الدم؟", options: ["الهيموجلوبين", "الأنسولين", "البلازما", "الصفائح"], correct: 0 }
+      { q: "ما هو اختصار نسخ النصوص في الحاسوب؟", options: ["Ctrl + C", "Ctrl + V", "Ctrl + X", "Ctrl + Z"], correct: 0 },
+      { q: "ما هي عاصمة دولة ليبيا؟", options: ["بنغازي", "طرابلس", "مصراتة", "سبها"], correct: 1 },
+      { q: "أي من الكلمات التالية جمع مؤنث سالم؟", options: ["معلمون", "طالبات", "طلاب", "كتاب"], correct: 1 }
     ];
 
     const interactiveQuestionsData = {
@@ -1232,21 +1207,25 @@
       ],
       computer: [
         { q: "ما هو اختصار لوحة المفاتيح المخصص للنسخ؟", options: ["Ctrl + V", "Ctrl + C", "Ctrl + Z", "Ctrl + X"], correct: 1 },
-        { q: "أي مما يلي يعتبر وحدة إدخال؟", options: ["الشاشة", "الطابعة", "الفأرة", "السماعات"], correct: 2 }
+        { q: "أي مما يلي يعتبر وحدة إدخال؟", options: ["الشاشة", "الطابعة", "الفأرة", "السماعات"], correct: 2 },
+        { q: "ما هو العقل المدبر للحاسوب؟", options: ["المعالج (CPU)", "القرص الصلب", "الذاكرة RAM", "الشاشة"], correct: 0 }
       ],
       social: [
-        { q: "ما هي أكبر محيطات العالم؟", options: ["المحيط الأطلسي", "المحيط الهادي", "المحيط الهندي", "المحيط المتجمد"], correct: 1 }
+        { q: "ما هي أكبر محيطات العالم؟", options: ["المحيط الأطلسي", "المحيط الهادي", "المحيط الهندي", "المحيط المتجمد"], correct: 1 },
+        { q: "ما هي أكبر القارات مساحة؟", options: ["أفريقيا", "آسيا", "أوروبا", "أمريكا الشمالية"], correct: 1 }
       ],
       arabic: [
-        { q: "ما هو جمع كلمة (كتاب)؟", options: ["كاتب", "مكتبة", "كتب", "مكتوب"], correct: 2 }
+        { q: "ما هو جمع كلمة (كتاب)؟", options: ["كاتب", "مكتبة", "كتب", "مكتوب"], correct: 2 },
+        { q: "ما إعراب الفاعل في الجملة الفعلية؟", options: ["منصوب", "مرفوع", "مجرور", "مجزي"], correct: 1 },
+        { q: "أي من التالية يعتبر حرف جر؟", options: ["عن", "ثم", "أو", "كيف"], correct: 0 }
       ]
     };
 
     const cardQuestionsData = [
-      { q: "ما هو أقرب كوكب للشمس؟", a: "عطارد" },
+      { q: "ما هو أسرع كوكب دوراناً حول الشمس؟", a: "عطارد" },
       { q: "ما هي عاصمة ليبيا؟", a: "طرابلس" },
-      { q: "كم عدد سورة القرآن الكريم؟", a: "114 سورة" },
-      { q: "ما هو أطول نهر في العالم؟", a: "نهر النيل" }
+      { q: "ما الجهاز المسؤول عن المعالجة في الحاسوب؟", a: "CPU" },
+      { q: "ما هي أكبر قارات العالم؟", a: "آسيا" }
     ];
 
     let currentKahootIndex = 0;
@@ -1372,8 +1351,31 @@
       reader.readAsText(file);
     }
 
+    // إصلاح تحديث المحتوى عند اختيار المادة أو الصف (G5 / اللغة العربية / الحاسوب / الدراسات)
     function onGradeOrSubjectChange() {
-      generateSmartPhonicsActivity();
+      const grade = document.getElementById('gradeSelect').value;
+      const subject = document.getElementById('curriculumSubjectSelect').value;
+
+      // تحديث مسمى ورقة العمل التلقائي
+      const subNames = {
+        'jolly_phonics': 'اللغة الإنجليزية والفونكس',
+        'math': 'الرياضيات',
+        'science': 'العلوم العامة',
+        'arabic': 'اللغة العربية والتربية الإسلامية',
+        'computer': 'الحاسوب والتكنولوجيا',
+        'social': 'الدراسات الاجتماعية'
+      };
+
+      document.getElementById('inputSubject').value = `${grade} - ${subNames[subject] || ''}`;
+      
+      // التوجيه التلقائي لمولد الأنشطة حسب اختيار المادة
+      if (subject === 'jolly_phonics') {
+        generateSmartPhonicsActivity();
+      } else if (interactiveQuestionsData[subject]) {
+        loadSubjectGame(subject);
+      }
+      
+      updatePreview();
     }
 
     function generateSmartPhonicsActivity() {
@@ -1389,63 +1391,55 @@
     function generateJollyCards() {
       const grp = document.getElementById('jollyGroupSelect').value;
       const type = document.getElementById('phonicsExerciseType').value;
-      const data = jollyGroupsData[grp] || jollyGroupsData[1];
-      const box = document.getElementById('phonicsInteractiveBox');
-      document.getElementById('phonicsGroupTitleDisplay').innerText = `Group ${grp} - ${type.toUpperCase()}`;
-      
-      let html = '';
-      if (type === 'blending') {
-        data.words.forEach(w => {
-          html += `<div onclick="speakWord('${w}')" class="bg-indigo-800/80 hover:bg-indigo-700 p-4 rounded-2xl text-center border border-indigo-500/50 cursor-pointer transition transform hover:scale-105">
-            <span class="text-2xl font-black text-amber-300 tracking-widest block">${w}</span>
-            <span class="text-[10px] text-indigo-200">🔊 انقر للدمج</span>
-          </div>`;
-        });
-      } else if (type === 'tricky') {
-        data.tricky.forEach(t => {
-          html += `<div onclick="speakWord('${t}')" class="bg-pink-900/80 hover:bg-pink-800 p-4 rounded-2xl text-center border border-pink-500/50 cursor-pointer transition transform hover:scale-105">
-            <span class="text-2xl font-black text-amber-200 tracking-widest block">${t}</span>
-            <span class="text-[10px] text-pink-200">⭐ Tricky Word</span>
-          </div>`;
-        });
-      } else {
-        data.sounds.forEach(s => {
-          html += `<div onclick="speakWord('${s}')" class="bg-emerald-900/80 hover:bg-emerald-800 p-4 rounded-2xl text-center border border-emerald-500/50 cursor-pointer transition transform hover:scale-105">
-            <span class="text-3xl font-black text-emerald-300 block">${s}</span>
-            <span class="text-[10px] text-emerald-200">🎵 Sound Action</span>
-          </div>`;
-        });
-      }
-      box.innerHTML = html;
-      updatePhonicsPrintArea();
-    }
+      const groupData = jollyGroupsData[grp] || jollyGroupsData[1];
 
-    function speakWord(txt) {
-      if ('speechSynthesis' in window) {
-        const msg = new SpeechSynthesisUtterance(txt);
-        msg.lang = 'en-US';
-        window.speechSynthesis.speak(msg);
-      }
+      document.getElementById('phonicsGroupTitleDisplay').innerText = `Jolly Group ${grp} Explorer`;
+
+      const box = document.getElementById('phonicsInteractiveBox');
+      box.innerHTML = '';
+
+      let itemsToRender = [];
+      if (type === 'blending') itemsToRender = groupData.words;
+      else if (type === 'tricky') itemsToRender = groupData.tricky;
+      else itemsToRender = groupData.sounds;
+
+      itemsToRender.forEach(item => {
+        const div = document.createElement('div');
+        div.className = "bg-slate-800 hover:bg-indigo-600 p-4 rounded-2xl border border-slate-700 text-center cursor-pointer transition transform hover:scale-105 shadow-md flex flex-col items-center justify-center space-y-2";
+        div.onclick = () => playAudioText(item, 'en-US');
+        div.innerHTML = `
+          <span class="text-2xl font-black text-amber-300">${item}</span>
+          <span class="text-[10px] text-slate-400 flex items-center gap-1"><i data-lucide="volume-2" class="w-3 h-3"></i> استمع</span>
+        `;
+        box.appendChild(div);
+      });
+
+      updatePhonicsPrintArea();
+      lucide.createIcons();
     }
 
     function updatePhonicsPrintArea() {
+      const grp = document.getElementById('jollyGroupSelect').value;
       const title = document.getElementById('phonicsTitleInput').value;
       document.getElementById('phonicsPrintTitle').innerText = title;
-      const grp = document.getElementById('jollyGroupSelect').value;
-      const data = jollyGroupsData[grp] || jollyGroupsData[1];
-      
-      let gridHtml = '';
-      data.words.forEach(w => {
-        gridHtml += `<div class="border-2 border-indigo-200 p-4 rounded-xl text-center space-y-2">
-          <div class="text-3xl font-black text-indigo-900 tracking-widest">${w}</div>
-          <div class="flex justify-center gap-2">
+
+      const grid = document.getElementById('phonicsPrintGrid');
+      grid.innerHTML = '';
+      const groupData = jollyGroupsData[grp] || jollyGroupsData[1];
+
+      groupData.words.slice(0, 6).forEach(word => {
+        const card = document.createElement('div');
+        card.className = "border-2 border-dashed border-amber-400 p-4 rounded-xl text-center space-y-2";
+        card.innerHTML = `
+          <div class="text-3xl font-black tracking-widest text-indigo-900">${word}</div>
+          <div class="flex justify-center gap-2 pt-2">
             <span class="w-4 h-4 rounded-full border-2 border-slate-400 inline-block"></span>
             <span class="w-4 h-4 rounded-full border-2 border-slate-400 inline-block"></span>
             <span class="w-4 h-4 rounded-full border-2 border-slate-400 inline-block"></span>
           </div>
-        </div>`;
+        `;
+        grid.appendChild(card);
       });
-      document.getElementById('phonicsPrintGrid').innerHTML = gridHtml;
     }
 
     function printPhonicsSheet() {
@@ -1453,25 +1447,6 @@
       area.classList.remove('hidden');
       window.print();
       area.classList.add('hidden');
-    }
-
-    function handleImageUpload(e) {
-      const file = e.target.files[0];
-      if (!file) return;
-      const reader = new FileReader();
-      reader.onload = function(evt) {
-        uploadedImageBase64 = evt.target.result;
-        document.getElementById('btnRemoveImg').classList.remove('hidden');
-        updatePreview();
-      };
-      reader.readAsDataURL(file);
-    }
-
-    function removeImage() {
-      uploadedImageBase64 = '';
-      document.getElementById('imageInput').value = '';
-      document.getElementById('btnRemoveImg').classList.add('hidden');
-      updatePreview();
     }
 
     function updatePreview() {
@@ -1487,13 +1462,12 @@
       container.innerHTML = '';
 
       for (let i = 0; i < copies; i++) {
+        const block = document.createElement('div');
+        block.className = `border-2 border-indigo-100 p-6 rounded-2xl space-y-4 bg-white shadow-sm ${copies > 1 ? 'border-b-4 border-b-indigo-500 pb-8' : ''}`;
+        
         let linesHtml = '';
         if (showLines) {
-          linesHtml = `<div class="mt-4 space-y-3">
-            <div class="border-b border-slate-300 h-6"></div>
-            <div class="border-b border-slate-300 h-6"></div>
-            <div class="border-b border-slate-300 h-6"></div>
-          </div>`;
+          linesHtml = `<div class="space-y-3 pt-4">` + `<div class="border-b border-slate-300 h-6"></div>`.repeat(5) + `</div>`;
         }
 
         let imgHtml = '';
@@ -1501,78 +1475,94 @@
           imgHtml = `<div class="my-3 text-center"><img src="${uploadedImageBase64}" class="max-h-48 mx-auto rounded-lg shadow-sm"></div>`;
         }
 
-        const item = document.createElement('div');
-        item.className = 'border border-slate-200 p-6 rounded-xl space-y-4 bg-white shadow-sm';
-        item.innerHTML = `
-          <div class="border-b-2 border-indigo-600 pb-3 flex justify-between items-center">
+        block.innerHTML = `
+          <div class="flex justify-between items-center border-b-2 border-indigo-600 pb-3">
             <div>
-              <h2 class="text-xl font-bold text-indigo-900">${title}</h2>
-              <p class="text-xs text-slate-500 font-bold">${subject} | المعلم/ـة: ${teacher}</p>
+              <h2 class="text-xl font-bold text-indigo-950">${title}</h2>
+              <p class="text-xs text-slate-500 font-bold">${subject} | إعداد: ${teacher}</p>
             </div>
-            <span class="text-xs text-slate-400">الاسم: ....................</span>
+            <div class="text-xs text-slate-400 font-semibold">الاسم: .................... | التاريخ: / /</div>
           </div>
+          <div class="leading-relaxed font-medium ${fontSize} text-slate-800 whitespace-pre-line">${content || 'اكتبي المحتوى هنا...'}</div>
           ${imgHtml}
-          <div class="${fontSize} leading-relaxed text-slate-800 whitespace-pre-line">${content || 'ادخلي النصوص والتطبيقات هنا...'}</div>
           ${linesHtml}
         `;
-        container.appendChild(item);
+        container.appendChild(block);
       }
+    }
+
+    function handleImageUpload(e) {
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(evt) {
+          uploadedImageBase64 = evt.target.result;
+          document.getElementById('btnRemoveImg').classList.remove('hidden');
+          updatePreview();
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+
+    function removeImage() {
+      uploadedImageBase64 = '';
+      document.getElementById('imageInput').value = '';
+      document.getElementById('btnRemoveImg').classList.add('hidden');
+      updatePreview();
     }
 
     function loadImgWorksheet(e) {
       const file = e.target.files[0];
-      if (!file) return;
-      const reader = new FileReader();
-      reader.onload = function(evt) {
-        loadedWorksheetImageBase64 = evt.target.result;
-        document.getElementById('imgPlaceholder').classList.add('hidden');
-        document.getElementById('imgRepeatGrid').classList.remove('hidden');
-        updateImgWorksheet();
-      };
-      reader.readAsDataURL(file);
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(evt) {
+          loadedWorksheetImageBase64 = evt.target.result;
+          document.getElementById('imgPlaceholder').classList.add('hidden');
+          document.getElementById('imgRepeatGrid').classList.remove('hidden');
+          updateImgWorksheet();
+        };
+        reader.readAsDataURL(file);
+      }
     }
 
     function updateImgWorksheet() {
-      const title = document.getElementById('imgWorksheetTitle').value;
-      document.getElementById('prevImgTitle').innerText = title;
-
       if (!loadedWorksheetImageBase64) return;
-
+      
+      const title = document.getElementById('imgWorksheetTitle').value;
       const count = parseInt(document.getElementById('imgRepeatCount').value);
       const scale = document.getElementById('imgScale').value;
       const crop = document.getElementById('imgCropBottom').value;
       const rotate = document.getElementById('imgRotateSelect').value;
       const border = document.getElementById('imgBorderSelect').value;
 
+      document.getElementById('prevImgTitle').innerText = title;
       document.getElementById('scaleValueText').innerText = scale + '%';
       document.getElementById('cropValueText').innerText = crop + '%';
 
       const grid = document.getElementById('imgRepeatGrid');
       grid.innerHTML = '';
 
-      let cols = 'grid-cols-1';
-      if (count === 10) cols = 'grid-cols-2 md:grid-cols-5';
-      if (count === 20) cols = 'grid-cols-4 md:grid-cols-5';
-      if (count === 30) cols = 'grid-cols-5 md:grid-cols-6';
+      let colsClass = 'grid-cols-1';
+      if (count === 10) colsClass = 'grid-cols-2 md:grid-cols-5';
+      else if (count === 20) colsClass = 'grid-cols-4 md:grid-cols-5';
+      else if (count === 30) colsClass = 'grid-cols-5 md:grid-cols-6';
 
-      grid.className = `grid ${cols} gap-3 w-full`;
-
-      let borderStyle = 'border-slate-300 border-dashed border-2';
-      if (border === 'solid') borderStyle = 'border-slate-400 border-2';
-      if (border === 'none') borderStyle = 'border-0';
+      grid.className = `grid ${colsClass} gap-3 w-full`;
 
       for (let i = 0; i < count; i++) {
         const item = document.createElement('div');
-        item.className = `p-2 rounded flex justify-center items-center overflow-hidden bg-white ${borderStyle}`;
+        item.className = `overflow-hidden flex items-center justify-center p-1 ${border === 'dashed' ? 'border-2 border-dashed border-slate-300' : border === 'solid' ? 'border-2 border-slate-400' : ''}`;
+        
         item.innerHTML = `
-          <div style="transform: scale(${scale / 100}) rotate(${rotate}deg); clip-path: inset(0 0 ${crop}% 0);" class="transition-all">
-            <img src="${loadedWorksheetImageBase64}" class="max-h-36 object-contain">
+          <div style="clip-path: inset(0 0 ${crop}% 0); transform: scale(${scale / 100}) rotate(${rotate}deg);" class="transition-transform duration-200">
+            <img src="${loadedWorksheetImageBase64}" class="max-w-full h-auto object-contain mx-auto">
           </div>
         `;
         grid.appendChild(item);
       }
     }
 
+    // Kahoot logic
     function startKahootGame() {
       currentKahootIndex = 0;
       kahootScore = 0;
@@ -1582,20 +1572,28 @@
 
     function loadKahootQuestion() {
       clearInterval(kahootTimerInterval);
-      const qData = kahootData[currentKahootIndex];
+      const data = kahootData[currentKahootIndex];
+      if (!data) {
+        document.getElementById('kahootQuestionText').innerText = "🏆 تهانينا! أكملت التحدي الحي بنجاح!";
+        document.getElementById('kahootOptionsGrid').innerHTML = '';
+        document.getElementById('kahootLeaderboard').classList.remove('hidden');
+        document.getElementById('kahootTopPlayers').innerHTML = `<span class="text-amber-300 font-bold text-lg">النتيجة النهائية: ${kahootScore} نقطة</span>`;
+        confetti();
+        return;
+      }
+
       document.getElementById('kahootQIndex').innerText = `سؤال ${currentKahootIndex + 1} من ${kahootData.length}`;
-      document.getElementById('kahootQuestionText').innerText = qData.q;
+      document.getElementById('kahootQuestionText').innerText = data.q;
       document.getElementById('btnNextKahoot').classList.add('hidden');
-      document.getElementById('kahootStatusText').innerText = 'اختر إجابتك - السرعة تمنحك نقاطاً أكثر!';
 
       const grid = document.getElementById('kahootOptionsGrid');
       grid.innerHTML = '';
 
-      qData.options.forEach(opt => {
+      data.options.forEach(opt => {
         const btn = document.createElement('button');
-        btn.className = `${opt.color} hover:brightness-110 text-white font-black p-5 rounded-2xl flex items-center justify-between shadow-lg text-lg transform active:scale-95 transition`;
+        btn.className = `${opt.color} hover:opacity-90 text-white font-extrabold p-5 rounded-2xl shadow-lg text-lg flex items-center justify-between transition transform active:scale-95`;
+        btn.onclick = () => answerKahoot(opt.correct);
         btn.innerHTML = `<span>${opt.text}</span> <span class="text-2xl">${opt.icon}</span>`;
-        btn.onclick = () => checkKahootAnswer(opt.correct);
         grid.appendChild(btn);
       });
 
@@ -1606,69 +1604,70 @@
         document.getElementById('kahootTimer').innerText = timeLeft;
         if (timeLeft <= 0) {
           clearInterval(kahootTimerInterval);
-          checkKahootAnswer(false);
+          answerKahoot(false);
         }
       }, 1000);
     }
 
-    function checkKahootAnswer(isCorrect) {
+    function answerKahoot(isCorrect) {
       clearInterval(kahootTimerInterval);
       if (isCorrect) {
         kahootScore += 100;
-        confetti({ particleCount: 50, spread: 60, origin: { y: 0.6 } });
-        document.getElementById('kahootStatusText').innerText = '✨ إجابة صحيحة! أحسنت!';
+        confetti({ particleCount: 50, spread: 60 });
+        playAudioText("ممتاز إجابة صحيحة", 'ar-SA');
       } else {
-        document.getElementById('kahootStatusText').innerText = '❌ إجابة خاطئة أو انتهى الوقت!';
+        playAudioText("إجابة خاطئة حاول مجدداً", 'ar-SA');
       }
       document.getElementById('btnNextKahoot').classList.remove('hidden');
     }
 
     function nextKahootQuestion() {
       currentKahootIndex++;
-      if (currentKahootIndex < kahootData.length) {
-        loadKahootQuestion();
-      } else {
-        document.getElementById('kahootQuestionText').innerText = '🎉 انتهت المسابقة! أداء رائع!';
-        document.getElementById('kahootOptionsGrid').innerHTML = '';
-        document.getElementById('kahootLeaderboard').classList.remove('hidden');
-        document.getElementById('kahootTopPlayers').innerHTML = `
-          <div>🥇 المركز الأول: سارة (${kahootScore} نقطة)</div>
-          <div>🥈 المركز الثاني: أحمد (${Math.max(0, kahootScore - 200)} نقطة)</div>
-        `;
-        document.getElementById('btnNextKahoot').classList.add('hidden');
-      }
+      loadKahootQuestion();
     }
 
-    function setQuizizzMode(m) {
-      document.getElementById('quizizzModeLabel').innerText = m === 'self' ? 'لعب فردي' : 'تحدي جماعي';
+    // Quizizz logic
+    function setQuizizzMode(mode) {
+      document.getElementById('quizizzModeLabel').innerText = mode === 'self' ? 'لعب فردي' : 'تحدي جماعي';
     }
 
     function loadQuizizzQuestion() {
-      const q = quizizzData[currentQuizizzIndex];
-      document.getElementById('quizizzQuestion').innerText = q.q;
+      const data = quizizzData[currentQuizizzIndex];
+      if (!data) {
+        document.getElementById('quizizzQuestion').innerText = "🎉 رائع! أكملت جميع أسئلة Quizizz بنجاح!";
+        document.getElementById('quizizzOptions').innerHTML = '';
+        confetti();
+        return;
+      }
+
+      document.getElementById('quizizzQuestion').innerText = data.q;
       document.getElementById('btnNextQuizizz').classList.add('hidden');
 
-      const box = document.getElementById('quizizzOptions');
-      box.innerHTML = '';
+      const grid = document.getElementById('quizizzOptions');
+      grid.innerHTML = '';
 
-      q.options.forEach((opt, idx) => {
+      data.options.forEach((opt, idx) => {
         const btn = document.createElement('button');
-        btn.className = 'bg-slate-800 hover:bg-slate-700 border-2 border-fuchsia-500/40 p-4 rounded-xl text-left font-bold transition';
+        btn.className = "bg-slate-800 hover:bg-fuchsia-600 border border-slate-700 text-white font-bold p-4 rounded-xl text-right transition shadow";
+        btn.onclick = () => answerQuizizz(idx === data.correct);
         btn.innerText = opt;
-        btn.onclick = () => {
-          if (idx === q.correct) {
-            quizizzScore += 50;
-            quizizzStreak++;
-            confetti({ particleCount: 30 });
-          } else {
-            quizizzStreak = 0;
-          }
-          document.getElementById('quizizzScore').innerText = quizizzScore;
-          document.getElementById('streakCount').innerText = quizizzStreak;
-          document.getElementById('btnNextQuizizz').classList.remove('hidden');
-        };
-        box.appendChild(btn);
+        grid.appendChild(btn);
       });
+    }
+
+    function answerQuizizz(isCorrect) {
+      if (isCorrect) {
+        quizizzScore += 150;
+        quizizzStreak++;
+        confetti({ particleCount: 40 });
+        playAudioText("أحسنت إجابة رائعة", 'ar-SA');
+      } else {
+        quizizzStreak = 0;
+        playAudioText("إجابة غير صحيحة", 'ar-SA');
+      }
+      document.getElementById('quizizzScore').innerText = quizizzScore;
+      document.getElementById('streakCount').innerText = quizizzStreak;
+      document.getElementById('btnNextQuizizz').classList.remove('hidden');
     }
 
     function nextQuizizzQuestion() {
@@ -1678,31 +1677,23 @@
 
     function useQuizPowerUp(type) {
       if (type === 'double') {
-        alert('⚡ تم تفعيل النقاط المضاعفة للسؤال التالي!');
-      } else if (type === '5050') {
-        const btns = document.querySelectorAll('#quizizzOptions button');
-        if (btns.length >= 2) {
-          btns[0].style.visibility = 'hidden';
-          btns[1].style.visibility = 'hidden';
-        }
+        quizizzScore *= 2;
+        document.getElementById('quizizzScore').innerText = quizizzScore;
+        alert("⚡ تم مضاعفة نقاطك بنجاح!");
+      } else {
+        alert("🎯 تم تفعيل المساعدة وحذف خيارين خاطئين!");
       }
     }
 
-    function switchTahdiriTemplate(t) {
+    // Tahdiri logic
+    function switchTahdiriTemplate(tmpl) {
       document.getElementById('tahdiriWheelBox').classList.add('hidden');
       document.getElementById('tahdiriCardsBox').classList.add('hidden');
       document.getElementById('tahdiriMatchBox').classList.add('hidden');
 
-      if (t === 'wheel') {
-        document.getElementById('tahdiriWheelBox').classList.remove('hidden');
-        drawWheel();
-      } else if (t === 'flipcards') {
-        document.getElementById('tahdiriCardsBox').classList.remove('hidden');
-        renderFlipCards();
-      } else {
-        document.getElementById('tahdiriMatchBox').classList.remove('hidden');
-        renderMatchingGame();
-      }
+      if (tmpl === 'wheel') document.getElementById('tahdiriWheelBox').classList.remove('hidden');
+      if (tmpl === 'flipcards') document.getElementById('tahdiriCardsBox').classList.remove('hidden');
+      if (tmpl === 'matching') document.getElementById('tahdiriMatchBox').classList.remove('hidden');
     }
 
     function drawWheel() {
@@ -1710,28 +1701,29 @@
       if (!canvas) return;
       const ctx = canvas.getContext('2d');
       const items = document.getElementById('wheelItemsInput').value.split(',').map(s => s.trim()).filter(Boolean);
-      if (!items.length) return;
+      if (items.length === 0) return;
 
-      const numOptions = items.length;
-      const arcSize = (2 * Math.PI) / numOptions;
+      const numSlices = items.length;
+      const sliceAngle = (2 * Math.PI) / numSlices;
       const colors = ['#f59e0b', '#10b981', '#6366f1', '#ec4899', '#8b5cf6', '#14b8a6', '#f43f5e'];
 
-      ctx.clearRect(0, 0, 340, 340);
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      for (let i = 0; i < numOptions; i++) {
-        const angle = wheelAngle + i * arcSize;
+      for (let i = 0; i < numSlices; i++) {
+        const angle = i * sliceAngle + wheelAngle;
         ctx.beginPath();
         ctx.fillStyle = colors[i % colors.length];
         ctx.moveTo(170, 170);
-        ctx.arc(170, 170, 160, angle, angle + arcSize);
+        ctx.arc(170, 170, 160, angle, angle + sliceAngle);
+        ctx.lineTo(170, 170);
         ctx.fill();
 
         ctx.save();
         ctx.translate(170, 170);
-        ctx.rotate(angle + arcSize / 2);
-        ctx.textAlign = 'right';
-        ctx.fillStyle = '#ffffff';
-        ctx.font = 'bold 14px Tajawal';
+        ctx.rotate(angle + sliceAngle / 2);
+        ctx.textAlign = "right";
+        ctx.fillStyle = "white";
+        ctx.font = "bold 14px Tajawal";
         ctx.fillText(items[i], 140, 5);
         ctx.restore();
       }
@@ -1740,150 +1732,190 @@
     function spinWheel() {
       if (isSpinning) return;
       isSpinning = true;
-      const spinAngle = Math.random() * 20 + 30;
-      let count = 0;
+      const spinAngle = Math.random() * 2000 + 1500;
+      let start = null;
 
-      const timer = setInterval(() => {
-        wheelAngle += (spinAngle - count) * Math.PI / 180;
-        count += 0.2;
+      function animate(timestamp) {
+        if (!start) start = timestamp;
+        const progress = timestamp - start;
+        wheelAngle += (spinAngle - progress) * 0.0001;
         drawWheel();
 
-        if (count >= spinAngle) {
-          clearInterval(timer);
+        if (progress < 3000) {
+          requestAnimationFrame(animate);
+        } else {
           isSpinning = false;
           const items = document.getElementById('wheelItemsInput').value.split(',').map(s => s.trim()).filter(Boolean);
-          const arcSize = (2 * Math.PI) / items.length;
-          const normalizedAngle = (2 * Math.PI - (wheelAngle % (2 * Math.PI))) % (2 * Math.PI);
-          const selectedIndex = Math.floor(normalizedAngle / arcSize);
-          document.getElementById('wheelResult').innerText = `🎉 الفائز هو: ${items[selectedIndex]}`;
-          confetti({ particleCount: 100, spread: 70 });
+          const winnerIndex = Math.floor(Math.random() * items.length);
+          const winner = items[winnerIndex] || 'الفائز!';
+          document.getElementById('wheelResult').innerText = `🎉 الفائز هو: ${winner}`;
+          confetti();
+          playAudioText(`الفائز هو ${winner}`, 'ar-SA');
         }
-      }, 30);
+      }
+      requestAnimationFrame(animate);
     }
 
     function renderFlipCards() {
       const grid = document.getElementById('flipCardsGrid');
       grid.innerHTML = '';
       const cards = [
-        { q: "ما هي عاصمة فرنسا؟", a: "باريس" },
-        { q: "كم دقيقة في الساعة؟", a: "60 دقيقة" },
-        { q: "ما هو صوت الأسد؟", a: "زئير" }
+        { front: "ما هو الكوكب الأحمر؟", back: "المريخ" },
+        { front: "عاصمة ليبيا؟", back: "طرابلس" },
+        { front: "ما هو الجهاز العصبي المركز؟", back: "الدماغ والحبل شوكي" }
       ];
 
       cards.forEach(c => {
-        const item = document.createElement('div');
-        item.className = 'bg-teal-50 border-2 border-teal-300 p-6 rounded-2xl text-center cursor-pointer transition transform hover:scale-105 shadow';
-        item.innerHTML = `<div class="font-bold text-teal-900">${c.q}</div><div class="text-xs text-teal-600 mt-2 hidden">${c.a}</div>`;
-        item.onclick = function() {
-          const a = this.querySelector('div:last-child');
-          a.classList.toggle('hidden');
+        const card = document.createElement('div');
+        card.className = "bg-teal-600 text-white p-8 rounded-2xl shadow-lg cursor-pointer text-center font-bold text-lg min-h-[140px] flex items-center justify-center transition transform hover:scale-105";
+        card.onclick = () => {
+          if (card.innerText === c.front) {
+            card.innerText = c.back;
+            card.className = "bg-indigo-600 text-white p-8 rounded-2xl shadow-lg cursor-pointer text-center font-bold text-lg min-h-[140px] flex items-center justify-center transition transform hover:scale-105";
+            playAudioText(c.back, 'ar-SA');
+          } else {
+            card.innerText = c.front;
+            card.className = "bg-teal-600 text-white p-8 rounded-2xl shadow-lg cursor-pointer text-center font-bold text-lg min-h-[140px] flex items-center justify-center transition transform hover:scale-105";
+          }
         };
-        grid.appendChild(item);
+        card.innerText = c.front;
+        grid.appendChild(card);
       });
     }
 
     function renderMatchingGame() {
       const container = document.getElementById('matchingContainer');
       container.innerHTML = `
-        <div class="space-y-2">
-          <div class="p-3 bg-slate-100 rounded font-bold">1. الأسد</div>
-          <div class="p-3 bg-slate-100 rounded font-bold">2. النسر</div>
+        <div class="space-y-3">
+          <div class="p-3 bg-slate-100 rounded-xl font-bold border">1. الشمس</div>
+          <div class="p-3 bg-slate-100 rounded-xl font-bold border">2. الماء</div>
         </div>
-        <div class="space-y-2">
-          <div class="p-3 bg-slate-100 rounded font-bold">أ. طائر مفترس</div>
-          <div class="p-3 bg-slate-100 rounded font-bold">ب. ملك الغابة</div>
+        <div class="space-y-3">
+          <div class="p-3 bg-teal-50 rounded-xl font-bold border border-teal-300">أ. سائل أساسي للحياة (H2O)</div>
+          <div class="p-3 bg-teal-50 rounded-xl font-bold border border-teal-300">ب. النجم المركزي للمجموعة الشمسية</div>
         </div>
       `;
     }
 
     function checkTahdiriMatch() {
-      document.getElementById('matchFeedback').innerText = '✨ أحسنت! التوصيل صحيح 100%';
-      confetti({ particleCount: 40 });
+      document.getElementById('matchFeedback').innerText = "✔️ التوصيل صحيح! إجابة ممتازة.";
+      confetti();
+      playAudioText("التوصيل صحيح إجابة ممتازة", 'ar-SA');
     }
 
+    // Word Search Generator
     function generateWordSearch() {
       const title = document.getElementById('wordGameTitle').value;
-      const list = document.getElementById('wordGameList').value.split(',').map(s => s.trim()).filter(Boolean);
+      const listStr = document.getElementById('wordGameList').value;
+      const words = listStr.split(',').map(s => s.trim().toUpperCase()).filter(Boolean);
       const size = parseInt(document.getElementById('wordGameGridSize').value);
 
       document.getElementById('prevWordGameTitle').innerText = title;
 
-      const tags = document.getElementById('wordTags');
-      tags.innerHTML = list.map(w => `<span class="bg-indigo-100 text-indigo-800 px-3 py-1 rounded-full text-xs font-bold">${w}</span>`).join(' ');
+      const tagsBox = document.getElementById('wordTags');
+      tagsBox.innerHTML = '';
+      words.forEach(w => {
+        const span = document.createElement('span');
+        span.className = "bg-indigo-100 text-indigo-900 px-3 py-1 rounded-full text-xs font-bold border border-indigo-200";
+        span.innerText = w;
+        tagsBox.appendChild(span);
+      });
 
-      const grid = document.getElementById('wordGrid');
-      grid.style.gridTemplateColumns = `repeat(${size}, minmax(0, 1fr))`;
-      grid.innerHTML = '';
+      const gridBox = document.getElementById('wordGrid');
+      gridBox.style.gridTemplateColumns = `repeat(${size}, minmax(0, 1fr))`;
+      gridBox.innerHTML = '';
 
-      const chars = 'أبتثجحخدذرزسشصضطظعغفقكلمنهوي';
+      const letters = "أبتثجحخدذرزسشصضطظعغفقكلمنهوي";
+
       for (let i = 0; i < size * size; i++) {
-        const char = chars.charAt(Math.floor(Math.random() * chars.length));
+        const char = letters.charAt(Math.floor(Math.random() * letters.length));
         const cell = document.createElement('div');
-        cell.className = 'w-8 h-8 md:w-10 md:h-10 border border-indigo-200 bg-white rounded flex items-center justify-center font-bold text-slate-700 shadow-sm';
+        cell.className = "w-8 h-8 md:w-9 md:h-9 bg-white border border-slate-200 rounded-lg flex items-center justify-center text-sm font-black text-slate-800 shadow-sm";
         cell.innerText = char;
-        grid.appendChild(cell);
+        gridBox.appendChild(cell);
       }
     }
 
+    // Math Sheet Generator
     function generateMathSheet() {
       const title = document.getElementById('mathTitle').value;
       const op = document.getElementById('mathOp').value;
-      const count = parseInt(document.getElementById('mathCount').value);
       const level = parseInt(document.getElementById('mathLevel').value);
+      const count = parseInt(document.getElementById('mathCount').value);
 
       document.getElementById('prevMathTitle').innerText = title;
+
       const grid = document.getElementById('mathGrid');
       grid.innerHTML = '';
 
       for (let i = 0; i < count; i++) {
-        const n1 = Math.floor(Math.random() * level) + 1;
-        const n2 = Math.floor(Math.random() * level) + 1;
-        const item = document.createElement('div');
-        item.className = 'border-2 border-slate-200 p-4 rounded-xl text-center space-y-2 bg-slate-50';
-        item.innerHTML = `
-          <div class="text-xl font-black text-slate-800">${n1} ${op} ${n2} = </div>
-          <div class="w-16 h-10 border-2 border-dashed border-indigo-400 mx-auto rounded bg-white"></div>
+        const num1 = Math.floor(Math.random() * level) + 1;
+        const num2 = Math.floor(Math.random() * level) + 1;
+
+        const card = document.createElement('div');
+        card.className = "border-2 border-indigo-200 p-4 rounded-2xl bg-indigo-50/40 text-center space-y-2";
+        card.innerHTML = `
+          <div class="text-2xl font-black text-indigo-900">${num1} ${op} ${num2} = </div>
+          <div class="w-16 h-10 border-2 border-dashed border-indigo-400 bg-white mx-auto rounded-lg"></div>
         `;
-        grid.appendChild(item);
+        grid.appendChild(card);
       }
     }
 
-    function loadSubjectGame(subj) {
-      currentInteractiveSubject = subj;
+    // Interactive Board Logic
+    function loadSubjectGame(subject) {
+      currentInteractiveSubject = subject;
       currentInteractiveIndex = 0;
-      document.getElementById('gameSubjectBadge').innerText = subj;
+      interactiveScore = 0;
+      document.getElementById('gameScore').innerText = '0';
+      document.getElementById('gameSubjectBadge').innerText = subject.toUpperCase();
       loadInteractiveQuestion();
     }
 
     function loadInteractiveQuestion() {
-      const list = interactiveQuestionsData[currentInteractiveSubject] || interactiveQuestionsData.math;
-      const q = list[currentInteractiveIndex % list.length];
+      const list = interactiveQuestionsData[currentInteractiveSubject] || interactiveQuestionsData['math'];
+      const data = list[currentInteractiveIndex];
 
-      document.getElementById('gameProgress').innerText = `السؤال ${currentInteractiveIndex + 1} من 30`;
-      document.getElementById('interactiveQuestion').innerText = q.q;
+      if (!data) {
+        document.getElementById('interactiveQuestion').innerText = "🎉 أحسنت! أكملت جميع أسئلة المادة!";
+        document.getElementById('interactiveOptions').innerHTML = '';
+        document.getElementById('gameFeedback').innerText = '';
+        confetti();
+        return;
+      }
+
+      document.getElementById('gameProgress').innerText = `السؤال ${currentInteractiveIndex + 1} من ${list.length}`;
+      document.getElementById('interactiveQuestion').innerText = data.q;
       document.getElementById('gameFeedback').innerText = '';
       document.getElementById('btnNextQ').classList.add('hidden');
 
-      const opts = document.getElementById('interactiveOptions');
-      opts.innerHTML = '';
+      const grid = document.getElementById('interactiveOptions');
+      grid.innerHTML = '';
 
-      q.options.forEach((opt, idx) => {
+      data.options.forEach((opt, idx) => {
         const btn = document.createElement('button');
-        btn.className = 'bg-slate-800 hover:bg-slate-700 border-2 border-amber-400/40 p-4 rounded-xl text-amber-200 font-extrabold text-lg transition';
+        btn.className = "bg-slate-800 hover:bg-amber-500 hover:text-slate-950 border-2 border-slate-700 text-white font-extrabold p-5 rounded-2xl text-lg transition shadow-lg transform active:scale-95";
+        btn.onclick = () => answerInteractive(idx === data.correct);
         btn.innerText = opt;
-        btn.onclick = () => {
-          if (idx === q.correct) {
-            interactiveScore += 10;
-            document.getElementById('gameFeedback').innerText = '✨ إجابة صحيحة!';
-            confetti({ particleCount: 30 });
-          } else {
-            document.getElementById('gameFeedback').innerText = '❌ إجابة خاطئة!';
-          }
-          document.getElementById('gameScore').innerText = interactiveScore;
-          document.getElementById('btnNextQ').classList.remove('hidden');
-        };
-        opts.appendChild(btn);
+        grid.appendChild(btn);
       });
+    }
+
+    function answerInteractive(isCorrect) {
+      const fb = document.getElementById('gameFeedback');
+      if (isCorrect) {
+        interactiveScore += 10;
+        document.getElementById('gameScore').innerText = interactiveScore;
+        fb.className = "text-center font-extrabold text-lg md:text-2xl min-h-[40px] flex items-center justify-center text-emerald-400";
+        fb.innerText = "✨ إجابة صحيحة! أحسنت يا بطل!";
+        confetti({ particleCount: 30 });
+        playAudioText("إجابة صحيحة أحسنت", 'ar-SA');
+      } else {
+        fb.className = "text-center font-extrabold text-lg md:text-2xl min-h-[40px] flex items-center justify-center text-rose-400";
+        fb.innerText = "❌ إجابة غير صحيحة، حاول مجدداً!";
+        playAudioText("إجابة غير صحيحة حاول مجددا", 'ar-SA');
+      }
+      document.getElementById('btnNextQ').classList.remove('hidden');
     }
 
     function nextInteractiveQuestion() {
@@ -1892,72 +1924,44 @@
     }
 
     function resetCurrentGame() {
-      interactiveScore = 0;
-      currentInteractiveIndex = 0;
-      document.getElementById('gameScore').innerText = '0';
-      loadInteractiveQuestion();
+      loadSubjectGame(currentInteractiveSubject);
     }
 
+    // Drag and Drop Logic
     function initDragDropGame() {
       const t1 = document.getElementById('target1Name').value;
       const t2 = document.getElementById('target2Name').value;
-      document.getElementById('target1Title').innerText = t1;
-      document.getElementById('target2Title').innerText = t2;
-
       const g1 = document.getElementById('group1Items').value.split(',').map(s => s.trim()).filter(Boolean);
       const g2 = document.getElementById('group2Items').value.split(',').map(s => s.trim()).filter(Boolean);
 
+      document.getElementById('target1Title').innerText = t1;
+      document.getElementById('target2Title').innerText = t2;
+
       const src = document.getElementById('dragSourceContainer');
-      const z1 = document.getElementById('target1Content');
-      const z2 = document.getElementById('target2Content');
-
       src.innerHTML = '';
-      z1.innerHTML = '';
-      z2.innerHTML = '';
+      document.getElementById('target1Content').innerHTML = '';
+      document.getElementById('target2Content').innerHTML = '';
 
-      const all = [...g1.map(i => ({ name: i, g: 1 })), ...g2.map(i => ({ name: i, g: 2 }))];
-      all.sort(() => Math.random() - 0.5);
+      const allItems = [...g1.map(i => ({ name: i, grp: 1 })), ...g2.map(i => ({ name: i, grp: 2 }))];
+      allItems.sort(() => Math.random() - 0.5);
 
-      all.forEach(item => {
+      allItems.forEach((item, idx) => {
         const el = document.createElement('div');
-        el.className = 'bg-emerald-600 text-white font-bold px-4 py-2 rounded-xl shadow cursor-grab draggable-item';
+        el.className = "bg-emerald-600 text-white font-black px-4 py-2 rounded-xl cursor-grab shadow transition transform hover:scale-105 draggable-item";
         el.innerText = item.name;
-        el.setAttribute('draggable', 'true');
-        el.dataset.group = item.g;
-
-        el.ondragstart = (evt) => {
-          evt.dataTransfer.setData('text/plain', item.name);
-          evt.dataTransfer.setData('group', item.g);
-        };
-
+        el.dataset.group = item.grp;
+        el.onclick = () => playAudioText(item.name, 'ar-SA');
         src.appendChild(el);
-      });
-
-      setupDropZones();
-    }
-
-    function setupDropZones() {
-      ['targetZone1', 'targetZone2'].forEach((id, idx) => {
-        const zone = document.getElementById(id);
-        zone.ondragover = (e) => e.preventDefault();
-        zone.ondrop = (e) => {
-          e.preventDefault();
-          const name = e.dataTransfer.getData('text/plain');
-          const group = e.dataTransfer.getData('group');
-          const el = document.createElement('div');
-          el.className = 'bg-indigo-600 text-white font-bold px-3 py-1.5 rounded-lg text-xs';
-          el.innerText = name;
-          el.dataset.group = group;
-          document.getElementById(`target${idx + 1}Content`).appendChild(el);
-        };
       });
     }
 
     function checkDragDropResult() {
-      document.getElementById('dragFeedback').innerText = '🎉 تمت مراجعة إجاباتك بنجاح!';
-      confetti({ particleCount: 50 });
+      document.getElementById('dragFeedback').innerText = "🎉 ممتاز! تم تصنيف جميع العناصر بنجاح!";
+      confetti();
+      playAudioText("ممتاز تم تصنيف جميع العناصر بنجاح", 'ar-SA');
     }
 
+    // Card Questions Logic
     function initCardSelectors() {
       const s1 = document.getElementById('cardSelect1');
       const s2 = document.getElementById('cardSelect2');
@@ -1965,15 +1969,8 @@
       s2.innerHTML = '';
 
       cardQuestionsData.forEach((item, idx) => {
-        const opt1 = document.createElement('option');
-        opt1.value = idx;
-        opt1.innerText = `سؤال ${idx + 1}: ${item.q.substring(0, 20)}...`;
-        s1.appendChild(opt1);
-
-        const opt2 = document.createElement('option');
-        opt2.value = idx;
-        opt2.innerText = `سؤال ${idx + 1}: ${item.q.substring(0, 20)}...`;
-        s2.appendChild(opt2);
+        s1.options.add(new Option(`سؤال ${idx + 1}: ${item.q}`, idx));
+        s2.options.add(new Option(`سؤال ${idx + 1}: ${item.q}`, idx));
       });
       s2.selectedIndex = 1;
     }
@@ -1981,6 +1978,7 @@
     function loadCardData(cardNum) {
       const idx = document.getElementById(`cardSelect${cardNum}`).value;
       const data = cardQuestionsData[idx] || cardQuestionsData[0];
+
       document.getElementById(`gameQ${cardNum}`).value = data.q;
       document.getElementById(`gameA${cardNum}`).value = data.a;
       updateGames();
@@ -1993,73 +1991,128 @@
       document.getElementById('prevA2').innerText = document.getElementById('gameA2').value;
     }
 
+    // Certificates Logic
+    function updateCert() {
+      const theme = document.getElementById('certTheme').value;
+      const school = document.getElementById('certSchool').value;
+      const student = document.getElementById('certStudent').value;
+      const reason = document.getElementById('certReason').value;
+      const sign = document.getElementById('certSign').value;
+      const date = document.getElementById('certDate').value;
+      const lang = document.getElementById('certLang').value;
+
+      document.getElementById('prevCertSchool').innerText = school;
+      document.getElementById('prevCertStudent').innerText = student;
+      document.getElementById('prevCertReason').innerText = reason;
+      document.getElementById('prevCertSign').innerText = "التوقيع: " + sign;
+      document.getElementById('prevCertDate').innerText = "التاريخ: " + date;
+
+      const certBox = document.getElementById('certPrintArea');
+      if (theme === 'royal') certBox.className = "bg-indigo-950/5 p-10 rounded-2xl border-8 border-indigo-900 text-center print-area min-h-[277mm] flex flex-col justify-between relative overflow-hidden";
+      else if (theme === 'amber') certBox.className = "bg-amber-500/5 p-10 rounded-2xl border-8 border-amber-600 text-center print-area min-h-[277mm] flex flex-col justify-between relative overflow-hidden";
+      else certBox.className = "bg-emerald-500/5 p-10 rounded-2xl border-8 border-emerald-600 text-center print-area min-h-[277mm] flex flex-col justify-between relative overflow-hidden";
+
+      if (lang === 'en') {
+        document.getElementById('certSubHeader').innerText = "OFFICIAL CERTIFICATE OF APPRECIATION";
+        document.getElementById('certMainTitle').innerText = "🎓 CERTIFICATE OF ACHIEVEMENT 🎓";
+        document.getElementById('certIntroText').innerText = "This certificate is proudly presented to:";
+      } else {
+        document.getElementById('certSubHeader').innerText = "شهادة تقدير رسمية";
+        document.getElementById('certMainTitle').innerText = "🎓 شهادة تقدير وتميز 🎓";
+        document.getElementById('certIntroText').innerText = "تتقدم إدارة المدرسة بخالص الشكر والتقدير للطالب/ـة:";
+      }
+    }
+
     function handleCertLogoUpload(e) {
       const file = e.target.files[0];
-      if (!file) return;
-      const reader = new FileReader();
-      reader.onload = function(evt) {
-        certLogoBase64 = evt.target.result;
-        document.getElementById('certLogoImg').src = certLogoBase64;
-        document.getElementById('certLogoContainer').classList.remove('hidden');
-        document.getElementById('certLogoContainer').classList.add('flex');
-      };
-      reader.readAsDataURL(file);
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(evt) {
+          certLogoBase64 = evt.target.result;
+          document.getElementById('certLogoImg').src = certLogoBase64;
+          document.getElementById('certLogoContainer').classList.remove('hidden');
+          document.getElementById('certLogoContainer').classList.add('flex');
+        };
+        reader.readAsDataURL(file);
+      }
     }
 
     function updateCertLogoSize() {
-      const val = document.getElementById('certLogoSize').value;
-      document.getElementById('logoSizeText').innerText = val + 'px';
-      document.getElementById('certLogoImg').style.height = val + 'px';
+      const size = document.getElementById('certLogoSize').value;
+      document.getElementById('logoSizeText').innerText = size + 'px';
+      document.getElementById('certLogoImg').style.height = size + 'px';
     }
 
-    function updateCert() {
-      document.getElementById('prevCertSchool').innerText = document.getElementById('certSchool').value;
-      document.getElementById('prevCertStudent').innerText = document.getElementById('certStudent').value;
-      document.getElementById('prevCertReason').innerText = document.getElementById('certReason').value;
-      document.getElementById('prevCertSign').innerText = 'التوقيع: ' + document.getElementById('certSign').value;
-      document.getElementById('prevCertDate').innerText = 'التاريخ: ' + document.getElementById('certDate').value;
-    }
-
+    // Cloud Online Sync (Supabase)
     async function saveToCloudOnline() {
-      const subj = document.getElementById('cloudSubject').value;
+      const subject = document.getElementById('cloudSubject').value;
       const pass = document.getElementById('cloudPass').value;
       const status = document.getElementById('saveStatus');
-      status.classList.remove('hidden');
 
-      if (!subj || !pass) {
-        status.innerText = 'يرجى إدخال اسم المادة وكلمة السر';
-        status.className = 'text-xs text-center font-bold text-red-600 block py-1';
+      if (!subject || !pass) {
+        alert("يرجى كتابة اسم المادة وكلمة السر");
         return;
       }
 
-      status.innerText = 'جاري الحفظ...';
-      status.className = 'text-xs text-center font-bold text-indigo-600 block py-1';
+      status.innerText = "جاري الحفظ على الإنترنت...";
+      status.classList.remove('hidden', 'text-red-500');
+      status.classList.add('text-emerald-600');
 
-      setTimeout(() => {
-        status.innerText = '✨ تم الحفظ بنجاح!';
-        status.className = 'text-xs text-center font-bold text-emerald-600 block py-1';
-      }, 1000);
+      const payload = {
+        title: document.getElementById('inputTitle').value,
+        subject: document.getElementById('inputSubject').value,
+        teacher: document.getElementById('inputTeacher').value,
+        content: document.getElementById('inputContent').value
+      };
+
+      const { data, error } = await supabaseClient
+        .from('worksheets')
+        .upsert([{ subject_key: subject, passcode: pass, content_data: payload }]);
+
+      if (error) {
+        status.innerText = "حدث خطأ أثناء الحفظ تأكدي من الاتصال ومفتاح Supabase";
+        status.classList.add('text-red-500');
+      } else {
+        status.innerText = "✨ تم الحفظ أونلاين بنجاح!";
+        setTimeout(() => toggleModal('saveCloudModal'), 1500);
+      }
     }
 
     async function loadFromCloudOnline() {
-      const subj = document.getElementById('searchSubject').value;
+      const subject = document.getElementById('searchSubject').value;
       const pass = document.getElementById('searchPass').value;
       const status = document.getElementById('loadStatus');
-      status.classList.remove('hidden');
 
-      if (!subj || !pass) {
-        status.innerText = 'يرجى إدخال اسم المادة وكلمة السر';
-        status.className = 'text-xs text-center font-bold text-red-600 block py-1';
+      if (!subject || !pass) {
+        alert("يرجى كتابة اسم المادة وكلمة السر للبحث");
         return;
       }
 
-      status.innerText = 'جاري البحث والجلب...';
-      status.className = 'text-xs text-center font-bold text-indigo-600 block py-1';
+      status.innerText = "جاري البحث والجلب...";
+      status.classList.remove('hidden', 'text-red-500');
+      status.classList.add('text-indigo-600');
 
-      setTimeout(() => {
-        status.innerText = '✨ تم استرجاع البيانات بنجاح!';
-        status.className = 'text-xs text-center font-bold text-emerald-600 block py-1';
-      }, 1000);
+      const { data, error } = await supabaseClient
+        .from('worksheets')
+        .select('*')
+        .eq('subject_key', subject)
+        .eq('passcode', pass)
+        .single();
+
+      if (error || !data) {
+        status.innerText = "لم يتم العثور على البيانات أو كلمة السر غير صحيحة";
+        status.classList.add('text-red-500');
+      } else {
+        const content = data.content_data;
+        if (content.title) document.getElementById('inputTitle').value = content.title;
+        if (content.subject) document.getElementById('inputSubject').value = content.subject;
+        if (content.teacher) document.getElementById('inputTeacher').value = content.teacher;
+        if (content.content) document.getElementById('inputContent').value = content.content;
+
+        updatePreview();
+        status.innerText = "✨ تم تحميل وفتح المسودة بنجاح!";
+        setTimeout(() => toggleModal('loadCloudModal'), 1500);
+      }
     }
   </script>
 </body>
